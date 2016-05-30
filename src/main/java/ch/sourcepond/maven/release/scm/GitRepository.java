@@ -3,6 +3,7 @@ package ch.sourcepond.maven.release.scm;
 import static ch.sourcepond.maven.release.scm.DefaultProposedTag.BUILD_NUMBER;
 import static ch.sourcepond.maven.release.scm.DefaultProposedTag.VERSION;
 import static java.lang.String.format;
+import static org.apache.commons.lang3.Validate.notNull;
 import static org.eclipse.jgit.lib.Repository.isValidRefName;
 
 import java.io.File;
@@ -33,8 +34,6 @@ import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-
-import ch.sourcepond.maven.release.Guard;
 
 // TODO: Make this class package private when SingleModuleTest is working with a Guice injector
 @Component(role = SCMRepository.class)
@@ -219,7 +218,7 @@ public final class GitRepository implements SCMRepository {
 
 	@Override
 	public ProposedTag fromRef(final Ref gitTag) throws SCMException {
-		Guard.notNull("gitTag", gitTag);
+		notNull(gitTag, "gitTag");
 
 		final RevWalk walk = new RevWalk(getGit().getRepository());
 		final ObjectId tagId = gitTag.getObjectId();

@@ -4,7 +4,7 @@ import static java.lang.String.format;
 import static java.nio.file.FileSystems.getDefault;
 import static java.nio.file.Files.createDirectories;
 import static java.util.Arrays.asList;
-import static org.apache.commons.lang.SystemUtils.USER_DIR;
+import static org.apache.commons.lang3.SystemUtils.USER_DIR;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
