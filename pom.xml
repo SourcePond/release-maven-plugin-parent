@@ -312,7 +312,6 @@
 					</releaseGoals>
 					<releaseProfiles>
 						<releaseProfile>release</releaseProfile>
-						<releaseProfile>gpg</releaseProfile>
 					</releaseProfiles>
 				</configuration>
 			</plugin>
