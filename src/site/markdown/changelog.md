@@ -20,7 +20,7 @@ failing due to the plugin picking the older tag to use when it is detected that 
 
 ## 1.3.0
 
-* Added ssh-agent support thanks to [pull request 7](https://github.com/danielflower/multi-module-maven-release-plugin/pull/7)
+* Added ssh-agent support thanks to [pull request 7](https://github.com/danielflower/multi-module-release-maven-plugin/pull/7)
 
 ### 1.2.4
 

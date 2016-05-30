@@ -5,14 +5,14 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.danielflower.mavenplugins.testprojects.snapshotdependencies</groupId>
+    <groupId>ch.sourcepond.maven.plugins.testprojects.snapshotdependencies</groupId>
     <artifactId>snapshot-dependencies</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Project with snapshot dependencies</name>
 
     <parent>
-        <groupId>com.github.danielflower.mavenplugins.testprojects.independentversions</groupId>
+        <groupId>ch.sourcepond.maven.plugins.testprojects.independentversions</groupId>
         <artifactId>independent-versions</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
@@ -23,7 +23,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.danielflower.mavenplugins.testprojects.independentversions</groupId>
+            <groupId>ch.sourcepond.maven.plugins.testprojects.independentversions</groupId>
             <artifactId>core-utils</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
@@ -32,8 +32,8 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>com.github.danielflower.mavenplugins</groupId>
-                <artifactId>multi-module-maven-release-plugin</artifactId>
+                <groupId>ch.sourcepond.maven.plugins</groupId>
+                <artifactId>multi-module-release-maven-plugin</artifactId>
                 <version>${current.plugin.version}</version>
                 <configuration>
                     <releaseGoals>

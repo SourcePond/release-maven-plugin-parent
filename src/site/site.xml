@@ -12,7 +12,7 @@
             <topBarEnabled>true</topBarEnabled>
             <sideBarEnabled>true</sideBarEnabled>
             <gitHub>
-                <projectId>danielflower/multi-module-maven-release-plugin</projectId>
+                <projectId>danielflower/multi-module-release-maven-plugin</projectId>
                 <ribbonOrientation>right</ribbonOrientation>
                 <ribbonColor>gray</ribbonColor>
             </gitHub>

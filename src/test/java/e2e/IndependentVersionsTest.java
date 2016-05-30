@@ -53,11 +53,11 @@ public class IndependentVersionsTest extends E2ETest {
 	}
 
 	private void installsAllModulesIntoTheRepoWithTheBuildNumber() throws Exception {
-		assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.independentversions",
+		assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.independentversions",
 				"independent-versions", expectedParentVersion);
-		assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.independentversions", "core-utils",
+		assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.independentversions", "core-utils",
 				expectedCoreVersion);
-		assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.independentversions",
+		assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.independentversions",
 				"console-app", expectedAppVersion);
 	}
 

@@ -166,12 +166,12 @@ public abstract class NestedModulesBaseTest extends E2ETest {
 	}
 
 	private Artifact project(final String artifacdId, final String version, final String buildNumber) {
-		return new DefaultArtifact(format("com.github.danielflower.mavenplugins.testprojects.nested:%s:%s%s", artifacdId,
+		return new DefaultArtifact(format("ch.sourcepond.maven.plugins.testprojects.nested:%s:%s%s", artifacdId,
 				version, buildNumber));
 	}
 
 	private Artifact misnamedProject(final String artifactId, final String version, final String buildNumber) {
-		return new DefaultArtifact(format("com.github.danielflower.mavenplugins.testprojects.nested.misnamed:%s:%s%s",
+		return new DefaultArtifact(format("ch.sourcepond.maven.plugins.testprojects.nested.misnamed:%s:%s%s",
 				artifactId, version, buildNumber));
 	}
 
@@ -206,21 +206,21 @@ public abstract class NestedModulesBaseTest extends E2ETest {
 	}
 
 	private void installsAllModulesIntoTheRepoWithTheBuildNumber() throws Exception {
-		assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.nested", "nested-project",
+		assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.nested", "nested-project",
 				expectedAggregatorVersion + "1");
-		assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.nested", "core-utils",
+		assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.nested", "core-utils",
 				expectedCoreVersion + "1");
-		assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.nested", "console-app",
+		assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.nested", "console-app",
 				expectedAppVersion + "1");
-		assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.nested", "parent-module",
+		assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.nested", "parent-module",
 				expectedParentVersion + "1");
-		assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.nested", "server-modules",
+		assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.nested", "server-modules",
 				expectedServerModulesVersion + "1");
-		assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.nested", "server-module-a",
+		assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.nested", "server-module-a",
 				expectedServerModuleAVersion + "1");
-		assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.nested", "server-module-b",
+		assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.nested", "server-module-b",
 				expectedServerModuleBVersion + "1");
-		assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.nested.misnamed", "server-module-c",
+		assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.nested.misnamed", "server-module-c",
 				expectedServerModuleCVersion + "1");
 	}
 

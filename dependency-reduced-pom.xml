@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.github.danielflower.mavenplugins</groupId>
-  <artifactId>multi-module-maven-release-plugin</artifactId>
+  <groupId>ch.sourcepond.maven.plugins</groupId>
+  <artifactId>multi-module-release-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
   <name>The Multi Module Maven Release Plugin</name>
   <version>2.0-SNAPSHOT</version>
   <description>A maven release plugin built for multi-maven-module git repositories allowing continuous deployment</description>
-  <url>https://github.com/danielflower/maven-multi-module-releaser</url>
+  <url>https://github.com/SourcePond/multi-module-release-maven-plugin</url>
   <prerequisites>
     <maven>3.0.1</maven>
   </prerequisites>
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/danielflower/multi-module-maven-release-plugin/issues</url>
+    <url>https://github.com/SourcePond/multi-module-release-maven-plugin/issues</url>
   </issueManagement>
-  <ciManagement>
-    <system>travis-ci</system>
-    <url>https://travis-ci.org/danielflower/multi-module-maven-release-plugin</url>
-  </ciManagement>
+	<ciManagement>
+		<url>https://sourcepond.ci.cloudbees.com/</url>
+		<system>Jenkins</system>
+	</ciManagement>
   <inceptionYear>2015</inceptionYear>
   <developers>
     <developer>
       <name>Daniel Flower</name>
       <organizationUrl>https://github.com/danielflower</organizationUrl>
+    </developer>
+    <developer>
+      <name>Roland Hauser</name>
+      <organizationUrl>https://github.com/SourcePond</organizationUrl>
     </developer>
   </developers>
   <licenses>
@@ -32,11 +36,15 @@
       <url>http://www.opensource.org/licenses/mit-license.php</url>
       <distribution>repo</distribution>
     </license>
+	<license>
+		<name>Apache License, Version 2.0</name>
+		<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+	</license>
   </licenses>
-  <scm>
-    <connection>scm:git:git@github.com:danielflower/multi-module-maven-release-plugin.git</connection>
-    <url>https://github.com/danielflower/multi-module-maven-release-plugin</url>
-  </scm>
+	<scm>
+		<url>https://github.com/SourcePond/multi-module-release-maven-plugin.git</url>
+		<connection>scm:git:git@github.com/SourcePond/multi-module-release-maven-plugin.git</connection>
+	</scm>
   <build>
     <pluginManagement>
       <plugins>
@@ -118,8 +126,8 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>com.github.danielflower.mavenplugins</groupId>
-        <artifactId>multi-module-maven-release-plugin</artifactId>
+        <groupId>ch.sourcepond.maven.plugins</groupId>
+        <artifactId>multi-module-release-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <releaseGoals>

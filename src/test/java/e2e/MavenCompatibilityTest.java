@@ -58,7 +58,7 @@ public class MavenCompatibilityTest extends E2ETest {
 		final MvnRunner runner = mvn.mvn(mavenVersionToTest);
 		testProject.setMvnRunner(runner);
 		testProject.mvnRelease(buildNumber);
-		runner.assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects", "single-module",
+		runner.assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects", "single-module",
 				expected);
 		assertThat(new File(testProject.localDir, "target/single-module-" + expected + "-package.jar").exists(),
 				is(true));

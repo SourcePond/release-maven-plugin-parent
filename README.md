@@ -2,12 +2,12 @@ Documentation, download, and usage instructions
 ===============================================
 
 Full usage details, FAQs, background and more are available on the
-**[project documention website](http://danielflower.github.io/multi-module-maven-release-plugin/index.html)**.
+**[project documention website](http://sourcepond.github.io/multi-module-maven-release-plugin/index.html)**.
 
 Development
 ===========
 
-[![Build Status](https://travis-ci.org/danielflower/multi-module-maven-release-plugin.svg?branch=master)](https://travis-ci.org/danielflower/multi-module-maven-release-plugin)
+[![Build Status](https://travis-ci.org/SourcePond/multi-module-release-maven-plugin.svg?branch=master)](https://travis-ci.org/SourcePond/multi-module-release-maven-plugin)
 
 Contributing
 ------------

@@ -45,9 +45,9 @@ public class InheritedVersionsTest extends E2ETest {
     }
 
     private void installsAllModulesIntoTheRepoWithTheBuildNumber() throws Exception {
-        assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.versioninheritor", "inherited-versions-from-parent", expected);
-        assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.versioninheritor", "core-utils", expected);
-        assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.versioninheritor", "console-app", expected);
+        assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.versioninheritor", "inherited-versions-from-parent", expected);
+        assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.versioninheritor", "core-utils", expected);
+        assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.versioninheritor", "console-app", expected);
     }
 
     private void theLocalAndRemoteGitReposAreTaggedWithTheModuleNameAndVersion() throws IOException, InterruptedException {

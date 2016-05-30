@@ -5,8 +5,8 @@ import static org.mockito.Mockito.when;
 
 import org.apache.maven.project.MavenProject;
 
-import com.github.danielflower.mavenplugins.release.reactor.ReleasableModule;
-import com.github.danielflower.mavenplugins.release.version.Version;
+import ch.sourcepond.maven.release.reactor.ReleasableModule;
+import ch.sourcepond.maven.release.version.Version;
 
 public class ReleasableModuleBuilder {
 
@@ -54,7 +54,6 @@ public class ReleasableModuleBuilder {
 	}
 
 	public static ReleasableModuleBuilder aModule() {
-		return new ReleasableModuleBuilder().withGroupId("com.github.danielflower.somegroup")
-				.withArtifactId("some-artifact");
+		return new ReleasableModuleBuilder().withGroupId("ch.sourcepond.somegroup").withArtifactId("some-artifact");
 	}
 }

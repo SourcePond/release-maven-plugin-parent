@@ -7,7 +7,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-import com.github.danielflower.mavenplugins.release.scm.GitHelper;
+import ch.sourcepond.maven.release.scm.GitHelper;
 
 public class GitMatchers {
 

@@ -48,10 +48,10 @@ public class ParentAsSiblingTest extends E2ETest {
     }
 
     private void installsAllModulesIntoTheRepoWithTheBuildNumber() throws Exception {
-        assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.parentassibling", "parent-as-sibling", expectedAggregatorVersion);
-        assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.parentassibling", "parent-module", expectedParentVersion);
-        assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.parentassibling", "core-utils", expectedCoreVersion);
-        assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects.parentassibling", "console-app", expectedAppVersion);
+        assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.parentassibling", "parent-as-sibling", expectedAggregatorVersion);
+        assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.parentassibling", "parent-module", expectedParentVersion);
+        assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.parentassibling", "core-utils", expectedCoreVersion);
+        assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects.parentassibling", "console-app", expectedAppVersion);
     }
 
     private void theLocalAndRemoteGitReposAreTaggedWithTheModuleNameAndVersion() throws IOException, InterruptedException {

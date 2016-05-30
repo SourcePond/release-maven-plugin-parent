@@ -28,7 +28,7 @@ public class UseLastDigitAsBuildNumber extends E2ETest {
 		assertThat(outputLines, oneOf(containsString("Going to release use-last-digit-as-build-number " + expected)));
 		assertThat(outputLines, oneOf(containsString("Hello from version " + expected + "!")));
 
-		assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects", "use-last-digit-as-build-number",
+		assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects", "use-last-digit-as-build-number",
 				expected);
 
 		assertThat(new File(testProject.localDir, "target/use-last-digit-as-build-number-" + expected + "-package.jar")

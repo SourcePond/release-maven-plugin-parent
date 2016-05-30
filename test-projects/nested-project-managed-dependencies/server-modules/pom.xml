@@ -5,7 +5,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.danielflower.mavenplugins.testprojects.nested</groupId>
+    <groupId>ch.sourcepond.maven.plugins.testprojects.nested</groupId>
     <artifactId>server-modules</artifactId>
     <version>1.0.2.4-SNAPSHOT</version>
     <modules>
@@ -18,8 +18,8 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>com.github.danielflower.mavenplugins</groupId>
-                <artifactId>multi-module-maven-release-plugin</artifactId>
+                <groupId>ch.sourcepond.maven.plugins</groupId>
+                <artifactId>multi-module-release-maven-plugin</artifactId>
                 <version>${current.plugin.version}</version>
                 <configuration>
                     <releaseGoals>

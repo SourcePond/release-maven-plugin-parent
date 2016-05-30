@@ -19,12 +19,11 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
 import org.junit.Test;
 
-import com.github.danielflower.mavenplugins.release.scm.GitFactory;
-import com.github.danielflower.mavenplugins.release.scm.GitRepository;
-import com.github.danielflower.mavenplugins.release.scm.ProposedTags;
-import com.github.danielflower.mavenplugins.release.scm.ProposedTagsBuilder;
-import com.github.danielflower.mavenplugins.release.version.Version;
-
+import ch.sourcepond.maven.release.scm.GitFactory;
+import ch.sourcepond.maven.release.scm.GitRepository;
+import ch.sourcepond.maven.release.scm.ProposedTags;
+import ch.sourcepond.maven.release.scm.ProposedTagsBuilder;
+import ch.sourcepond.maven.release.version.Version;
 import scaffolding.TestProject;
 
 public class SingleModuleTest extends E2ETest {
@@ -39,7 +38,7 @@ public class SingleModuleTest extends E2ETest {
 		assertThat(outputLines, oneOf(containsString("Going to release single-module " + expected)));
 		assertThat(outputLines, oneOf(containsString("Hello from version " + expected + "!")));
 
-		assertArtifactInLocalRepo("com.github.danielflower.mavenplugins.testprojects", "single-module", expected);
+		assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects", "single-module", expected);
 
 		assertThat(new File(testProject.localDir, "target/single-module-" + expected + "-package.jar").exists(),
 				is(true));

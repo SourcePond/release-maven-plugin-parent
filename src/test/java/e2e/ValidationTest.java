@@ -124,7 +124,7 @@ public class ValidationTest extends E2ETest {
 			// testing purposes only
 			// assertThat(mee.output, oneOf(containsString(" *
 			// snapshot-dependencies references plugin
-			// multi-module-maven-release-plugin 0.2-SNAPSHOT")));
+			// multi-module-release-maven-plugin 0.2-SNAPSHOT")));
 		}
 
 		assertThat(badOne.local, hasCleanWorkingDirectory());
