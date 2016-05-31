@@ -32,6 +32,7 @@ public class UpdateModelTest {
 		when(project.getGroupId()).thenReturn(GROUP_ID);
 		when(project.getArtifactId()).thenReturn(ARTIFACT_ID);
 		when(project.getOriginalModel()).thenReturn(model);
+		when(context.getModel()).thenReturn(model);
 		when(context.getProject()).thenReturn(project);
 		when(context.getVersionToDependOn(GROUP_ID, ARTIFACT_ID)).thenReturn(VERSION);
 	}

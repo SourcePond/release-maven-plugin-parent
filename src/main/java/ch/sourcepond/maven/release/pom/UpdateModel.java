@@ -13,9 +13,9 @@ final class UpdateModel extends Command {
 	@Override
 	public void alterModel(final Context updateContext) {
 		final MavenProject project = updateContext.getProject();
-		final Model originalModel = project.getOriginalModel();
+		final Model model = updateContext.getModel();
 		try {
-			originalModel.setVersion(updateContext.getVersionToDependOn(project.getGroupId(), project.getArtifactId()));
+			model.setVersion(updateContext.getVersionToDependOn(project.getGroupId(), project.getArtifactId()));
 		} catch (final UnresolvedSnapshotDependencyException e) {
 			updateContext.addError(ERROR_FORMAT, project);
 		}

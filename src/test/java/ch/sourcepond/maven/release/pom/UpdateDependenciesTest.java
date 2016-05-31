@@ -52,6 +52,7 @@ public class UpdateDependenciesTest {
 
 		// Setup project
 		when(context.getProject()).thenReturn(project);
+		when(context.getModel()).thenReturn(model);
 		when(project.getArtifactId()).thenReturn(ANY_ARTIFACT_ID);
 		when(project.getOriginalModel()).thenReturn(model);
 

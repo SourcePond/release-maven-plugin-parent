@@ -37,6 +37,7 @@ public class UpdateParentTest {
 	public void setup() throws Exception {
 		cmd.setCommand(log);
 		when(context.getProject()).thenReturn(project);
+		when(context.getModel()).thenReturn(originalModel);
 		when(project.getArtifactId()).thenReturn(ANY_ARTIFACT_ID);
 		when(project.getParent()).thenReturn(parentProject);
 		when(project.getOriginalModel()).thenReturn(originalModel);

@@ -31,9 +31,9 @@ class UpdateDependencies extends Command {
 	@Override
 	public final void alterModel(final Context updateContext) {
 		final MavenProject project = updateContext.getProject();
-		final Model originalModel = project.getOriginalModel();
+		final Model model = updateContext.getModel();
 
-		for (final Dependency dependency : determineDependencies(originalModel)) {
+		for (final Dependency dependency : determineDependencies(model)) {
 			final String substitutedVersion = substitution.getActualVersion(project, dependency);
 			if (isSnapshot(substitutedVersion)) {
 				try {

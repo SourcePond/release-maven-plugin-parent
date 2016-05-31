@@ -27,14 +27,6 @@ import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
-import ch.sourcepond.maven.release.pom.ChangeSet;
-import ch.sourcepond.maven.release.pom.Command;
-import ch.sourcepond.maven.release.pom.Context;
-import ch.sourcepond.maven.release.pom.ContextFactory;
-import ch.sourcepond.maven.release.pom.POMUpdateException;
-import ch.sourcepond.maven.release.pom.PomWriter;
-import ch.sourcepond.maven.release.pom.PomWriterFactory;
-import ch.sourcepond.maven.release.pom.UpdateProcessor;
 import ch.sourcepond.maven.release.reactor.Reactor;
 import ch.sourcepond.maven.release.reactor.ReleasableModule;
 import ch.sourcepond.maven.release.version.Version;
@@ -67,10 +59,11 @@ public class UpdateProcessorTest {
 	@Before
 	public void setup() throws POMUpdateException {
 		// Setup context factory
-		when(contextFactory.newContext(reactor, project, false)).thenReturn(context);
+		when(contextFactory.newContext(reactor, project, originalModel, false)).thenReturn(context);
 
 		// Setup context
 		when(context.getErrors()).thenReturn(Collections.<String> emptyList());
+		when(context.getModel()).thenReturn(originalModel);
 
 		// Setup writer factory
 		when(writerFactory.newWriter()).thenReturn(writer);

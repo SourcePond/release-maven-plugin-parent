@@ -5,6 +5,7 @@ import static java.lang.String.format;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.maven.model.Model;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.annotations.Component;
@@ -47,8 +48,7 @@ final class UpdateProcessor implements Updater {
 		this.log = log;
 	}
 
-	private void process(final MavenProject project, final Context context, final List<String> errors,
-			final String newVersion) {
+	private void process(final Context context, final List<String> errors, final String newVersion) {
 		for (final Command cmd : commands) {
 			cmd.alterModel(context);
 		}
@@ -70,18 +70,18 @@ final class UpdateProcessor implements Updater {
 				log.info(format("Going to release %s %s", module.getArtifactId(), version.getReleaseVersion()));
 			}
 
-			final MavenProject releaseClone = module.getProject().clone();
-			process(releaseClone, contextFactory.newContext(reactor, releaseClone, false), errors,
+			final MavenProject project = module.getProject();
+			final Model originalModel = project.getOriginalModel();
+			process(contextFactory.newContext(reactor, project, originalModel, false), errors,
 					version.getReleaseVersion());
 			// Mark project to be written at a later stage; if an exception
 			// occurs, we don't need to revert anything.
-			writer.markRelease(releaseClone);
+			writer.markRelease(project);
 
 			if (incrementSnapshotVersionAfterRelease) {
-				final MavenProject snapshotIncrementClone = module.getProject().clone();
-				process(snapshotIncrementClone, contextFactory.newContext(reactor, snapshotIncrementClone, true),
-						errors, format("%s.%d", version.getBusinessVersion(), version.getBuildNumber() + 1));
-				writer.markSnapshotVersionIncrement(snapshotIncrementClone);
+				process(contextFactory.newContext(reactor, project, originalModel.clone(), true), errors,
+						format("%s.%d", version.getBusinessVersion(), version.getBuildNumber() + 1));
+				writer.markSnapshotVersionIncrement(project);
 			}
 		}
 

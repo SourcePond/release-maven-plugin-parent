@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,12 +21,13 @@ public class ContextFactoryTest {
 	private static final String ANY_ARTIFACT_ID = "anyArtifactId";
 	private static final String TEST_STRING = "test";
 	private final Reactor reactor = mock(Reactor.class);
+	private final Model model = mock(Model.class);
 	private final MavenProject project = mock(MavenProject.class);
 	private Context context;
 
 	@Before
 	public void setup() {
-		context = new ContextFactory().newContext(reactor, project, false);
+		context = new ContextFactory().newContext(reactor, project, model, false);
 	}
 
 	@Test
@@ -41,6 +43,11 @@ public class ContextFactoryTest {
 	@Test
 	public void getProject() {
 		assertSame(project, context.getProject());
+	}
+
+	@Test
+	public void getModel() {
+		assertSame(model, context.getModel());
 	}
 
 	@Test

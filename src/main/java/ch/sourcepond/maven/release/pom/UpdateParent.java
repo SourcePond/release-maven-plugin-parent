@@ -19,14 +19,14 @@ final class UpdateParent extends Command {
 	@Override
 	public void alterModel(final Context updateContext) {
 		final MavenProject project = updateContext.getProject();
-		final Model originalModel = project.getOriginalModel();
+		final Model model = updateContext.getModel();
 		final MavenProject parent = project.getParent();
 
 		if (parent != null && isSnapshot(parent.getVersion())) {
 			try {
 				final String versionToDependOn = updateContext.getVersionToDependOn(parent.getGroupId(),
 						parent.getArtifactId());
-				originalModel.getParent().setVersion(versionToDependOn);
+				model.getParent().setVersion(versionToDependOn);
 				log.debug(format(" Parent %s rewritten to version %s", parent.getArtifactId(), versionToDependOn));
 			} catch (final UnresolvedSnapshotDependencyException e) {
 				updateContext.addError(ERROR_FORMAT, project.getArtifactId(), e.artifactId, parent.getVersion());

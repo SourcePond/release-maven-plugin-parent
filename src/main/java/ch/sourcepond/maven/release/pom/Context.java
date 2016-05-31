@@ -5,6 +5,7 @@ import static java.lang.String.format;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
 
 import ch.sourcepond.maven.release.reactor.Reactor;
@@ -15,17 +16,24 @@ class Context {
 
 	private final List<String> errors = new LinkedList<>();
 	private final Reactor reactor;
+	private final Model model;
 	private final MavenProject project;
 	private final boolean incrementSnapshotVersionAfterRelease;
 
-	Context(final Reactor reactor, final MavenProject project, final boolean incrementSnapshotVersionAfterRelease) {
+	Context(final Reactor reactor, final MavenProject project, final Model model,
+			final boolean incrementSnapshotVersionAfterRelease) {
 		this.reactor = reactor;
 		this.project = project;
+		this.model = model;
 		this.incrementSnapshotVersionAfterRelease = incrementSnapshotVersionAfterRelease;
 	}
 
 	public void addError(final String format, final Object... args) {
 		errors.add(format(format, args));
+	}
+
+	public Model getModel() {
+		return model;
 	}
 
 	public MavenProject getProject() {

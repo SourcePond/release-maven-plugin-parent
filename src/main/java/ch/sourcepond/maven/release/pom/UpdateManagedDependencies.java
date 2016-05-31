@@ -16,9 +16,9 @@ import org.codehaus.plexus.component.annotations.Component;
 final class UpdateManagedDependencies extends UpdateDependencies {
 
 	@Override
-	protected List<Dependency> determineDependencies(final Model originalModel) {
+	protected List<Dependency> determineDependencies(final Model model) {
 		List<Dependency> dependencies = Collections.emptyList();
-		final DependencyManagement mgmt = originalModel.getDependencyManagement();
+		final DependencyManagement mgmt = model.getDependencyManagement();
 
 		if (mgmt != null) {
 			dependencies = mgmt.getDependencies();
