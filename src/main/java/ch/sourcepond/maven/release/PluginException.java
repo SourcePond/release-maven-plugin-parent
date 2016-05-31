@@ -31,9 +31,10 @@ public class PluginException extends Exception {
 	}
 
 	private void printCause(final Log log) {
-		log.error("");
-		log.error(format("Caused by %s", getCause().getClass()));
-		log.error(getCause().getMessage());
+		if (getCause() != null) {
+			log.error(format("Caused by %s", getCause().getClass()));
+			log.error(getCause().getMessage());
+		}
 
 		if (getCause() instanceof PluginException) {
 			final PluginException plex = (PluginException) getCause();
