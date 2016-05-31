@@ -11,17 +11,17 @@ import ch.sourcepond.maven.release.version.Version;
 final class DefaultProposedTags implements ProposedTags {
 	static final String KEY_FORMAT = "%s/%s";
 	private final Map<String, ProposedTag> proposedTags;
-	private final String remoteUrl;
+	private final String remoteUrlOrNull;
 
-	DefaultProposedTags(final String remoteUrl, final Map<String, ProposedTag> proposedTags) {
-		this.remoteUrl = remoteUrl;
+	DefaultProposedTags(final String remoteUrlOrNull, final Map<String, ProposedTag> proposedTags) {
+		this.remoteUrlOrNull = remoteUrlOrNull;
 		this.proposedTags = proposedTags;
 	}
 
 	@Override
 	public void tagAndPushRepo() throws SCMException {
 		for (final ProposedTag tag : proposedTags.values()) {
-			tag.tagAndPush(remoteUrl);
+			tag.tagAndPush(remoteUrlOrNull);
 		}
 	}
 

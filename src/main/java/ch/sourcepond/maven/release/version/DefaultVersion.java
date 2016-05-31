@@ -1,6 +1,6 @@
 package ch.sourcepond.maven.release.version;
 
-final class DefaultVersion implements Version {
+final class DefaultVersion extends BaseVersion implements Version {
 	private String equivalentVersion;
 	private String businessVersion;
 	private String releaseVersion;

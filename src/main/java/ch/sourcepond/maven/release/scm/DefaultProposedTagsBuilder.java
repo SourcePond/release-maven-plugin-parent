@@ -22,13 +22,13 @@ final class DefaultProposedTagsBuilder implements ProposedTagsBuilder {
 	private final Log log;
 	private final Git git;
 	private final GitRepository repo;
-	private final String remoteUrl;
+	private final String remoteUrlOrNull;
 
-	DefaultProposedTagsBuilder(final Log log, final Git git, final GitRepository repo, final String remoteUrl) {
+	DefaultProposedTagsBuilder(final Log log, final Git git, final GitRepository repo, final String remoteUrlOrNull) {
 		this.log = log;
 		this.git = git;
 		this.repo = repo;
-		this.remoteUrl = remoteUrl;
+		this.remoteUrlOrNull = remoteUrlOrNull;
 	}
 
 	@Override
@@ -53,7 +53,7 @@ final class DefaultProposedTagsBuilder implements ProposedTagsBuilder {
 		}
 
 		final List<String> results = new ArrayList<String>();
-		final Collection<Ref> remoteTags = repo.allRemoteTags(remoteUrl);
+		final Collection<Ref> remoteTags = repo.allRemoteTags(remoteUrlOrNull);
 		for (final Ref remoteTag : remoteTags) {
 			for (final String proposedTag : tagNamesToSearchFor) {
 				if (remoteTag.getName().equals("refs/tags/" + proposedTag)) {
@@ -75,7 +75,7 @@ final class DefaultProposedTagsBuilder implements ProposedTagsBuilder {
 			}
 			throw exception.add("Please try releasing again with a new build number.");
 		}
-		return new DefaultProposedTags(remoteUrl, proposedTags);
+		return new DefaultProposedTags(remoteUrlOrNull, proposedTags);
 	}
 
 }

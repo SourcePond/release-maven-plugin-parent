@@ -11,7 +11,7 @@ public interface ProposedTag extends Version {
 
 	Ref saveAtHEAD() throws SCMException;
 
-	void tagAndPush(String remoteUrl) throws SCMException;
+	void tagAndPush(String remoteUrlOrNull) throws SCMException;
 
 	ObjectId getObjectId();
 }

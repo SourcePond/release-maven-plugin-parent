@@ -50,12 +50,10 @@ class SnapshotIncrementChangeSet extends LinkedList<MavenProject>implements Auto
 						pomWriter.write(fileWriter, project.getOriginalModel());
 					}
 
-					if (remoteUrlOrNull != null) {
-						try {
-							repository.pushChanges(remoteUrlOrNull);
-						} catch (final SCMException e) {
-							throw new ChangeSetCloseException(e, IO_EXCEPTION_FORMAT, changedFiles);
-						}
+					try {
+						repository.pushChanges(remoteUrlOrNull);
+					} catch (final SCMException e) {
+						throw new ChangeSetCloseException(e, IO_EXCEPTION_FORMAT, changedFiles);
 					}
 				} catch (final IOException e) {
 					try {

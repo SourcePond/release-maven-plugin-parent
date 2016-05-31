@@ -4,7 +4,6 @@ import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.annotations.Component;
 
-import ch.sourcepond.maven.release.reactor.ReleasableModule;
 import ch.sourcepond.maven.release.reactor.UnresolvedSnapshotDependencyException;
 
 @Component(role = Command.class, hint = "UpdateModel")
@@ -16,9 +15,7 @@ final class UpdateModel extends Command {
 		final MavenProject project = updateContext.getProject();
 		final Model originalModel = project.getOriginalModel();
 		try {
-			final ReleasableModule module = updateContext.getVersionToDependOn(project.getGroupId(),
-					project.getArtifactId());
-			originalModel.setVersion(module.getVersionToDependOn());
+			originalModel.setVersion(updateContext.getVersionToDependOn(project.getGroupId(), project.getArtifactId()));
 		} catch (final UnresolvedSnapshotDependencyException e) {
 			updateContext.addError(ERROR_FORMAT, project);
 		}

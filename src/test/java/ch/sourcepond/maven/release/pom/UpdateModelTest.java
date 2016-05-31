@@ -12,9 +12,6 @@ import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.sourcepond.maven.release.pom.Context;
-import ch.sourcepond.maven.release.pom.UpdateModel;
-import ch.sourcepond.maven.release.reactor.ReleasableModule;
 import ch.sourcepond.maven.release.reactor.UnresolvedSnapshotDependencyException;
 
 /**
@@ -28,7 +25,6 @@ public class UpdateModelTest {
 	private final MavenProject project = mock(MavenProject.class);
 	private final Model model = mock(Model.class);
 	private final Context context = mock(Context.class);
-	private final ReleasableModule module = mock(ReleasableModule.class);
 	private final UpdateModel update = new UpdateModel();
 
 	@Before
@@ -37,8 +33,7 @@ public class UpdateModelTest {
 		when(project.getArtifactId()).thenReturn(ARTIFACT_ID);
 		when(project.getOriginalModel()).thenReturn(model);
 		when(context.getProject()).thenReturn(project);
-		when(context.getVersionToDependOn(GROUP_ID, ARTIFACT_ID)).thenReturn(module);
-		when(module.getVersionToDependOn()).thenReturn(VERSION);
+		when(context.getVersionToDependOn(GROUP_ID, ARTIFACT_ID)).thenReturn(VERSION);
 	}
 
 	@Test

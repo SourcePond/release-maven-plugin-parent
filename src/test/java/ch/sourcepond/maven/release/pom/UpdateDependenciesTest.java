@@ -19,9 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
 
-import ch.sourcepond.maven.release.pom.Context;
-import ch.sourcepond.maven.release.pom.UpdateDependencies;
-import ch.sourcepond.maven.release.reactor.ReleasableModule;
 import ch.sourcepond.maven.release.reactor.UnresolvedSnapshotDependencyException;
 import ch.sourcepond.maven.release.substitution.VersionSubstitution;
 
@@ -37,7 +34,6 @@ public class UpdateDependenciesTest {
 	private final Dependency dependency = mock(Dependency.class);
 	private final VersionSubstitution substitution = mock(VersionSubstitution.class);
 	protected final List<Dependency> dependencies = asList(dependency);
-	private final ReleasableModule module = mock(ReleasableModule.class);
 	private final UpdateDependencies cmd = newCommand();
 
 	protected UpdateDependencies newCommand() {
@@ -49,10 +45,10 @@ public class UpdateDependenciesTest {
 		cmd.setCommand(log);
 		cmd.setVersionSubstitution(substitution);
 		setupDetermineDependencies();
+		when(substitution.getActualVersion(project, dependency)).thenReturn(ANY_VERSION);
 
 		// Setup reactor
-		when(module.getVersionToDependOn()).thenReturn(ANY_VERSION);
-		when(context.getVersionToDependOn(ANY_GROUP_ID, ANY_ARTIFACT_ID)).thenReturn(module);
+		when(context.getVersionToDependOn(ANY_GROUP_ID, ANY_ARTIFACT_ID)).thenReturn(ANY_VERSION);
 
 		// Setup project
 		when(context.getProject()).thenReturn(project);

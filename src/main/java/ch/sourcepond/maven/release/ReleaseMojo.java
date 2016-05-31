@@ -11,6 +11,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import ch.sourcepond.maven.release.pom.ChangeSet;
 import ch.sourcepond.maven.release.pom.Updater;
 import ch.sourcepond.maven.release.reactor.Reactor;
+import ch.sourcepond.maven.release.reactor.ReactorBuilder;
 import ch.sourcepond.maven.release.scm.ProposedTags;
 
 /**
@@ -103,6 +104,11 @@ public class ReleaseMojo extends NextMojo {
 
 	void setUpdater(final Updater pomUpdater) {
 		this.pomUpdater = pomUpdater;
+	}
+
+	@Override
+	protected ReactorBuilder newReactorBuilder() {
+		return super.newReactorBuilder().setUseLastDigitAsBuildNumber(incrementSnapshotVersionAfterRelease);
 	}
 
 	@Override

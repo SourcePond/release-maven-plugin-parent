@@ -14,19 +14,19 @@ public interface SCMRepository {
 
 	boolean hasLocalTag(String tag) throws SCMException;
 
-	void revertChanges(List<File> changedFiles) throws SCMException;
+	void revertChanges(Collection<File> changedFiles) throws SCMException;
 
-	Collection<Long> getRemoteBuildNumbers(String remoteUrl, String artifactId, String versionWithoutBuildNumber)
+	Collection<Long> getRemoteBuildNumbers(String remoteUrlOrNull, String artifactId, String versionWithoutBuildNumber)
 			throws SCMException;
 
 	List<ProposedTag> tagsForVersion(String module, String versionWithoutBuildNumber) throws SCMException;
 
-	ProposedTagsBuilder newProposedTagsBuilder(String remoteUrl) throws SCMException;
+	ProposedTagsBuilder newProposedTagsBuilder(String remoteUrlNull) throws SCMException;
 
 	void checkValidRefName(String releaseVersion) throws SCMException;
 
 	boolean hasChangedSince(String modulePath, List<String> childModules, Collection<ProposedTag> tags)
 			throws SCMException;
 
-	void pushChanges(String remoteUrl) throws SCMException;
+	void pushChanges(String remoteUrlOrNull) throws SCMException;
 }

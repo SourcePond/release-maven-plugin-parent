@@ -7,16 +7,7 @@ import static org.mockito.Mockito.when;
 
 import org.apache.maven.project.MavenProject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import ch.sourcepond.maven.release.version.BuildNumberFinder;
-import ch.sourcepond.maven.release.version.ChangeDetector;
-import ch.sourcepond.maven.release.version.ChangeDetectorFactory;
-import ch.sourcepond.maven.release.version.DefaultVersionBuilder;
-import ch.sourcepond.maven.release.version.Version;
-import ch.sourcepond.maven.release.version.VersionBuilder;
-import ch.sourcepond.maven.release.version.VersionException;
 
 public class DefaultVersionBuilderFactoryTest {
 	private static final String BUSINESS_VERSION = "1.0";
@@ -49,11 +40,32 @@ public class DefaultVersionBuilderFactoryTest {
 		builder.setRemoteUrl(ANY_REMOTE_URL);
 	}
 
-	@Test(expected = VersionException.class)
-	public void buildWhenUseLastDigitAsBuildNumberAndBuildNumberAreSet() throws VersionException {
+	@Test
+	public void buildWhenBuildNumberIsSet() throws VersionException {
+		when(detector.setBuildNumber(11)).thenReturn(detector);
+		builder.setBuildNumber(11l);
+		final Version version = builder.build();
+		assertEquals(11l, version.getBuildNumber());
+	}
+
+	@Test
+	public void buildWhenUseLastDigitAsBuildNumberAndBuildNumberAreSet_LastDigitIsHigher() throws VersionException {
+		when(project.getVersion()).thenReturn("1.0.11-SNAPSHOT");
+		when(detector.setBuildNumber(11)).thenReturn(detector);
 		builder.setUseLastDigitAsBuildNumber(true);
 		builder.setBuildNumber(9l);
-		builder.build();
+		final Version version = builder.build();
+		assertEquals(11l, version.getBuildNumber());
+	}
+
+	@Test
+	public void buildWhenUseLastDigitAsBuildNumberAndBuildNumberAreSet_BuildNumberIsHigher() throws VersionException {
+		when(project.getVersion()).thenReturn("1.0.9-SNAPSHOT");
+		when(detector.setBuildNumber(11)).thenReturn(detector);
+		builder.setUseLastDigitAsBuildNumber(true);
+		builder.setBuildNumber(11l);
+		final Version version = builder.build();
+		assertEquals(11l, version.getBuildNumber());
 	}
 
 	@Test
@@ -62,15 +74,5 @@ public class DefaultVersionBuilderFactoryTest {
 		when(detector.setBuildNumber(10l)).thenReturn(detector);
 		final Version version = builder.build();
 		assertEquals(10l, version.getBuildNumber());
-	}
-
-	@Ignore
-	@Test
-	public void verifyEvaluateBuildNumberUseLastDigitAsBuildNumber() throws VersionException {
-		builder.setUseLastDigitAsBuildNumber(true);
-		when(project.getVersion()).thenReturn("1.2.3-SNAPSHOT");
-		when(detector.setBuildNumber(3l)).thenReturn(detector);
-		final Version version = builder.build();
-		assertEquals(3, version.getBuildNumber());
 	}
 }

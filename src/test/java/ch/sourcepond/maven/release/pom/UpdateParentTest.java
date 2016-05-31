@@ -17,9 +17,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
 
-import ch.sourcepond.maven.release.pom.Context;
-import ch.sourcepond.maven.release.pom.UpdateParent;
-import ch.sourcepond.maven.release.reactor.ReleasableModule;
 import ch.sourcepond.maven.release.reactor.UnresolvedSnapshotDependencyException;
 
 public class UpdateParentTest {
@@ -34,7 +31,6 @@ public class UpdateParentTest {
 	private final Parent parent = mock(Parent.class);
 	private final MavenProject parentProject = mock(MavenProject.class);
 	private final Context context = mock(Context.class);
-	private final ReleasableModule module = mock(ReleasableModule.class);
 	private final UpdateParent cmd = new UpdateParent();
 
 	@Before
@@ -50,8 +46,7 @@ public class UpdateParentTest {
 		when(parentProject.getGroupId()).thenReturn(ANY_PARENT_GROUP_ID);
 		when(parentProject.getVersion()).thenReturn(ANY_PARENT_SNAPSHOT_VERSION);
 
-		when(module.getVersionToDependOn()).thenReturn(ANY_PARENT_VERSION);
-		when(context.getVersionToDependOn(ANY_PARENT_GROUP_ID, ANY_PARENT_ARTIFACT_ID)).thenReturn(module);
+		when(context.getVersionToDependOn(ANY_PARENT_GROUP_ID, ANY_PARENT_ARTIFACT_ID)).thenReturn(ANY_PARENT_VERSION);
 	}
 
 	@Test

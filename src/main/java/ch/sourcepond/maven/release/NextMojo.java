@@ -57,23 +57,6 @@ public class NextMojo extends AbstractMojo {
 
 	/**
 	 * <p>
-	 * Tells the plugin to use the last digit of the current version of the
-	 * POM(s) to be released as build number. Given a snapshot version of
-	 * "1.0.3-SNAPSHOT", the actual released version will be "1.0.3".
-	 * </p>
-	 * 
-	 * <p>
-	 * This setting <em>cannot</em> be used in conjunction with
-	 * {@link #buildNumber}. If this property is set to {@code true} and
-	 * {@link #buildNumber} has non-{@code null} value, a
-	 * {@link MojoExecutionException} will be caused to be thrown.
-	 * </p>
-	 */
-	@Parameter(property = "useLastDigitAsBuildNumber")
-	protected boolean useLastDigitAsBuildNumber;
-
-	/**
-	 * <p>
 	 * The build number to use in the release version. Given a snapshot version
 	 * of "1.0-SNAPSHOT" and a buildNumber value of "2", the actual released
 	 * version will be "1.0.2".
@@ -225,11 +208,13 @@ public class NextMojo extends AbstractMojo {
 		return builder.build();
 	}
 
-	protected final Reactor newReactor(final String remoteUrl) throws ReactorException {
-		final ReactorBuilder builder = builderFactory.newBuilder();
-		return builder.setRootProject(project).setProjects(projects)
-				.setUseLastDigitAsBuildNumber(useLastDigitAsBuildNumber).setBuildNumber(buildNumber)
-				.setModulesToForceRelease(modulesToForceRelease).setRemoteUrl(remoteUrl).build();
+	protected ReactorBuilder newReactorBuilder() {
+		return builderFactory.newBuilder().setRootProject(project).setProjects(projects).setBuildNumber(buildNumber)
+				.setModulesToForceRelease(modulesToForceRelease);
+	}
+
+	private Reactor newReactor(final String remoteUrl) throws ReactorException {
+		return newReactorBuilder().setRemoteUrl(remoteUrl).build();
 	}
 
 	protected final void configureJsch() {

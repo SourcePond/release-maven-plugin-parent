@@ -71,8 +71,7 @@ final class UpdateProcessor implements Updater {
 			}
 
 			final MavenProject releaseClone = module.getProject().clone();
-			process(releaseClone,
-					contextFactory.newContext(reactor, releaseClone, incrementSnapshotVersionAfterRelease), errors,
+			process(releaseClone, contextFactory.newContext(reactor, releaseClone, false), errors,
 					version.getReleaseVersion());
 			// Mark project to be written at a later stage; if an exception
 			// occurs, we don't need to revert anything.
@@ -80,9 +79,7 @@ final class UpdateProcessor implements Updater {
 
 			if (incrementSnapshotVersionAfterRelease) {
 				final MavenProject snapshotIncrementClone = module.getProject().clone();
-				process(snapshotIncrementClone,
-						contextFactory.newContext(reactor, snapshotIncrementClone,
-								incrementSnapshotVersionAfterRelease),
+				process(snapshotIncrementClone, contextFactory.newContext(reactor, snapshotIncrementClone, true),
 						errors, format("%s.%d", version.getBusinessVersion(), version.getBuildNumber() + 1));
 				writer.markSnapshotVersionIncrement(snapshotIncrementClone);
 			}

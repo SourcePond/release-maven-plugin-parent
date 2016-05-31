@@ -53,10 +53,6 @@ public class ReleasableModule {
 		return version.getEquivalentVersionOrNull() == null;
 	}
 
-	public String getVersionToDependOn() {
-		return willBeReleased() ? version.getReleaseVersion() : version.getEquivalentVersionOrNull();
-	}
-
 	public String getRelativePathToModule() {
 		return relativePathToModule;
 	}

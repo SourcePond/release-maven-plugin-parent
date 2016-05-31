@@ -1,6 +1,9 @@
 package ch.sourcepond.maven.release.version;
 
 public interface Version {
+	String SNAPSHOT_EXTENSION = "-SNAPSHOT";
+
+	String getNextDevelopmentVersion();
 
 	String getReleaseVersion();
 

@@ -77,9 +77,9 @@ public final class GitRepository implements SCMRepository {
 	}
 
 	@Override
-	public Collection<Long> getRemoteBuildNumbers(final String remoteUrl, final String artifactId,
+	public Collection<Long> getRemoteBuildNumbers(final String remoteUrlOrNull, final String artifactId,
 			final String versionWithoutBuildNumber) throws SCMException {
-		final Collection<Ref> remoteTagRefs = allRemoteTags(remoteUrl);
+		final Collection<Ref> remoteTagRefs = allRemoteTags(remoteUrlOrNull);
 		final Collection<Long> remoteBuildNumbers = new ArrayList<Long>();
 		final String tagWithoutBuildNumber = artifactId + "-" + versionWithoutBuildNumber;
 		for (final Ref remoteTagRef : remoteTagRefs) {
@@ -92,11 +92,11 @@ public final class GitRepository implements SCMRepository {
 		return remoteBuildNumbers;
 	}
 
-	public Collection<Ref> allRemoteTags(final String remoteUrl) throws SCMException {
+	public Collection<Ref> allRemoteTags(final String remoteUrlOrNull) throws SCMException {
 		if (remoteTags == null) {
 			final LsRemoteCommand lsRemoteCommand = getGit().lsRemote().setTags(true).setHeads(false);
-			if (remoteUrl != null) {
-				lsRemoteCommand.setRemote(remoteUrl);
+			if (remoteUrlOrNull != null) {
+				lsRemoteCommand.setRemote(remoteUrlOrNull);
 			}
 			try {
 				remoteTags = lsRemoteCommand.call();
@@ -152,7 +152,7 @@ public final class GitRepository implements SCMRepository {
 	}
 
 	@Override
-	public void revertChanges(final List<File> changedFiles) throws SCMException {
+	public void revertChanges(final Collection<File> changedFiles) throws SCMException {
 		try {
 			final File workTree = getGit().getRepository().getWorkTree().getCanonicalFile();
 			final SCMException exception = new SCMException("Reverting changed POMs failed!");
@@ -245,8 +245,8 @@ public final class GitRepository implements SCMRepository {
 	}
 
 	@Override
-	public ProposedTagsBuilder newProposedTagsBuilder(final String remoteUrl) throws SCMException {
-		return new DefaultProposedTagsBuilder(log, getGit(), this, remoteUrl);
+	public ProposedTagsBuilder newProposedTagsBuilder(final String remoteUrlOrNull) throws SCMException {
+		return new DefaultProposedTagsBuilder(log, getGit(), this, remoteUrlOrNull);
 	}
 
 	@Override
@@ -311,10 +311,12 @@ public final class GitRepository implements SCMRepository {
 	}
 
 	@Override
-	public void pushChanges(final String remoteUrl) throws SCMException {
+	public void pushChanges(final String remoteUrlOrNull) throws SCMException {
 		try {
 			git.commit().setMessage("Incremented SNAPSHOT-version for next development iteration").call();
-			git.push().setRemote(remoteUrl).setAtomic(true).call();
+			if (remoteUrlOrNull != null) {
+				git.push().setRemote(remoteUrlOrNull).setAtomic(true).call();
+			}
 		} catch (final GitAPIException e) {
 			throw new SCMException(e, "Changed POM files could not be committed and pushed!");
 		}

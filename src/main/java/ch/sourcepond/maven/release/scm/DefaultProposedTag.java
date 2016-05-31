@@ -11,7 +11,9 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.json.simple.JSONObject;
 
-class DefaultProposedTag implements ProposedTag {
+import ch.sourcepond.maven.release.version.BaseVersion;
+
+class DefaultProposedTag extends BaseVersion implements ProposedTag {
 	public static final String VERSION = "version";
 	public static final String BUILD_NUMBER = "buildNumber";
 	private final Log log;
@@ -47,12 +49,12 @@ class DefaultProposedTag implements ProposedTag {
 	}
 
 	@Override
-	public void tagAndPush(final String remoteUrl) throws SCMException {
+	public void tagAndPush(final String remoteUrlOrNull) throws SCMException {
 		log.info(String.format("About to tag the repository with %s", name()));
 		try {
 			final PushCommand pushCommand = git.push().add(saveAtHEAD());
-			if (remoteUrl != null) {
-				pushCommand.setRemote(remoteUrl);
+			if (remoteUrlOrNull != null) {
+				pushCommand.setRemote(remoteUrlOrNull);
 			}
 			pushCommand.call();
 		} catch (final GitAPIException e) {

@@ -35,11 +35,10 @@ class UpdateDependencies extends Command {
 
 		for (final Dependency dependency : determineDependencies(originalModel)) {
 			final String substitutedVersion = substitution.getActualVersion(project, dependency);
-			if (updateContext.incrementSnapshotVersionAfterRelease() || isSnapshot(substitutedVersion)) {
+			if (isSnapshot(substitutedVersion)) {
 				try {
-					final String versionToDependOn = updateContext
-							.getVersionToDependOn(dependency.getGroupId(), dependency.getArtifactId())
-							.getVersionToDependOn();
+					final String versionToDependOn = updateContext.getVersionToDependOn(dependency.getGroupId(),
+							dependency.getArtifactId());
 					dependency.setVersion(versionToDependOn);
 					log.debug(format(" Dependency on %s rewritten to version %s", dependency.getArtifactId(),
 							versionToDependOn));

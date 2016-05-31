@@ -18,7 +18,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import e2e.E2ETest;
 
 public class TestProject {
-	public static final String PLUGIN_VERSION_FOR_TESTS = "2.0-SNAPSHOT";
+	public static final String PLUGIN_VERSION_FOR_TESTS = "1.0-SNAPSHOT";
 	public final File originDir;
 	public final Git origin;
 
@@ -154,6 +154,10 @@ public class TestProject {
 
 	public static TestProject inheritedVersionsFromParent() {
 		return project("inherited-versions-from-parent");
+	}
+
+	public static TestProject incrementSnapshotVersionAfterRelease() {
+		return project("increment-snapshot-version-after-release");
 	}
 
 	public static TestProject independentVersionsProject() {

@@ -8,8 +8,8 @@ import java.util.List;
 import org.apache.maven.project.MavenProject;
 
 import ch.sourcepond.maven.release.reactor.Reactor;
-import ch.sourcepond.maven.release.reactor.ReleasableModule;
 import ch.sourcepond.maven.release.reactor.UnresolvedSnapshotDependencyException;
+import ch.sourcepond.maven.release.version.Version;
 
 class Context {
 
@@ -36,9 +36,20 @@ class Context {
 		return errors;
 	}
 
-	public ReleasableModule getVersionToDependOn(final String groupId, final String artifactId)
+	public String getVersionToDependOn(final String groupId, final String artifactId)
 			throws UnresolvedSnapshotDependencyException {
-		return reactor.find(groupId, artifactId);
+		final Version version = reactor.find(groupId, artifactId).getVersion();
+
+		String versionToDependOn = null;
+		if (incrementSnapshotVersionAfterRelease) {
+			versionToDependOn = version.getNextDevelopmentVersion();
+		} else if (version.getEquivalentVersionOrNull() == null) {
+			versionToDependOn = version.getReleaseVersion();
+		} else {
+			versionToDependOn = version.getEquivalentVersionOrNull();
+		}
+
+		return versionToDependOn;
 	}
 
 	public boolean incrementSnapshotVersionAfterRelease() {

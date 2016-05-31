@@ -11,10 +11,9 @@ import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.sourcepond.maven.release.pom.Context;
-import ch.sourcepond.maven.release.pom.ContextFactory;
 import ch.sourcepond.maven.release.reactor.Reactor;
 import ch.sourcepond.maven.release.reactor.ReleasableModule;
+import ch.sourcepond.maven.release.version.Version;
 
 public class ContextFactoryTest {
 	private static final String ANY_GROUP_ID = "anyGroupId";
@@ -47,9 +46,11 @@ public class ContextFactoryTest {
 	@Test
 	public void getVersionToDependOn() throws Exception {
 		final ReleasableModule module = mock(ReleasableModule.class);
-		when(module.getVersionToDependOn()).thenReturn(TEST_STRING);
+		final Version version = mock(Version.class);
+		when(module.getVersion()).thenReturn(version);
+		when(version.getReleaseVersion()).thenReturn(TEST_STRING);
 		when(reactor.find(ANY_GROUP_ID, ANY_ARTIFACT_ID)).thenReturn(module);
-		assertEquals(module, context.getVersionToDependOn(ANY_GROUP_ID, ANY_ARTIFACT_ID));
+		assertEquals(TEST_STRING, context.getVersionToDependOn(ANY_GROUP_ID, ANY_ARTIFACT_ID));
 	}
 
 }
