@@ -45,11 +45,9 @@ class ChangeSetCreator {
 		registerModel(snapshotVersionIncrements, file, model);
 	}
 
-	ChangeSet newChangeSet(final String remoteUrl) throws POMUpdateException {
-		final SnapshotIncrementChangeSet snapshotIncrementChangeSet = new SnapshotIncrementChangeSet(log, repository,
-				writer, snapshotVersionIncrements, remoteUrl);
-		final DefaultChangeSet changedFiles = new DefaultChangeSet(log, repository, snapshotIncrementChangeSet, writer,
-				releases);
+	ChangeSet newChangeSet(final String remoteUrlOrNull) throws POMUpdateException {
+		final DefaultChangeSet changedFiles = new DefaultChangeSet(log, repository, writer, releases,
+				snapshotVersionIncrements, remoteUrlOrNull);
 
 		changedFiles.writeChanges();
 
