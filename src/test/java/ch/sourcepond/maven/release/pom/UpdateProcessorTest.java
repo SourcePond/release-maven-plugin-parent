@@ -53,17 +53,18 @@ public class UpdateProcessorTest {
 	private final MavenProject project = mock(MavenProject.class);
 	private final ChangeSet changeSet = mock(ChangeSet.class);
 	private final Model originalModel = mock(Model.class);
+	private final Model clonedModel = mock(Model.class);
 	private UpdateProcessor processor;
 
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws POMUpdateException {
 		// Setup context factory
-		when(contextFactory.newContext(reactor, project, originalModel, false)).thenReturn(context);
+		when(contextFactory.newContext(reactor, project, clonedModel, false)).thenReturn(context);
 
 		// Setup context
 		when(context.getErrors()).thenReturn(Collections.<String> emptyList());
-		when(context.getModel()).thenReturn(originalModel);
+		when(context.getModel()).thenReturn(clonedModel);
 
 		// Setup writer factory
 		when(writerFactory.newWriter()).thenReturn(writer);
@@ -90,6 +91,7 @@ public class UpdateProcessorTest {
 		when(project.clone()).thenReturn(project);
 		when(project.getFile()).thenReturn(ANY_POM);
 		when(project.getOriginalModel()).thenReturn(originalModel);
+		when(originalModel.clone()).thenReturn(clonedModel);
 
 		processor = new UpdateProcessor();
 		processor.setCommands(commands);
@@ -106,10 +108,10 @@ public class UpdateProcessorTest {
 		assertSame(ANY_POM, it.next());
 		assertFalse(it.hasNext());
 
-		final InOrder order = inOrder(originalModel, command, log, writer);
+		final InOrder order = inOrder(clonedModel, command, log, writer);
 		order.verify(log).info("Going to release anyArtifactId anyVersion");
 		order.verify(command).alterModel(context);
-		order.verify(writer).markRelease(ANY_POM, originalModel);
+		order.verify(writer).markRelease(ANY_POM, clonedModel);
 	}
 
 	@Test
@@ -141,7 +143,7 @@ public class UpdateProcessorTest {
 		assertSame(ANY_POM, it.next());
 		assertFalse(it.hasNext());
 
-		final InOrder order = inOrder(originalModel, command, log, writer);
+		final InOrder order = inOrder(clonedModel, command, log, writer);
 
 		// This is the only difference between a "normal" run and a run when
 		// module#willBeReleased() returns false; see
@@ -149,6 +151,6 @@ public class UpdateProcessorTest {
 		order.verify(log, Mockito.never()).info("Going to release anyArtifactId anyVersion");
 
 		order.verify(command).alterModel(context);
-		order.verify(writer).markRelease(ANY_POM, originalModel);
+		order.verify(writer).markRelease(ANY_POM, clonedModel);
 	}
 }

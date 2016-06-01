@@ -71,15 +71,16 @@ final class UpdateProcessor implements Updater {
 			}
 
 			final MavenProject project = module.getProject();
-			final Model originalModel = project.getOriginalModel();
-			process(contextFactory.newContext(reactor, project, originalModel, false), errors);
+			final Model releaseModel = project.getOriginalModel().clone();
+			process(contextFactory.newContext(reactor, project, releaseModel, false), errors);
 			// Mark project to be written at a later stage; if an exception
 			// occurs, we don't need to revert anything.
-			writer.markRelease(project.getFile(), project.getOriginalModel());
+			writer.markRelease(project.getFile(), releaseModel);
 
 			if (incrementSnapshotVersionAfterRelease) {
-				process(contextFactory.newContext(reactor, project, originalModel.clone(), true), errors);
-				writer.markSnapshotVersionIncrement(project.getFile(), project.getOriginalModel());
+				final Model snapshotModel = project.getOriginalModel().clone();
+				process(contextFactory.newContext(reactor, project, snapshotModel, true), errors);
+				writer.markSnapshotVersionIncrement(project.getFile(), snapshotModel);
 			}
 		}
 
