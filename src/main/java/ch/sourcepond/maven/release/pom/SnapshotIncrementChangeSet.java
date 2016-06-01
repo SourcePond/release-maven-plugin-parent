@@ -65,7 +65,7 @@ class SnapshotIncrementChangeSet implements AutoCloseable {
 				}
 			}
 			try {
-				repository.pushChanges(remoteUrlOrNull);
+				repository.pushChanges(remoteUrlOrNull, changedFiles);
 			} catch (final SCMException e) {
 				throw new ChangeSetCloseException(e, IO_EXCEPTION_FORMAT, changedFiles);
 			}

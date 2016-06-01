@@ -311,13 +311,18 @@ public final class GitRepository implements SCMRepository {
 	}
 
 	@Override
-	public void pushChanges(final String remoteUrlOrNull) throws SCMException {
+	public void pushChanges(final String remoteUrlOrNull, final Collection<File> changedFiles) throws SCMException {
 		try {
-			git.commit().setMessage("Incremented SNAPSHOT-version for next development iteration").call();
-			if (remoteUrlOrNull != null) {
-				git.push().setRemote(remoteUrlOrNull).setAtomic(true).call();
+			final File workTree = getGit().getRepository().getWorkTree().getCanonicalFile();
+			for (final File changedFile : changedFiles) {
+				final String pathRelativeToWorkingTree = Repository.stripWorkDir(workTree, changedFile);
+				getGit().add().setUpdate(true).addFilepattern(pathRelativeToWorkingTree);
 			}
-		} catch (final GitAPIException e) {
+			getGit().commit().setMessage("Incremented SNAPSHOT-version for next development iteration").call();
+			if (remoteUrlOrNull != null) {
+				getGit().push().setRemote(remoteUrlOrNull).setAtomic(true).call();
+			}
+		} catch (final GitAPIException | IOException e) {
 			throw new SCMException(e, "Changed POM files could not be committed and pushed!");
 		}
 	}
