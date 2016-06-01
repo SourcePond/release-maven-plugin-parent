@@ -15,9 +15,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Writer which stores all passed data into buffer. After data has been written
- * and {@link #close()} has been called, all <em>&lt;version&gt;</em> tags of
- * the original file specified will be determined and updated with the data
+ * Writer which stores all passed data into a buffer. After all data has been
+ * written and {@link #close()} has been called, all <em>&lt;version&gt;</em>
+ * tags of the original file will be determined and updated with the data
  * actually written. The format of of the original file will be preserved.
  *
  */

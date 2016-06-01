@@ -16,7 +16,6 @@ import org.apache.maven.plugin.logging.Log;
 import ch.sourcepond.maven.release.scm.SCMException;
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
-@SuppressWarnings("serial")
 class SnapshotIncrementChangeSet implements AutoCloseable {
 	static final String IO_EXCEPTION_FORMAT = "Updated project %s could not be written!";
 	static final String PUSH_EXCEPTION_FORMAT = "Changed files %s could not be pushed";

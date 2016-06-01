@@ -31,12 +31,21 @@ class ChangeSetCreator {
 		this.writer = writer;
 	}
 
-	void markRelease(final File file, final Model model) {
-		releases.put(file, model);
+	private void registerModel(final Map<File, Model> models, final File file, final Model model)
+			throws POMUpdateException {
+		try {
+			models.put(file.getCanonicalFile(), model);
+		} catch (final IOException e) {
+			throw new POMUpdateException(e, "Canonical path could be determined for file %s", file);
+		}
 	}
 
-	void markSnapshotVersionIncrement(final File file, final Model model) {
-		snapshotVersionIncrements.put(file, model);
+	void markRelease(final File file, final Model model) throws POMUpdateException {
+		registerModel(releases, file, model);
+	}
+
+	void markSnapshotVersionIncrement(final File file, final Model model) throws POMUpdateException {
+		registerModel(snapshotVersionIncrements, file, model);
 	}
 
 	ChangeSet newChangeSet(final String remoteUrl) throws POMUpdateException {
@@ -48,7 +57,7 @@ class ChangeSetCreator {
 				// It's necessary to use the canonical file here, otherwise GIT
 				// revert can fail when symbolic links are used (ends up in an
 				// empty path and revert fails).
-				final File changedFile = entry.getKey().getCanonicalFile();
+				final File changedFile = entry.getKey();
 				changedFiles.add(changedFile);
 				try (final Writer fileWriter = new FileWriter(changedFile)) {
 					writer.write(fileWriter, entry.getValue());

@@ -62,7 +62,7 @@ public class ChangeSetCreatorFactoryTest {
 	private File testFile;
 
 	@Before
-	public void setup() throws IOException {
+	public void setup() throws Exception {
 		testFile = new File("target/pomWriterTest").getCanonicalFile();
 		when(writerFactory.newWriter()).thenReturn(writer);
 		when(project.getOriginalModel()).thenReturn(originalModel);
