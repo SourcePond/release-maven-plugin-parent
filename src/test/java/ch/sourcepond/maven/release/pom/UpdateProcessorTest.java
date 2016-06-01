@@ -45,8 +45,8 @@ public class UpdateProcessorTest {
 	private final Reactor reactor = mock(Reactor.class);
 	private final ReleasableModule module = mock(ReleasableModule.class);
 	private final ContextFactory contextFactory = mock(ContextFactory.class);
-	private final PomWriterFactory writerFactory = mock(PomWriterFactory.class);
-	private final PomWriter writer = mock(PomWriter.class);
+	private final ChangeSetCreatorFactory writerFactory = mock(ChangeSetCreatorFactory.class);
+	private final ChangeSetCreator writer = mock(ChangeSetCreator.class);
 	private final Context context = mock(Context.class);
 	private final Command command = mock(Command.class);
 	private final List<Command> commands = asList(command);
@@ -67,10 +67,10 @@ public class UpdateProcessorTest {
 		when(context.getModel()).thenReturn(clonedModel);
 
 		// Setup writer factory
-		when(writerFactory.newWriter()).thenReturn(writer);
+		when(writerFactory.newCreator()).thenReturn(writer);
 
 		// Setup writer
-		when(writer.writePoms(ANY_REMOTE_URL)).thenReturn(changeSet);
+		when(writer.newChangeSet(ANY_REMOTE_URL)).thenReturn(changeSet);
 		when(changeSet.iterator()).thenReturn(Arrays.asList(ANY_POM).iterator());
 
 		// Setup reactor
@@ -97,7 +97,7 @@ public class UpdateProcessorTest {
 		processor.setCommands(commands);
 		processor.setContextFactory(contextFactory);
 		processor.setLog(log);
-		processor.setPomWriterFactory(writerFactory);
+		processor.setCreatorFactory(writerFactory);
 	}
 
 	@Test

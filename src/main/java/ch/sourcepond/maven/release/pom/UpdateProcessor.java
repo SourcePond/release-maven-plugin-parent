@@ -23,8 +23,8 @@ final class UpdateProcessor implements Updater {
 	@Requirement(role = ContextFactory.class)
 	private ContextFactory contextFactory;
 
-	@Requirement(role = PomWriterFactory.class)
-	private PomWriterFactory writerFactory;
+	@Requirement(role = ChangeSetCreatorFactory.class)
+	private ChangeSetCreatorFactory creatorFactory;
 
 	@Requirement(role = Log.class)
 	private Log log;
@@ -36,8 +36,8 @@ final class UpdateProcessor implements Updater {
 		this.commands = commands;
 	}
 
-	void setPomWriterFactory(final PomWriterFactory writerFactory) {
-		this.writerFactory = writerFactory;
+	void setCreatorFactory(final ChangeSetCreatorFactory creatorFactory) {
+		this.creatorFactory = creatorFactory;
 	}
 
 	void setContextFactory(final ContextFactory contextFactory) {
@@ -58,7 +58,7 @@ final class UpdateProcessor implements Updater {
 	@Override
 	public ChangeSet updatePoms(final Reactor reactor, final String remoteUrl,
 			final boolean incrementSnapshotVersionAfterRelease) throws POMUpdateException {
-		final PomWriter writer = writerFactory.newWriter();
+		final ChangeSetCreator creator = creatorFactory.newCreator();
 		final List<String> errors = new LinkedList<String>();
 
 		for (final ReleasableModule module : reactor) {
@@ -75,12 +75,12 @@ final class UpdateProcessor implements Updater {
 			process(contextFactory.newContext(reactor, project, releaseModel, false), errors);
 			// Mark project to be written at a later stage; if an exception
 			// occurs, we don't need to revert anything.
-			writer.markRelease(project.getFile(), releaseModel);
+			creator.markRelease(project.getFile(), releaseModel);
 
 			if (incrementSnapshotVersionAfterRelease) {
 				final Model snapshotModel = project.getOriginalModel().clone();
 				process(contextFactory.newContext(reactor, project, snapshotModel, true), errors);
-				writer.markSnapshotVersionIncrement(project.getFile(), snapshotModel);
+				creator.markSnapshotVersionIncrement(project.getFile(), snapshotModel);
 			}
 		}
 
@@ -94,6 +94,6 @@ final class UpdateProcessor implements Updater {
 		}
 
 		// At this point it's guaranteed that no dependency errors occurred.
-		return writer.writePoms(remoteUrl);
+		return creator.newChangeSet(remoteUrl);
 	}
 }

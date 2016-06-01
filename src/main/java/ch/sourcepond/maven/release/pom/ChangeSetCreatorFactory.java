@@ -6,8 +6,8 @@ import org.codehaus.plexus.component.annotations.Requirement;
 
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
-@Component(role = PomWriterFactory.class)
-class PomWriterFactory {
+@Component(role = ChangeSetCreatorFactory.class)
+class ChangeSetCreatorFactory {
 
 	@Requirement(role = SCMRepository.class)
 	private SCMRepository repository;
@@ -30,11 +30,7 @@ class PomWriterFactory {
 		this.log = log;
 	}
 
-	PomWriter newWriter() {
-		final PomWriter writer = new PomWriter();
-		writer.setRepository(repository);
-		writer.setWriter(writerFactory.newWriter());
-		writer.setLog(log);
-		return writer;
+	ChangeSetCreator newCreator() {
+		return new ChangeSetCreator(log, repository, writerFactory.newWriter());
 	}
 }

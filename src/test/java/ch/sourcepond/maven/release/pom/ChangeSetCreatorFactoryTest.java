@@ -1,6 +1,6 @@
 package ch.sourcepond.maven.release.pom;
 
-import static ch.sourcepond.maven.release.pom.PomWriter.EXCEPTION_MESSAGE;
+import static ch.sourcepond.maven.release.pom.ChangeSetCreator.EXCEPTION_MESSAGE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -35,7 +35,7 @@ import org.mockito.stubbing.Answer;
 import ch.sourcepond.maven.release.scm.SCMException;
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
-public class PomWriterFactoryTest {
+public class ChangeSetCreatorFactoryTest {
 	private final class HasOneChangedPomFile implements ArgumentMatcher<List<File>> {
 		@SuppressWarnings("unchecked")
 		@Override
@@ -58,7 +58,7 @@ public class PomWriterFactoryTest {
 	private final Log log = mock(Log.class);
 	private final MavenProject project = mock(MavenProject.class);
 	private final Model originalModel = mock(Model.class);
-	private PomWriter pomWriter;
+	private ChangeSetCreator creator;
 	private File testFile;
 
 	@Before
@@ -67,12 +67,12 @@ public class PomWriterFactoryTest {
 		when(writerFactory.newWriter()).thenReturn(writer);
 		when(project.getOriginalModel()).thenReturn(originalModel);
 		when(project.getFile()).thenReturn(testFile);
-		final PomWriterFactory factory = new PomWriterFactory();
+		final ChangeSetCreatorFactory factory = new ChangeSetCreatorFactory();
 		factory.setLog(log);
 		factory.setMavenXpp3WriterFactory(writerFactory);
 		factory.setRepository(repository);
-		pomWriter = factory.newWriter();
-		pomWriter.markRelease(testFile, originalModel);
+		creator = factory.newCreator();
+		creator.markRelease(testFile, originalModel);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -87,7 +87,7 @@ public class PomWriterFactoryTest {
 			}
 		}).when(writer).write((Writer) Mockito.notNull(), Mockito.same(originalModel));
 
-		final ChangeSet changedFiles = pomWriter.writePoms(ANY_REMOTE_URL);
+		final ChangeSet changedFiles = creator.newChangeSet(ANY_REMOTE_URL);
 		try (final Scanner sc = new Scanner(testFile)) {
 			assertEquals(TEST_LINE, sc.nextLine());
 		}
@@ -103,7 +103,7 @@ public class PomWriterFactoryTest {
 		final IOException expected = new IOException();
 		doThrow(expected).when(writer).write((Writer) Mockito.notNull(), Mockito.same(originalModel));
 		try {
-			pomWriter.writePoms(ANY_REMOTE_URL);
+			creator.newChangeSet(ANY_REMOTE_URL);
 			fail("Exception expected");
 		} catch (final POMUpdateException e) {
 			assertSame(expected, e.getCause());
@@ -121,7 +121,7 @@ public class PomWriterFactoryTest {
 		final IOException expected = new IOException();
 		doThrow(expected).when(writer).write((Writer) Mockito.notNull(), Mockito.same(originalModel));
 		try {
-			pomWriter.writePoms(ANY_REMOTE_URL);
+			creator.newChangeSet(ANY_REMOTE_URL);
 			fail("Exception expected");
 		} catch (final ChangeSetCloseException e) {
 			assertSame(expected, e.getCause());

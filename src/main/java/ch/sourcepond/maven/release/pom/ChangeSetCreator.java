@@ -10,8 +10,6 @@ import java.util.Map;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
@@ -19,31 +17,18 @@ import ch.sourcepond.maven.release.scm.SCMRepository;
  * @author rolandhauser
  *
  */
-@Component(role = PomWriter.class)
-class PomWriter {
+class ChangeSetCreator {
 	static final String EXCEPTION_MESSAGE = "Unexpected exception while setting the release versions in the pom";
 	private final Map<File, Model> releases = new LinkedHashMap<>();
 	private final Map<File, Model> snapshotVersionIncrements = new LinkedHashMap<>();
+	private final Log log;
+	private final SCMRepository repository;
+	private final MavenXpp3Writer writer;
 
-	@Requirement(role = SCMRepository.class)
-	private SCMRepository repository;
-
-	@Requirement(role = MavenXpp3Writer.class)
-	private MavenXpp3Writer writer;
-
-	@Requirement(role = Log.class)
-	private Log log;
-
-	void setRepository(final SCMRepository repository) {
-		this.repository = repository;
-	}
-
-	void setWriter(final MavenXpp3Writer writer) {
-		this.writer = writer;
-	}
-
-	void setLog(final Log log) {
+	ChangeSetCreator(final Log log, final SCMRepository repository, final MavenXpp3Writer writer) {
 		this.log = log;
+		this.repository = repository;
+		this.writer = writer;
 	}
 
 	void markRelease(final File file, final Model model) {
@@ -54,7 +39,7 @@ class PomWriter {
 		snapshotVersionIncrements.put(file, model);
 	}
 
-	ChangeSet writePoms(final String remoteUrl) throws POMUpdateException {
+	ChangeSet newChangeSet(final String remoteUrl) throws POMUpdateException {
 		final SnapshotIncrementChangeSet snapshotIncrementChangeSet = new SnapshotIncrementChangeSet(log, repository,
 				writer, snapshotVersionIncrements, remoteUrl);
 		final DefaultChangeSet changedFiles = new DefaultChangeSet(log, repository, snapshotIncrementChangeSet);

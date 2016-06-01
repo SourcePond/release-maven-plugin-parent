@@ -48,7 +48,7 @@ class SnapshotIncrementChangeSet implements AutoCloseable {
 					// empty path and revert fails).
 					final File changedFile = entry.getKey().getCanonicalFile();
 					changedFiles.add(changedFile);
-					try (final Writer fileWriter = new FormatPreservingWriter(changedFile)) {
+					try (final Writer fileWriter = new TransferVersionWriter(changedFile)) {
 						pomWriter.write(fileWriter, entry.getValue());
 					}
 				} catch (final IOException e) {

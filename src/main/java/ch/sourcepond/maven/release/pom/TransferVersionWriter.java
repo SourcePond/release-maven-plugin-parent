@@ -1,5 +1,7 @@
 package ch.sourcepond.maven.release.pom;
 
+import static org.apache.commons.lang3.Validate.notNull;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,12 +14,28 @@ import java.io.Writer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-final class FormatPreservingWriter extends StringWriter {
+/**
+ * Writer which stores all passed data into buffer. After data has been written
+ * and {@link #close()} has been called, all <em>&lt;version&gt;</em> tags of
+ * the original file specified will be determined and updated with the data
+ * actually written. The format of of the original file will be preserved.
+ *
+ */
+final class TransferVersionWriter extends StringWriter {
 	private static final Pattern VERSION_PATTERN = Pattern.compile("<version>\\s*(.*?)\\s*<\\/version>");
 	private final StringBuilder original = new StringBuilder();
 	private final File file;
 
-	public FormatPreservingWriter(final File file) throws IOException {
+	/**
+	 * Constructs a new instance of this class. During construction, the file
+	 * specified will be read and stored in a buffer.
+	 * 
+	 * @param file
+	 *            File to be read, must not be {@code null}
+	 * @throws IOException
+	 */
+	public TransferVersionWriter(final File file) throws IOException {
+		notNull(file, "File specified is null");
 		this.file = file;
 		final char[] buffer = new char[1024];
 		try (final Reader rd = new BufferedReader(new FileReader(file))) {
