@@ -79,7 +79,7 @@ final class UpdateProcessor implements Updater {
 
 			if (incrementSnapshotVersionAfterRelease) {
 				process(contextFactory.newContext(reactor, project, originalModel.clone(), true), errors);
-				writer.markSnapshotVersionIncrement(project);
+				writer.markSnapshotVersionIncrement(project.getFile(), project.getOriginalModel());
 			}
 		}
 
