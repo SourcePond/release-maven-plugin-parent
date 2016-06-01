@@ -88,6 +88,7 @@ public class UpdateProcessorTest {
 
 		// Setup project
 		when(project.clone()).thenReturn(project);
+		when(project.getFile()).thenReturn(ANY_POM);
 		when(project.getOriginalModel()).thenReturn(originalModel);
 
 		processor = new UpdateProcessor();
@@ -108,7 +109,7 @@ public class UpdateProcessorTest {
 		final InOrder order = inOrder(originalModel, command, log, writer);
 		order.verify(log).info("Going to release anyArtifactId anyVersion");
 		order.verify(command).alterModel(context);
-		order.verify(writer).markRelease(project);
+		order.verify(writer).markRelease(ANY_POM, originalModel);
 	}
 
 	@Test
@@ -148,6 +149,6 @@ public class UpdateProcessorTest {
 		order.verify(log, Mockito.never()).info("Going to release anyArtifactId anyVersion");
 
 		order.verify(command).alterModel(context);
-		order.verify(writer).markRelease(project);
+		order.verify(writer).markRelease(ANY_POM, originalModel);
 	}
 }

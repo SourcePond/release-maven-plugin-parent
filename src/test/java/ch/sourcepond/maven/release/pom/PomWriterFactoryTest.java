@@ -32,12 +32,6 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import ch.sourcepond.maven.release.pom.ChangeSet;
-import ch.sourcepond.maven.release.pom.ChangeSetCloseException;
-import ch.sourcepond.maven.release.pom.MavenXpp3WriterFactory;
-import ch.sourcepond.maven.release.pom.POMUpdateException;
-import ch.sourcepond.maven.release.pom.PomWriter;
-import ch.sourcepond.maven.release.pom.PomWriterFactory;
 import ch.sourcepond.maven.release.scm.SCMException;
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
@@ -78,7 +72,7 @@ public class PomWriterFactoryTest {
 		factory.setMavenXpp3WriterFactory(writerFactory);
 		factory.setRepository(repository);
 		pomWriter = factory.newWriter();
-		pomWriter.markRelease(project);
+		pomWriter.markRelease(testFile, originalModel);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -75,7 +75,7 @@ final class UpdateProcessor implements Updater {
 			process(contextFactory.newContext(reactor, project, originalModel, false), errors);
 			// Mark project to be written at a later stage; if an exception
 			// occurs, we don't need to revert anything.
-			writer.markRelease(project);
+			writer.markRelease(project.getFile(), project.getOriginalModel());
 
 			if (incrementSnapshotVersionAfterRelease) {
 				process(contextFactory.newContext(reactor, project, originalModel.clone(), true), errors);
