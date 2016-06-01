@@ -45,7 +45,7 @@ class SnapshotIncrementChangeSet implements AutoCloseable {
 					// revert can fail when symbolic links are used (ends up in
 					// an
 					// empty path and revert fails).
-					final File changedFile = entry.getKey().getCanonicalFile();
+					final File changedFile = entry.getKey();
 					changedFiles.add(changedFile);
 					try (final Writer fileWriter = new TransferVersionWriter(changedFile)) {
 						pomWriter.write(fileWriter, entry.getValue());
