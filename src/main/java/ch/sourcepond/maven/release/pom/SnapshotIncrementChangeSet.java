@@ -52,12 +52,6 @@ class SnapshotIncrementChangeSet implements AutoCloseable {
 					try (final Writer fileWriter = new FileWriter(changedFile)) {
 						pomWriter.write(fileWriter, entry.getValue());
 					}
-
-					try {
-						repository.pushChanges(remoteUrlOrNull);
-					} catch (final SCMException e) {
-						throw new ChangeSetCloseException(e, IO_EXCEPTION_FORMAT, changedFiles);
-					}
 				} catch (final IOException e) {
 					try {
 						repository.revertChanges(changedFiles);
@@ -69,6 +63,11 @@ class SnapshotIncrementChangeSet implements AutoCloseable {
 					}
 					throw new ChangeSetCloseException(e, IO_EXCEPTION_FORMAT, entry.getValue());
 				}
+			}
+			try {
+				repository.pushChanges(remoteUrlOrNull);
+			} catch (final SCMException e) {
+				throw new ChangeSetCloseException(e, IO_EXCEPTION_FORMAT, changedFiles);
 			}
 		}
 	}
