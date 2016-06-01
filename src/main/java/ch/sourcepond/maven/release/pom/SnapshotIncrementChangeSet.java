@@ -3,7 +3,6 @@ package ch.sourcepond.maven.release.pom;
 import static ch.sourcepond.maven.release.pom.DefaultChangeSet.REVERT_ERROR_MESSAGE;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.LinkedList;
@@ -49,7 +48,7 @@ class SnapshotIncrementChangeSet implements AutoCloseable {
 					// empty path and revert fails).
 					final File changedFile = entry.getKey().getCanonicalFile();
 					changedFiles.add(changedFile);
-					try (final Writer fileWriter = new FileWriter(changedFile)) {
+					try (final Writer fileWriter = new FormatPreservingWriter(changedFile)) {
 						pomWriter.write(fileWriter, entry.getValue());
 					}
 				} catch (final IOException e) {

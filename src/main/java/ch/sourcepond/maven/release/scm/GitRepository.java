@@ -316,7 +316,7 @@ public final class GitRepository implements SCMRepository {
 			final File workTree = getGit().getRepository().getWorkTree().getCanonicalFile();
 			for (final File changedFile : changedFiles) {
 				final String pathRelativeToWorkingTree = Repository.stripWorkDir(workTree, changedFile);
-				getGit().add().setUpdate(true).addFilepattern(pathRelativeToWorkingTree);
+				getGit().add().setUpdate(true).addFilepattern(pathRelativeToWorkingTree).call();
 			}
 			getGit().commit().setMessage("Incremented SNAPSHOT-version for next development iteration").call();
 			if (remoteUrlOrNull != null) {

@@ -111,7 +111,7 @@ public class MvnRunner {
 
 		request.setGoals(asList(arguments));
 		request.setBaseDirectory(workingDir);
-
+		request.setDebug(true);
 		final Invoker invoker = new DefaultInvoker();
 		invoker.setMavenHome(mvnHome);
 		final CollectingLogOutputStream logOutput = new CollectingLogOutputStream(false);
