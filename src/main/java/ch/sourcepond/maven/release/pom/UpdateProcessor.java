@@ -48,7 +48,7 @@ final class UpdateProcessor implements Updater {
 		this.log = log;
 	}
 
-	private void process(final Context context, final List<String> errors, final String newVersion) {
+	private void process(final Context context, final List<String> errors) {
 		for (final Command cmd : commands) {
 			cmd.alterModel(context);
 		}
@@ -72,15 +72,13 @@ final class UpdateProcessor implements Updater {
 
 			final MavenProject project = module.getProject();
 			final Model originalModel = project.getOriginalModel();
-			process(contextFactory.newContext(reactor, project, originalModel, false), errors,
-					version.getReleaseVersion());
+			process(contextFactory.newContext(reactor, project, originalModel, false), errors);
 			// Mark project to be written at a later stage; if an exception
 			// occurs, we don't need to revert anything.
 			writer.markRelease(project);
 
 			if (incrementSnapshotVersionAfterRelease) {
-				process(contextFactory.newContext(reactor, project, originalModel.clone(), true), errors,
-						format("%s.%d", version.getBusinessVersion(), version.getBuildNumber() + 1));
+				process(contextFactory.newContext(reactor, project, originalModel.clone(), true), errors);
 				writer.markSnapshotVersionIncrement(project);
 			}
 		}
