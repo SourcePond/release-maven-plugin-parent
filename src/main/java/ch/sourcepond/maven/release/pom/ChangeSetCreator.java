@@ -1,9 +1,7 @@
 package ch.sourcepond.maven.release.pom;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -18,7 +16,6 @@ import ch.sourcepond.maven.release.scm.SCMRepository;
  *
  */
 class ChangeSetCreator {
-	static final String EXCEPTION_MESSAGE = "Unexpected exception while setting the release versions in the pom";
 	private final Map<File, Model> releases = new LinkedHashMap<>();
 	private final Map<File, Model> snapshotVersionIncrements = new LinkedHashMap<>();
 	private final Log log;
@@ -51,22 +48,10 @@ class ChangeSetCreator {
 	ChangeSet newChangeSet(final String remoteUrl) throws POMUpdateException {
 		final SnapshotIncrementChangeSet snapshotIncrementChangeSet = new SnapshotIncrementChangeSet(log, repository,
 				writer, snapshotVersionIncrements, remoteUrl);
-		final DefaultChangeSet changedFiles = new DefaultChangeSet(log, repository, snapshotIncrementChangeSet);
-		try {
-			for (final Map.Entry<File, Model> entry : releases.entrySet()) {
-				// It's necessary to use the canonical file here, otherwise GIT
-				// revert can fail when symbolic links are used (ends up in an
-				// empty path and revert fails).
-				final File changedFile = entry.getKey();
-				changedFiles.add(changedFile);
-				try (final Writer fileWriter = new FileWriter(changedFile)) {
-					writer.write(fileWriter, entry.getValue());
-				}
-			}
-		} catch (final IOException e) {
-			changedFiles.setFailure(EXCEPTION_MESSAGE, e);
-			changedFiles.close();
-		}
+		final DefaultChangeSet changedFiles = new DefaultChangeSet(log, repository, snapshotIncrementChangeSet, writer,
+				releases);
+
+		changedFiles.writeChanges();
 
 		return changedFiles;
 	}

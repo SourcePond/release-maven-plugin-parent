@@ -1,6 +1,5 @@
 package ch.sourcepond.maven.release.pom;
 
-import static ch.sourcepond.maven.release.pom.ChangeSetCreator.EXCEPTION_MESSAGE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -107,9 +106,7 @@ public class ChangeSetCreatorFactoryTest {
 			fail("Exception expected");
 		} catch (final POMUpdateException e) {
 			assertSame(expected, e.getCause());
-			assertEquals(EXCEPTION_MESSAGE, e.getMessage());
 		}
-		verify(repository).revertChanges(Mockito.argThat(new HasOneChangedPomFile()));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -123,11 +120,9 @@ public class ChangeSetCreatorFactoryTest {
 		try {
 			creator.newChangeSet(ANY_REMOTE_URL);
 			fail("Exception expected");
-		} catch (final ChangeSetCloseException e) {
+		} catch (final POMUpdateException e) {
 			assertSame(expected, e.getCause());
-			assertEquals(EXCEPTION_MESSAGE, e.getMessage());
 		}
 
-		verify(repository).revertChanges(Mockito.argThat(new HasOneChangedPomFile()));
 	}
 }
