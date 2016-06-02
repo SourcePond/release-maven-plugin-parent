@@ -21,8 +21,7 @@ import org.eclipse.jgit.transport.JschConfigSessionFactory;
 import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
 import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.reactor.Reactor;
-import ch.sourcepond.maven.release.reactor.ReactorBuilder;
-import ch.sourcepond.maven.release.reactor.ReactorBuilderFactory;
+import ch.sourcepond.maven.release.reactor.ReactorFactory;
 import ch.sourcepond.maven.release.reactor.ReactorException;
 import ch.sourcepond.maven.release.reactor.ReleasableModule;
 import ch.sourcepond.maven.release.scm.ProposedTags;
@@ -134,17 +133,17 @@ public class NextMojo extends AbstractMojo {
 	@Parameter(property = "passphrase")
 	private String passphrase;
 
-	private final ReactorBuilderFactory builderFactory;
+	private final ReactorFactory reactorFactory;
 	protected final SCMRepository repository;
 	private final MavenComponentSingletons singletons;
 
 	protected RootProject rootProject;
 
 	@Inject
-	public NextMojo(final SCMRepository pRepository, final ReactorBuilderFactory pBuilderFactory,
+	public NextMojo(final SCMRepository pRepository, final ReactorFactory pReactorFactory,
 			final MavenComponentSingletons pSingletons, final RootProject pRootProject) {
 		repository = pRepository;
-		builderFactory = pBuilderFactory;
+		reactorFactory = pReactorFactory;
 		singletons = pSingletons;
 		rootProject = pRootProject;
 	}
@@ -204,12 +203,8 @@ public class NextMojo extends AbstractMojo {
 		return builder.build();
 	}
 
-	protected ReactorBuilder newReactorBuilder() {
-		return builderFactory.newBuilder().setBuildNumber(buildNumber).setModulesToForceRelease(modulesToForceRelease);
-	}
-
-	private Reactor newReactor(final String remoteUrl) throws ReactorException {
-		return newReactorBuilder().setRemoteUrl(remoteUrl).build();
+	protected ReactorFactory configureReactorFactory() {
+		return reactorFactory.setBuildNumber(buildNumber).setModulesToForceRelease(modulesToForceRelease);
 	}
 
 	protected final void configureJsch() {
@@ -249,7 +244,7 @@ public class NextMojo extends AbstractMojo {
 			repository.errorIfNotClean();
 			configureJsch();
 			final String remoteUrl = getRemoteUrlOrNullIfNoneSet(project.getScm());
-			final Reactor reactor = newReactor(remoteUrl);
+			final Reactor reactor = configureReactorFactory().setRemoteUrl(remoteUrl).newReactor();
 			execute(reactor, figureOutTagNamesAndThrowIfAlreadyExists(reactor, remoteUrl), remoteUrl);
 		} catch (final PluginException e) {
 			e.printBigErrorMessageAndThrow(getLog());

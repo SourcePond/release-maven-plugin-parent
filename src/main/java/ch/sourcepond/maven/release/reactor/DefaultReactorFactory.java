@@ -2,6 +2,10 @@ package ch.sourcepond.maven.release.reactor;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
@@ -10,7 +14,9 @@ import ch.sourcepond.maven.release.version.VersionBuilder;
 import ch.sourcepond.maven.release.version.VersionBuilderFactory;
 import ch.sourcepond.maven.release.version.VersionException;
 
-final class DefaultReactorBuilder implements ReactorBuilder {
+@Named
+@Singleton
+final class DefaultReactorFactory implements ReactorFactory {
 	private final Log log;
 	private final VersionBuilderFactory versionBuilderFactory;
 	private final RootProject rootProject;
@@ -20,8 +26,9 @@ final class DefaultReactorBuilder implements ReactorBuilder {
 	private List<String> modulesToForceRelease;
 	private String remoteUrl;
 
-	public DefaultReactorBuilder(final Log log, final VersionBuilderFactory versioningFactory,
-			final RootProject pRootProject, final ReactorProjects pProjects) {
+	@Inject
+	DefaultReactorFactory(final Log log, final VersionBuilderFactory versioningFactory, final RootProject pRootProject,
+			final ReactorProjects pProjects) {
 		this.log = log;
 		this.versionBuilderFactory = versioningFactory;
 		rootProject = pRootProject;
@@ -29,25 +36,25 @@ final class DefaultReactorBuilder implements ReactorBuilder {
 	}
 
 	@Override
-	public ReactorBuilder setBuildNumber(final Long buildNumber) {
+	public ReactorFactory setBuildNumber(final Long buildNumber) {
 		this.buildNumber = buildNumber;
 		return this;
 	}
 
 	@Override
-	public ReactorBuilder setUseLastDigitAsBuildNumber(final boolean useLastDigitAsBuildNumber) {
+	public ReactorFactory setUseLastDigitAsBuildNumber(final boolean useLastDigitAsBuildNumber) {
 		this.useLastDigitAsBuildNumber = useLastDigitAsBuildNumber;
 		return this;
 	}
 
 	@Override
-	public ReactorBuilder setModulesToForceRelease(final List<String> modulesToForceRelease) {
+	public ReactorFactory setModulesToForceRelease(final List<String> modulesToForceRelease) {
 		this.modulesToForceRelease = modulesToForceRelease;
 		return this;
 	}
 
 	@Override
-	public Reactor build() throws ReactorException {
+	public Reactor newReactor() throws ReactorException {
 		final DefaultReactor reactor = new DefaultReactor(log);
 
 		for (final MavenProject project : projects) {
@@ -76,7 +83,7 @@ final class DefaultReactorBuilder implements ReactorBuilder {
 	}
 
 	@Override
-	public ReactorBuilder setRemoteUrl(final String remoteUrl) {
+	public ReactorFactory setRemoteUrl(final String remoteUrl) {
 		this.remoteUrl = remoteUrl;
 		return this;
 	}
