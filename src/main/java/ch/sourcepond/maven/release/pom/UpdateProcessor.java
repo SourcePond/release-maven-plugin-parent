@@ -58,7 +58,7 @@ final class UpdateProcessor implements Updater {
 	@Override
 	public ChangeSet updatePoms(final Reactor reactor, final String remoteUrl,
 			final boolean incrementSnapshotVersionAfterRelease) throws POMUpdateException {
-		final ChangeSetCreator creator = creatorFactory.newCreator();
+		final DefaultChangeSet changeSet = creatorFactory.newChangeSet(remoteUrl);
 		final List<String> errors = new LinkedList<String>();
 
 		for (final ReleasableModule module : reactor) {
@@ -75,12 +75,12 @@ final class UpdateProcessor implements Updater {
 			process(contextFactory.newContext(reactor, project, releaseModel, false), errors);
 			// Mark project to be written at a later stage; if an exception
 			// occurs, we don't need to revert anything.
-			creator.markRelease(project.getFile(), releaseModel);
+			changeSet.markRelease(project.getFile(), releaseModel);
 
 			if (incrementSnapshotVersionAfterRelease) {
 				final Model snapshotModel = project.getOriginalModel().clone();
 				process(contextFactory.newContext(reactor, project, snapshotModel, true), errors);
-				creator.markSnapshotVersionIncrement(project.getFile(), snapshotModel);
+				changeSet.markSnapshotVersionIncrement(project.getFile(), snapshotModel);
 			}
 		}
 
@@ -94,6 +94,6 @@ final class UpdateProcessor implements Updater {
 		}
 
 		// At this point it's guaranteed that no dependency errors occurred.
-		return creator.newChangeSet(remoteUrl);
+		return changeSet.writeChanges();
 	}
 }

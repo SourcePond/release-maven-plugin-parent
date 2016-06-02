@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,27 +21,28 @@ import ch.sourcepond.maven.release.scm.SCMRepository;
  * Default implementation of the {@link ChangeSet} interface.
  *
  */
-final class DefaultChangeSet implements ChangeSet {
+class DefaultChangeSet implements ChangeSet {
 	static final String EXCEPTION_MESSAGE = "Unexpected exception while setting the release versions in the pom";
-	static final String REVERT_ERROR_MESSAGE = "Could not revert releasesModels - working directory is no longer clean. Please revert releasesModels manually";
+	static final String REVERT_ERROR_MESSAGE = "Could not revert modelsToBeReleased - working directory is no longer clean. Please revert modelsToBeReleased manually";
 	static final String IO_EXCEPTION_FORMAT = "Updated project %s could not be written!";
 	private final Log log;
 	private final SCMRepository repository;
-	private final Map<File, Model> releasesModels;
-	private final Map<File, Model> modelsToBeIncremented;
+	private final Map<File, Model> modelsToBeReleased = new LinkedHashMap<>();
+	private final Map<File, Model> modelsToBeIncremented = new LinkedHashMap<>();
 	private final MavenXpp3Writer writer;
 	private final String remoteUrlOrNull;
 	private ChangeSetCloseException failure;
 
 	DefaultChangeSet(final Log log, final SCMRepository repository, final MavenXpp3Writer writer,
-			final Map<File, Model> releaseModels, final Map<File, Model> modelsToBeIncremented,
 			final String remoteUrlOrNull) {
 		this.log = log;
 		this.repository = repository;
 		this.writer = writer;
-		this.releasesModels = releaseModels;
-		this.modelsToBeIncremented = modelsToBeIncremented;
 		this.remoteUrlOrNull = remoteUrlOrNull;
+	}
+
+	Map<File, Model> getModelsToBeReleased() {
+		return modelsToBeReleased;
 	}
 
 	private void writeChanges(final Map.Entry<File, Model> entry) throws IOException {
@@ -49,8 +51,25 @@ final class DefaultChangeSet implements ChangeSet {
 		}
 	}
 
-	void writeChanges() throws POMUpdateException {
-		for (final Map.Entry<File, Model> entry : releasesModels.entrySet()) {
+	private void registerModel(final Map<File, Model> models, final File file, final Model model)
+			throws POMUpdateException {
+		try {
+			models.put(file.getCanonicalFile(), model);
+		} catch (final IOException e) {
+			throw new POMUpdateException(e, "Canonical path could be determined for file %s", file);
+		}
+	}
+
+	void markRelease(final File file, final Model model) throws POMUpdateException {
+		registerModel(modelsToBeReleased, file, model);
+	}
+
+	void markSnapshotVersionIncrement(final File file, final Model model) throws POMUpdateException {
+		registerModel(modelsToBeIncremented, file, model);
+	}
+
+	DefaultChangeSet writeChanges() throws POMUpdateException {
+		for (final Map.Entry<File, Model> entry : modelsToBeReleased.entrySet()) {
 			try {
 				writeChanges(entry);
 			} catch (final IOException e) {
@@ -58,12 +77,13 @@ final class DefaultChangeSet implements ChangeSet {
 				close();
 			}
 		}
+		return this;
 	}
 
 	@Override
 	public void close() throws ChangeSetCloseException {
 		try {
-			repository.revertChanges(releasesModels.keySet());
+			repository.revertChanges(modelsToBeReleased.keySet());
 		} catch (final SCMException e) {
 			if (failure == null) {
 				// throw if you can't revert as that is the root problem
@@ -113,8 +133,8 @@ final class DefaultChangeSet implements ChangeSet {
 	@Override
 	public Iterator<File> iterator() {
 		final List<File> files = new ArrayList<>(
-				releasesModels.keySet().size() + modelsToBeIncremented.keySet().size());
-		files.addAll(releasesModels.keySet());
+				modelsToBeReleased.keySet().size() + modelsToBeIncremented.keySet().size());
+		files.addAll(modelsToBeReleased.keySet());
 		files.addAll(modelsToBeIncremented.keySet());
 		return files.iterator();
 	}

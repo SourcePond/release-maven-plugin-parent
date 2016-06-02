@@ -30,7 +30,7 @@ class ChangeSetCreatorFactory {
 		this.log = log;
 	}
 
-	ChangeSetCreator newCreator() {
-		return new ChangeSetCreator(log, repository, writerFactory.newWriter());
+	DefaultChangeSet newChangeSet(final String remoteUrlOrNull) {
+		return new DefaultChangeSet(log, repository, writerFactory.newWriter(), remoteUrlOrNull);
 	}
 }

@@ -28,9 +28,7 @@ public class DefaultChangeSetTest {
 	private final SCMRepository repository = mock(SCMRepository.class);
 	private final MavenXpp3Writer writer = mock(MavenXpp3Writer.class);
 	private final Map<File, Model> releasedModels = new LinkedHashMap<>();
-	private final Map<File, Model> modelsToBeIncremented = new LinkedHashMap<>();
-	private final DefaultChangeSet set = new DefaultChangeSet(log, repository, writer, releasedModels,
-			modelsToBeIncremented, ANY_REMOTE_URL);
+	private final DefaultChangeSet set = new DefaultChangeSet(log, repository, writer, ANY_REMOTE_URL);
 
 	/**
 	 * @throws Exception

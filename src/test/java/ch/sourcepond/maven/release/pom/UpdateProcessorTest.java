@@ -46,12 +46,11 @@ public class UpdateProcessorTest {
 	private final ReleasableModule module = mock(ReleasableModule.class);
 	private final ContextFactory contextFactory = mock(ContextFactory.class);
 	private final ChangeSetCreatorFactory writerFactory = mock(ChangeSetCreatorFactory.class);
-	private final ChangeSetCreator writer = mock(ChangeSetCreator.class);
 	private final Context context = mock(Context.class);
 	private final Command command = mock(Command.class);
 	private final List<Command> commands = asList(command);
 	private final MavenProject project = mock(MavenProject.class);
-	private final ChangeSet changeSet = mock(ChangeSet.class);
+	private final DefaultChangeSet changeSet = mock(DefaultChangeSet.class);
 	private final Model originalModel = mock(Model.class);
 	private final Model clonedModel = mock(Model.class);
 	private UpdateProcessor processor;
@@ -67,11 +66,11 @@ public class UpdateProcessorTest {
 		when(context.getModel()).thenReturn(clonedModel);
 
 		// Setup writer factory
-		when(writerFactory.newCreator()).thenReturn(writer);
+		when(writerFactory.newChangeSet(ANY_REMOTE_URL)).thenReturn(changeSet);
 
 		// Setup writer
-		when(writer.newChangeSet(ANY_REMOTE_URL)).thenReturn(changeSet);
 		when(changeSet.iterator()).thenReturn(Arrays.asList(ANY_POM).iterator());
+		when(changeSet.writeChanges()).thenReturn(changeSet);
 
 		// Setup reactor
 		final Iterator<ReleasableModule> it = mock(Iterator.class);
@@ -108,10 +107,10 @@ public class UpdateProcessorTest {
 		assertSame(ANY_POM, it.next());
 		assertFalse(it.hasNext());
 
-		final InOrder order = inOrder(clonedModel, command, log, writer);
+		final InOrder order = inOrder(clonedModel, command, log, changeSet);
 		order.verify(log).info("Going to release anyArtifactId anyVersion");
 		order.verify(command).alterModel(context);
-		order.verify(writer).markRelease(ANY_POM, clonedModel);
+		order.verify(changeSet).markRelease(ANY_POM, clonedModel);
 	}
 
 	@Test
@@ -143,7 +142,7 @@ public class UpdateProcessorTest {
 		assertSame(ANY_POM, it.next());
 		assertFalse(it.hasNext());
 
-		final InOrder order = inOrder(clonedModel, command, log, writer);
+		final InOrder order = inOrder(clonedModel, command, log, changeSet);
 
 		// This is the only difference between a "normal" run and a run when
 		// module#willBeReleased() returns false; see
@@ -151,6 +150,6 @@ public class UpdateProcessorTest {
 		order.verify(log, Mockito.never()).info("Going to release anyArtifactId anyVersion");
 
 		order.verify(command).alterModel(context);
-		order.verify(writer).markRelease(ANY_POM, clonedModel);
+		order.verify(changeSet).markRelease(ANY_POM, clonedModel);
 	}
 }
