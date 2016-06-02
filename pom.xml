@@ -14,14 +14,13 @@
 	<packaging>maven-plugin</packaging>
 	<prerequisites>
 		<!-- if this changes, please update the MavenCompatibilityTest -->
-		<maven>3.0.1</maven>
+		<maven>3.1.0</maven>
 	</prerequisites>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<github.global.server>github</github.global.server>
 		<jsch.agentproxy.version>0.0.9</jsch.agentproxy.version>
-		<maven.version>3.3.9</maven.version>
 		<aetherVersion>1.1.0</aetherVersion>
 		<maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
 	</properties>
@@ -100,7 +99,7 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
-			<version>${maven.version}</version>
+			<version>${project.prerequisites.maven}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.plexus</groupId>
@@ -111,22 +110,22 @@
 			<scope>test</scope>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-artifact</artifactId>
-			<version>${maven.version}</version>
+			<version>${project.prerequisites.maven}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-model</artifactId>
-			<version>${maven.version}</version>
+			<version>${project.prerequisites.maven}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-core</artifactId>
-			<version>${maven.version}</version>
+			<version>${project.prerequisites.maven}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-settings</artifactId>
-			<version>${maven.version}</version>
+			<version>${project.prerequisites.maven}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.shared</groupId>
@@ -189,7 +188,7 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-model-builder</artifactId>
-			<version>${maven.version}</version>
+			<version>${project.prerequisites.maven}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -231,7 +230,7 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-aether-provider</artifactId>
-			<version>${maven.version}</version>
+			<version>${project.prerequisites.maven}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

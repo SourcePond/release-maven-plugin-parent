@@ -27,16 +27,6 @@ public class MavenCompatibilityTest extends E2ETest {
 	}
 
 	@Test
-	public void maven_3_0_1() throws Exception {
-		buildProjectWithMavenVersion("3.0.1");
-	}
-
-	@Test
-	public void maven_3_0_4() throws Exception {
-		buildProjectWithMavenVersion("3.0.4");
-	}
-
-	@Test
 	public void maven_3_1_0() throws Exception {
 		buildProjectWithMavenVersion("3.1.0");
 	}
@@ -58,8 +48,7 @@ public class MavenCompatibilityTest extends E2ETest {
 		final MvnRunner runner = mvn.mvn(mavenVersionToTest);
 		testProject.setMvnRunner(runner);
 		testProject.mvnRelease(buildNumber);
-		runner.assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects", "single-module",
-				expected);
+		runner.assertArtifactInLocalRepo("ch.sourcepond.maven.plugins.testprojects", "single-module", expected);
 		assertThat(new File(testProject.localDir, "target/single-module-" + expected + "-package.jar").exists(),
 				is(true));
 	}

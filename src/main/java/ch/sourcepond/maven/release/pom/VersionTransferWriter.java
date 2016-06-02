@@ -48,6 +48,17 @@ final class VersionTransferWriter extends StringWriter {
 		}
 	}
 
+	private boolean find(final Matcher updated, final Matcher original, final int originalIdx) throws IOException {
+		final boolean findUpdated = updated.find();
+		final boolean findOriginal = original.find(originalIdx);
+
+		if (findOriginal && !findUpdated || !findOriginal && findUpdated) {
+			throw new IOException("File cannot be updated because it has incompatbility been changed!");
+		}
+
+		return findOriginal;
+	}
+
 	@Override
 	public void close() throws IOException {
 		final Matcher matcher = VERSION_PATTERN.matcher(toString());
@@ -55,7 +66,7 @@ final class VersionTransferWriter extends StringWriter {
 		int originalIdx = 0;
 		int startIdx = 0;
 
-		while (matcher.find() && originalMatcher.find(originalIdx)) {
+		while (find(matcher, originalMatcher, originalIdx)) {
 			final String newVersion = matcher.group(VERSION_VALUE);
 			startIdx = originalMatcher.start(VERSION_VALUE);
 			original.replace(startIdx, originalMatcher.end(VERSION_VALUE), newVersion);
