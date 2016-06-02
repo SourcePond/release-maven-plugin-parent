@@ -2,9 +2,7 @@ package ch.sourcepond.maven.release.log;
 
 import org.apache.maven.plugin.logging.Log;
 
-public interface LogHolder {
+public interface MavenComponentSingletons {
 
-	Log getLog();
-
-	void setLog(Log log);
+	void setLog(Log pLog);
 }

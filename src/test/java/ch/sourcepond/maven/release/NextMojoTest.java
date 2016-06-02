@@ -19,7 +19,7 @@ import org.eclipse.jgit.transport.JschConfigSessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.sourcepond.maven.release.log.LogHolder;
+import ch.sourcepond.maven.release.log.MavenComponentSingletons;
 import ch.sourcepond.maven.release.reactor.ReactorBuilderFactory;
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
@@ -41,9 +41,9 @@ public class NextMojoTest {
 	private final Server server = mock(Server.class);
 	private final ReactorBuilderFactory reactorBuilderFactory = mock(ReactorBuilderFactory.class);
 	private final SCMRepository repository = mock(SCMRepository.class);
-	private final LogHolder logHolder = mock(LogHolder.class);
+	private final MavenComponentSingletons singletons = mock(MavenComponentSingletons.class);
 	private final Scm scm = mock(Scm.class);
-	private final NextMojo mojo = new NextMojo(repository, reactorBuilderFactory, logHolder);
+	private final NextMojo mojo = new NextMojo(repository, reactorBuilderFactory, singletons);
 
 	@Before
 	public void setup() {

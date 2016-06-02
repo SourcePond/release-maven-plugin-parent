@@ -9,7 +9,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import ch.sourcepond.maven.release.log.LogHolder;
+import ch.sourcepond.maven.release.log.MavenComponentSingletons;
 import ch.sourcepond.maven.release.pom.ChangeSet;
 import ch.sourcepond.maven.release.pom.Updater;
 import ch.sourcepond.maven.release.reactor.Reactor;
@@ -107,8 +107,8 @@ public class ReleaseMojo extends NextMojo {
 
 	@Inject
 	public ReleaseMojo(final SCMRepository pRepository, final ReactorBuilderFactory pBuilderFactory,
-			final LogHolder pLogHolder, final Updater pUpdater) {
-		super(pRepository, pBuilderFactory, pLogHolder);
+			final MavenComponentSingletons singletons, final Updater pUpdater) {
+		super(pRepository, pBuilderFactory, singletons);
 		updater = pUpdater;
 	}
 

@@ -18,7 +18,7 @@ import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.eclipse.jgit.transport.JschConfigSessionFactory;
 
-import ch.sourcepond.maven.release.log.LogHolder;
+import ch.sourcepond.maven.release.log.MavenComponentSingletons;
 import ch.sourcepond.maven.release.reactor.Reactor;
 import ch.sourcepond.maven.release.reactor.ReactorBuilder;
 import ch.sourcepond.maven.release.reactor.ReactorBuilderFactory;
@@ -135,14 +135,14 @@ public class NextMojo extends AbstractMojo {
 
 	private final ReactorBuilderFactory builderFactory;
 	protected final SCMRepository repository;
-	private final LogHolder logHolder;
+	private final MavenComponentSingletons singletons;
 
 	@Inject
 	public NextMojo(final SCMRepository pRepository, final ReactorBuilderFactory pBuilderFactory,
-			final LogHolder pLogHolder) {
+			final MavenComponentSingletons pSingletons) {
 		repository = pRepository;
 		builderFactory = pBuilderFactory;
-		logHolder = pLogHolder;
+		singletons = pSingletons;
 	}
 
 	final void setSettings(final Settings settings) {
@@ -229,7 +229,7 @@ public class NextMojo extends AbstractMojo {
 	@Override
 	public final void setLog(final Log log) {
 		super.setLog(log);
-		logHolder.setLog(log);
+		singletons.setLog(log);
 	}
 
 	protected void execute(final Reactor reactor, final ProposedTags proposedTags, final String remoteUrl)
