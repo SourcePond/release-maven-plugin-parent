@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
+import ch.sourcepond.maven.release.providers.ReactorProjects;
 import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.version.VersionBuilder;
 import ch.sourcepond.maven.release.version.VersionBuilderFactory;
@@ -14,23 +15,18 @@ final class DefaultReactorBuilder implements ReactorBuilder {
 	private final Log log;
 	private final VersionBuilderFactory versionBuilderFactory;
 	private final RootProject rootProject;
-	private List<MavenProject> projects;
+	private final ReactorProjects projects;
 	private boolean useLastDigitAsBuildNumber;
 	private Long buildNumber;
 	private List<String> modulesToForceRelease;
 	private String remoteUrl;
 
 	public DefaultReactorBuilder(final Log log, final VersionBuilderFactory versioningFactory,
-			final RootProject pRootProject) {
+			final RootProject pRootProject, final ReactorProjects pProjects) {
 		this.log = log;
 		this.versionBuilderFactory = versioningFactory;
 		rootProject = pRootProject;
-	}
-
-	@Override
-	public ReactorBuilder setProjects(final List<MavenProject> projects) {
-		this.projects = projects;
-		return this;
+		projects = pProjects;
 	}
 
 	@Override

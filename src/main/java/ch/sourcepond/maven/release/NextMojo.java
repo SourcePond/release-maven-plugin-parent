@@ -205,8 +205,7 @@ public class NextMojo extends AbstractMojo {
 	}
 
 	protected ReactorBuilder newReactorBuilder() {
-		return builderFactory.newBuilder().setProjects(projects).setBuildNumber(buildNumber)
-				.setModulesToForceRelease(modulesToForceRelease);
+		return builderFactory.newBuilder().setBuildNumber(buildNumber).setModulesToForceRelease(modulesToForceRelease);
 	}
 
 	private Reactor newReactor(final String remoteUrl) throws ReactorException {
@@ -244,6 +243,7 @@ public class NextMojo extends AbstractMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		singletons.setRootProject(project);
+		singletons.setReactorProjects(projects);
 
 		try {
 			repository.errorIfNotClean();
