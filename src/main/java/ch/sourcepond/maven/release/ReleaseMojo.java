@@ -12,6 +12,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import ch.sourcepond.maven.release.pom.ChangeSet;
 import ch.sourcepond.maven.release.pom.Updater;
 import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
+import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.reactor.Reactor;
 import ch.sourcepond.maven.release.reactor.ReactorBuilder;
 import ch.sourcepond.maven.release.reactor.ReactorBuilderFactory;
@@ -107,8 +108,8 @@ public class ReleaseMojo extends NextMojo {
 
 	@Inject
 	public ReleaseMojo(final SCMRepository pRepository, final ReactorBuilderFactory pBuilderFactory,
-			final MavenComponentSingletons singletons, final Updater pUpdater) {
-		super(pRepository, pBuilderFactory, singletons);
+			final MavenComponentSingletons singletons, final RootProject pRootProject, final Updater pUpdater) {
+		super(pRepository, pBuilderFactory, singletons, pRootProject);
 		updater = pUpdater;
 	}
 
@@ -132,7 +133,7 @@ public class ReleaseMojo extends NextMojo {
 			proposedTags.tagAndPushRepo();
 
 			try {
-				final ReleaseInvoker invoker = new ReleaseInvoker(getLog(), project);
+				final ReleaseInvoker invoker = new ReleaseInvoker(getLog(), rootProject);
 				invoker.setGlobalSettings(globalSettings);
 				invoker.setUserSettings(userSettings);
 				invoker.setLocalMavenRepo(localMavenRepo);

@@ -6,8 +6,6 @@ import org.apache.maven.project.MavenProject;
 
 public interface ReactorBuilder {
 
-	ReactorBuilder setRootProject(MavenProject rootProject);
-
 	ReactorBuilder setProjects(List<MavenProject> projects);
 
 	ReactorBuilder setUseLastDigitAsBuildNumber(boolean useLastDigitAsVersionNumber);

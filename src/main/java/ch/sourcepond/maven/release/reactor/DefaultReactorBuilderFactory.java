@@ -6,6 +6,7 @@ import javax.inject.Singleton;
 
 import org.apache.maven.plugin.logging.Log;
 
+import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.version.VersionBuilderFactory;
 
 /**
@@ -17,16 +18,19 @@ import ch.sourcepond.maven.release.version.VersionBuilderFactory;
 final class DefaultReactorBuilderFactory implements ReactorBuilderFactory {
 	private final Log log;
 	private final VersionBuilderFactory versionFactory;
+	private final RootProject rootProject;
 
 	@Inject
-	DefaultReactorBuilderFactory(final Log pLog, final VersionBuilderFactory pVersionFactory) {
+	DefaultReactorBuilderFactory(final Log pLog, final VersionBuilderFactory pVersionFactory,
+			final RootProject pRootProject) {
 		log = pLog;
 		versionFactory = pVersionFactory;
+		rootProject = pRootProject;
 	}
 
 	@Override
 	public ReactorBuilder newBuilder() {
-		return new DefaultReactorBuilder(log, versionFactory);
+		return new DefaultReactorBuilder(log, versionFactory, rootProject);
 	}
 
 }

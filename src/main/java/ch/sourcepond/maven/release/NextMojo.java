@@ -19,6 +19,7 @@ import org.apache.maven.settings.Settings;
 import org.eclipse.jgit.transport.JschConfigSessionFactory;
 
 import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
+import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.reactor.Reactor;
 import ch.sourcepond.maven.release.reactor.ReactorBuilder;
 import ch.sourcepond.maven.release.reactor.ReactorBuilderFactory;
@@ -137,12 +138,15 @@ public class NextMojo extends AbstractMojo {
 	protected final SCMRepository repository;
 	private final MavenComponentSingletons singletons;
 
+	protected RootProject rootProject;
+
 	@Inject
 	public NextMojo(final SCMRepository pRepository, final ReactorBuilderFactory pBuilderFactory,
-			final MavenComponentSingletons pSingletons) {
+			final MavenComponentSingletons pSingletons, final RootProject pRootProject) {
 		repository = pRepository;
 		builderFactory = pBuilderFactory;
 		singletons = pSingletons;
+		rootProject = pRootProject;
 	}
 
 	final void setSettings(final Settings settings) {
@@ -201,7 +205,7 @@ public class NextMojo extends AbstractMojo {
 	}
 
 	protected ReactorBuilder newReactorBuilder() {
-		return builderFactory.newBuilder().setRootProject(project).setProjects(projects).setBuildNumber(buildNumber)
+		return builderFactory.newBuilder().setProjects(projects).setBuildNumber(buildNumber)
 				.setModulesToForceRelease(modulesToForceRelease);
 	}
 
@@ -239,6 +243,8 @@ public class NextMojo extends AbstractMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		singletons.setRootProject(project);
+
 		try {
 			repository.errorIfNotClean();
 			configureJsch();

@@ -1,13 +1,11 @@
 package ch.sourcepond.maven.release.reactor;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.eclipse.jgit.lib.Repository;
 
+import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.version.VersionBuilder;
 import ch.sourcepond.maven.release.version.VersionBuilderFactory;
 import ch.sourcepond.maven.release.version.VersionException;
@@ -15,22 +13,18 @@ import ch.sourcepond.maven.release.version.VersionException;
 final class DefaultReactorBuilder implements ReactorBuilder {
 	private final Log log;
 	private final VersionBuilderFactory versionBuilderFactory;
-	private MavenProject rootProject;
+	private final RootProject rootProject;
 	private List<MavenProject> projects;
 	private boolean useLastDigitAsBuildNumber;
 	private Long buildNumber;
 	private List<String> modulesToForceRelease;
 	private String remoteUrl;
 
-	public DefaultReactorBuilder(final Log log, final VersionBuilderFactory versioningFactory) {
+	public DefaultReactorBuilder(final Log log, final VersionBuilderFactory versioningFactory,
+			final RootProject pRootProject) {
 		this.log = log;
 		this.versionBuilderFactory = versioningFactory;
-	}
-
-	@Override
-	public ReactorBuilder setRootProject(final MavenProject rootProject) {
-		this.rootProject = rootProject;
-		return this;
+		rootProject = pRootProject;
 	}
 
 	@Override
@@ -63,7 +57,7 @@ final class DefaultReactorBuilder implements ReactorBuilder {
 
 		for (final MavenProject project : projects) {
 			try {
-				final String relativePathToModule = calculateModulePath(rootProject, project);
+				final String relativePathToModule = rootProject.calculateModulePath(project);
 				final String changedDependencyOrNull = reactor.getChangedDependencyOrNull(project);
 				final VersionBuilder versionBuilder = versionBuilderFactory.newBuilder();
 				versionBuilder.setProject(project);
@@ -84,25 +78,6 @@ final class DefaultReactorBuilder implements ReactorBuilder {
 		}
 
 		return reactor.finalizeReleaseVersions();
-	}
-
-	private static String calculateModulePath(final MavenProject rootProject, final MavenProject project)
-			throws ReactorException {
-		// Getting canonical files because on Windows, it's possible one returns
-		// "C:\..." and the other "c:\..." which is rather amazing
-		File projectRoot;
-		File moduleRoot;
-		try {
-			projectRoot = rootProject.getBasedir().getCanonicalFile();
-			moduleRoot = project.getBasedir().getCanonicalFile();
-		} catch (final IOException e) {
-			throw new ReactorException(e, "Could not find directory paths for maven project");
-		}
-		String relativePathToModule = Repository.stripWorkDir(projectRoot, moduleRoot);
-		if (relativePathToModule.length() == 0) {
-			relativePathToModule = ".";
-		}
-		return relativePathToModule;
 	}
 
 	@Override

@@ -16,10 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.apache.maven.model.Profile;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
@@ -29,7 +27,7 @@ import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 
-import ch.sourcepond.maven.release.ReleaseInvoker;
+import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.reactor.Reactor;
 import ch.sourcepond.maven.release.reactor.ReleasableModule;
 
@@ -45,7 +43,7 @@ public class ReleaseInvokerTest {
 	private final static String MODULE_PATH = "modulePath";
 	private final static String SITE = "site";
 	private final Log log = mock(Log.class);
-	private final MavenProject project = mock(MavenProject.class);
+	private final RootProject project = mock(RootProject.class);
 	private final InvocationRequest request = mock(InvocationRequest.class);
 	private final InvocationResult result = mock(InvocationResult.class);
 	private final Invoker invoker = mock(Invoker.class);
@@ -56,7 +54,6 @@ public class ReleaseInvokerTest {
 	private final Iterator<ReleasableModule> modulesInBuildOrder = mock(Iterator.class);
 	private final Reactor reactor = mock(Reactor.class);
 	private final ReleasableModule module = mock(ReleasableModule.class);
-	private final Profile activeProfile = mock(Profile.class);
 	private final ReleaseInvoker releaseInvoker = new ReleaseInvoker(log, project, request, invoker);
 
 	@SuppressWarnings("unchecked")
@@ -67,7 +64,6 @@ public class ReleaseInvokerTest {
 		when(reactor.iterator()).thenReturn(modulesInBuildOrder);
 		when(log.isDebugEnabled()).thenReturn(true);
 		when(invoker.execute(request)).thenReturn(result);
-		when(activeProfile.getId()).thenReturn(ACTIVE_PROFILE_ID);
 		when(module.getRelativePathToModule()).thenReturn(MODULE_PATH);
 	}
 
@@ -158,7 +154,7 @@ public class ReleaseInvokerTest {
 	public void runMavenBuild_WithActiveProfiles() throws Exception {
 		releaseProfiles.add(SOME_PROFILE_ID);
 		releaseInvoker.setReleaseProfiles(releaseProfiles);
-		when(project.getActiveProfiles()).thenReturn(asList(activeProfile));
+		when(project.getActiveProfileIds()).thenReturn(asList(ACTIVE_PROFILE_ID));
 		releaseInvoker.runMavenBuild(reactor);
 		verify(request).setProfiles(Mockito.argThat(new ArgumentMatcher<List<String>>() {
 
