@@ -6,7 +6,6 @@ import javax.inject.Singleton;
 
 import org.apache.maven.plugin.logging.Log;
 
-import ch.sourcepond.maven.release.providers.ReactorProjects;
 import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.version.VersionBuilderFactory;
 

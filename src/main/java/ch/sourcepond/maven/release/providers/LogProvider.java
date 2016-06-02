@@ -14,7 +14,7 @@ import org.apache.maven.plugin.logging.Log;
 final class LogProvider extends BaseProvider<Log> {
 
 	@Inject
-	LogProvider(final DefaultMavenComponentSingletons pSingletons) {
+	LogProvider(final MavenComponentSingletons pSingletons) {
 		super(pSingletons);
 	}
 

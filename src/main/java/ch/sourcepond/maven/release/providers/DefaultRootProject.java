@@ -16,10 +16,10 @@ import ch.sourcepond.maven.release.reactor.ReactorException;
 
 @Named
 class DefaultRootProject implements RootProject {
-	private final DefaultMavenComponentSingletons singletons;
+	private final MavenComponentSingletons singletons;
 
 	@Inject
-	DefaultRootProject(final DefaultMavenComponentSingletons pSingletons) {
+	DefaultRootProject(final MavenComponentSingletons pSingletons) {
 		singletons = pSingletons;
 	}
 

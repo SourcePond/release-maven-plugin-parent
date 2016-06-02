@@ -1,4 +1,4 @@
-package ch.sourcepond.maven.release.providers;
+package ch.sourcepond.maven.release.reactor;
 
 import org.apache.maven.project.MavenProject;
 

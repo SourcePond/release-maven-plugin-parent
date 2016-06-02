@@ -8,10 +8,10 @@ import java.lang.reflect.Proxy;
 
 import com.google.inject.Provider;
 
-abstract class BaseProvider<T> implements Provider<T> {
-	protected final DefaultMavenComponentSingletons singletons;
+public abstract class BaseProvider<T> implements Provider<T> {
+	protected final MavenComponentSingletons singletons;
 
-	protected BaseProvider(final DefaultMavenComponentSingletons pSingletons) {
+	protected BaseProvider(final MavenComponentSingletons pSingletons) {
 		singletons = pSingletons;
 	}
 

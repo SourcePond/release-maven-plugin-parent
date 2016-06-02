@@ -1,15 +1,18 @@
-package ch.sourcepond.maven.release.providers;
+package ch.sourcepond.maven.release.reactor;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+
+import ch.sourcepond.maven.release.providers.BaseProvider;
+import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
 
 @Named
 @Singleton
 final class ReactorProjectsProvider extends BaseProvider<ReactorProjects> {
 
 	@Inject
-	ReactorProjectsProvider(final DefaultMavenComponentSingletons pSingletons) {
+	ReactorProjectsProvider(final MavenComponentSingletons pSingletons) {
 		super(pSingletons);
 	}
 
