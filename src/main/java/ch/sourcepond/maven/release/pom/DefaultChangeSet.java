@@ -4,10 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.model.Model;
@@ -128,14 +125,5 @@ class DefaultChangeSet implements ChangeSet {
 	@Override
 	public void setFailure(final String message, final Exception failure) {
 		this.failure = new ChangeSetCloseException(failure, message);
-	}
-
-	@Override
-	public Iterator<File> iterator() {
-		final List<File> files = new ArrayList<>(
-				modelsToBeReleased.keySet().size() + modelsToBeIncremented.keySet().size());
-		files.addAll(modelsToBeReleased.keySet());
-		files.addAll(modelsToBeIncremented.keySet());
-		return files.iterator();
 	}
 }

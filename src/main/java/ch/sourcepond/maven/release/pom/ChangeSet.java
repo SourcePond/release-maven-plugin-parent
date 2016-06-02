@@ -1,7 +1,5 @@
 package ch.sourcepond.maven.release.pom;
 
-import java.io.File;
-
 /**
  * Represents a set of changed files. This interface extends
  * {@link AutoCloseable}; when {@link #close()} is called all changed files will
@@ -9,7 +7,7 @@ import java.io.File;
  * 
  *
  */
-public interface ChangeSet extends Iterable<File>, AutoCloseable {
+public interface ChangeSet extends AutoCloseable {
 
 	/**
 	 * Sets the exception to be thrown when {@link #close()} is called. If an

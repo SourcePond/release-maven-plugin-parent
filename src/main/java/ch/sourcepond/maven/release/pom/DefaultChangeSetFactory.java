@@ -6,8 +6,8 @@ import org.codehaus.plexus.component.annotations.Requirement;
 
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
-@Component(role = ChangeSetCreatorFactory.class)
-class ChangeSetCreatorFactory {
+@Component(role = DefaultChangeSetFactory.class)
+class DefaultChangeSetFactory {
 
 	@Requirement(role = SCMRepository.class)
 	private SCMRepository repository;

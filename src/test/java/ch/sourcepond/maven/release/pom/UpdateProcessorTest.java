@@ -13,10 +13,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.apache.maven.model.Model;
@@ -45,7 +46,7 @@ public class UpdateProcessorTest {
 	private final Reactor reactor = mock(Reactor.class);
 	private final ReleasableModule module = mock(ReleasableModule.class);
 	private final ContextFactory contextFactory = mock(ContextFactory.class);
-	private final ChangeSetCreatorFactory writerFactory = mock(ChangeSetCreatorFactory.class);
+	private final DefaultChangeSetFactory writerFactory = mock(DefaultChangeSetFactory.class);
 	private final Context context = mock(Context.class);
 	private final Command command = mock(Command.class);
 	private final List<Command> commands = asList(command);
@@ -69,7 +70,9 @@ public class UpdateProcessorTest {
 		when(writerFactory.newChangeSet(ANY_REMOTE_URL)).thenReturn(changeSet);
 
 		// Setup writer
-		when(changeSet.iterator()).thenReturn(Arrays.asList(ANY_POM).iterator());
+		final Map<File, Model> modelsToBeReleased = new LinkedHashMap<>();
+		modelsToBeReleased.put(ANY_POM, clonedModel);
+		when(changeSet.getModelsToBeReleased()).thenReturn(modelsToBeReleased);
 		when(changeSet.writeChanges()).thenReturn(changeSet);
 
 		// Setup reactor
@@ -101,8 +104,8 @@ public class UpdateProcessorTest {
 
 	@Test
 	public void updatePomsCompletedSuccessfully() throws Exception {
-		final ChangeSet updatedPoms = processor.updatePoms(reactor, ANY_REMOTE_URL, false);
-		final Iterator<File> it = updatedPoms.iterator();
+		final DefaultChangeSet updatedPoms = (DefaultChangeSet) processor.updatePoms(reactor, ANY_REMOTE_URL, false);
+		final Iterator<File> it = updatedPoms.getModelsToBeReleased().keySet().iterator();
 		assertTrue(it.hasNext());
 		assertSame(ANY_POM, it.next());
 		assertFalse(it.hasNext());
@@ -136,8 +139,8 @@ public class UpdateProcessorTest {
 	@Test
 	public void updatePomsModuleWillNotBeReleased() throws Exception {
 		when(module.willBeReleased()).thenReturn(false);
-		final ChangeSet updatedPoms = processor.updatePoms(reactor, ANY_REMOTE_URL, false);
-		final Iterator<File> it = updatedPoms.iterator();
+		final DefaultChangeSet updatedPoms = (DefaultChangeSet) processor.updatePoms(reactor, ANY_REMOTE_URL, false);
+		final Iterator<File> it = updatedPoms.getModelsToBeReleased().keySet().iterator();
 		assertTrue(it.hasNext());
 		assertSame(ANY_POM, it.next());
 		assertFalse(it.hasNext());

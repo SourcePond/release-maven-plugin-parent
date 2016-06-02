@@ -23,8 +23,8 @@ final class UpdateProcessor implements Updater {
 	@Requirement(role = ContextFactory.class)
 	private ContextFactory contextFactory;
 
-	@Requirement(role = ChangeSetCreatorFactory.class)
-	private ChangeSetCreatorFactory creatorFactory;
+	@Requirement(role = DefaultChangeSetFactory.class)
+	private DefaultChangeSetFactory creatorFactory;
 
 	@Requirement(role = Log.class)
 	private Log log;
@@ -36,7 +36,7 @@ final class UpdateProcessor implements Updater {
 		this.commands = commands;
 	}
 
-	void setCreatorFactory(final ChangeSetCreatorFactory creatorFactory) {
+	void setCreatorFactory(final DefaultChangeSetFactory creatorFactory) {
 		this.creatorFactory = creatorFactory;
 	}
 
