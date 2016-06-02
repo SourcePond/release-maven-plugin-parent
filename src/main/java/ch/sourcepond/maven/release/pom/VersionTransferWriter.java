@@ -21,8 +21,9 @@ import java.util.regex.Pattern;
  * format of of the original file will be preserved.
  *
  */
-final class TransferVersionWriter extends StringWriter {
-	private static final Pattern VERSION_PATTERN = Pattern.compile("<version>\\s*(.*?)\\s*<\\/version>");
+final class VersionTransferWriter extends StringWriter {
+	static final Pattern VERSION_PATTERN = Pattern.compile("<version>\\s*(.*?)\\s*<\\/version>");
+	static final int VERSION_VALUE = 1;
 	private final StringBuilder original = new StringBuilder();
 	private final File file;
 
@@ -34,7 +35,7 @@ final class TransferVersionWriter extends StringWriter {
 	 *            File to be read, must not be {@code null}
 	 * @throws IOException
 	 */
-	public TransferVersionWriter(final File file) throws IOException {
+	public VersionTransferWriter(final File file) throws IOException {
 		notNull(file, "File specified is null");
 		this.file = file;
 		final char[] buffer = new char[1024];
@@ -55,9 +56,9 @@ final class TransferVersionWriter extends StringWriter {
 		int startIdx = 0;
 
 		while (matcher.find() && originalMatcher.find(originalIdx)) {
-			final String newVersion = matcher.group(1);
-			startIdx = originalMatcher.start(1);
-			original.replace(startIdx, originalMatcher.end(1), newVersion);
+			final String newVersion = matcher.group(VERSION_VALUE);
+			startIdx = originalMatcher.start(VERSION_VALUE);
+			original.replace(startIdx, originalMatcher.end(VERSION_VALUE), newVersion);
 			originalIdx = startIdx + newVersion.length();
 		}
 
