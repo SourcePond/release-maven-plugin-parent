@@ -1,26 +1,23 @@
 package ch.sourcepond.maven.release.version;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
-@Component(role = ChangeDetectorFactory.class)
+@Named
+@Singleton
 class ChangeDetectorFactory {
+	private final Log log;
+	private final SCMRepository repository;
 
-	@Requirement(role = Log.class)
-	private Log log;
-
-	@Requirement(role = SCMRepository.class)
-	private SCMRepository repository;
-
-	void setLog(final Log log) {
-		this.log = log;
-	}
-
-	void setRepository(final SCMRepository repository) {
-		this.repository = repository;
+	@Inject
+	ChangeDetectorFactory(final Log pLog, final SCMRepository pRepository) {
+		log = pLog;
+		repository = pRepository;
 	}
 
 	ChangeDetector newDetector() {

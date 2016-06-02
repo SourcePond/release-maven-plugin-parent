@@ -1,36 +1,29 @@
 package ch.sourcepond.maven.release.pom;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
-@Component(role = DefaultChangeSetFactory.class)
+@Named
+@Singleton
 class DefaultChangeSetFactory {
+	private final Log log;
+	private final SCMRepository repository;
+	private final MavenXpp3Writer writer;
 
-	@Requirement(role = SCMRepository.class)
-	private SCMRepository repository;
-
-	@Requirement(role = MavenXpp3WriterFactory.class)
-	private MavenXpp3WriterFactory writerFactory;
-
-	@Requirement(role = Log.class)
-	private Log log;
-
-	void setRepository(final SCMRepository repository) {
-		this.repository = repository;
-	}
-
-	void setMavenXpp3WriterFactory(final MavenXpp3WriterFactory writerFactory) {
-		this.writerFactory = writerFactory;
-	}
-
-	void setLog(final Log log) {
-		this.log = log;
+	@Inject
+	DefaultChangeSetFactory(final Log pLog, final SCMRepository pRepository, final MavenXpp3Writer pWriter) {
+		log = pLog;
+		repository = pRepository;
+		writer = pWriter;
 	}
 
 	DefaultChangeSet newChangeSet(final String remoteUrlOrNull) {
-		return new DefaultChangeSet(log, repository, writerFactory.newWriter(), remoteUrlOrNull);
+		return new DefaultChangeSet(log, repository, writer, remoteUrlOrNull);
 	}
 }

@@ -8,26 +8,15 @@ import static org.mockito.Mockito.when;
 
 import org.apache.maven.plugin.logging.Log;
 import org.eclipse.jgit.lib.Ref;
-import org.junit.Before;
 import org.junit.Test;
 
-import ch.sourcepond.maven.release.scm.GitFactory;
-import ch.sourcepond.maven.release.scm.GitRepository;
-import ch.sourcepond.maven.release.scm.ProposedTag;
-import ch.sourcepond.maven.release.scm.ProposedTagsBuilder;
 import ch.sourcepond.maven.release.version.Version;
 import scaffolding.TestProject;
 
 public class AnnotatedTagTest {
 	private final Log log = mock(Log.class);
 	private final GitFactory gitFactory = mock(GitFactory.class);
-	private final GitRepository repo = new GitRepository();
-
-	@Before
-	public void setup() {
-		repo.setGitFactory(gitFactory);
-		repo.setLog(log);
-	}
+	private final GitRepository repo = new GitRepository(log, gitFactory);
 
 	@Test
 	public void gettersReturnValuesPassedIn() throws Exception {
@@ -49,9 +38,7 @@ public class AnnotatedTagTest {
 	public void aTagCanBeCreatedFromAGitTag() throws Exception {
 		final TestProject project = TestProject.singleModuleProject();
 		when(gitFactory.newGit()).thenReturn(project.local);
-		final GitRepository repo = new GitRepository();
-		repo.setGitFactory(gitFactory);
-		repo.setLog(log);
+		final GitRepository repo = new GitRepository(log, gitFactory);
 		final ProposedTagsBuilder builder = repo.newProposedTagsBuilder(null);
 		final Version ver = mock(Version.class);
 		when(ver.getBusinessVersion()).thenReturn("the-version");
@@ -74,9 +61,7 @@ public class AnnotatedTagTest {
 
 		final Ref ref = project.local.tagList().call().get(0);
 		when(gitFactory.newGit()).thenReturn(project.local);
-		final GitRepository repo = new GitRepository();
-		repo.setGitFactory(gitFactory);
-		repo.setLog(log);
+		final GitRepository repo = new GitRepository(log, gitFactory);
 		final ProposedTag inflatedTag = repo.fromRef(ref);
 		assertThat(inflatedTag.name(), equalTo("my-name-1.0.2"));
 		assertThat(inflatedTag.getBusinessVersion(), equalTo("0"));

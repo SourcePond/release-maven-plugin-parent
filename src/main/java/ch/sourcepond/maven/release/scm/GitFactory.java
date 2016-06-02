@@ -3,11 +3,14 @@ package ch.sourcepond.maven.release.scm;
 import java.io.File;
 import java.io.IOException;
 
-import org.codehaus.plexus.component.annotations.Component;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 
-@Component(role = GitFactory.class)
+@Named
+@Singleton
 public class GitFactory {
 
 	public Git newGit() throws SCMException {

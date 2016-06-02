@@ -5,31 +5,29 @@ import static java.lang.String.format;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 
 /**
  * Default implementation of the {@link VersionSubstitution} interface.
  *
  */
-@Component(role = VersionSubstitution.class)
+@Named
+@Singleton
 class DefaultVersionSubstitution implements VersionSubstitution {
+	private final PropertyAdapter<Dependency> dependencyAdapter;
+	private final PropertyAdapter<Plugin> pluginAdapter;
 
-	@Requirement(role = PropertyAdapter.class, hint = "dependencyAdapter")
-	private PropertyAdapter<Dependency> dependencyAdapter;
-
-	@Requirement(role = PropertyAdapter.class, hint = "pluginAdapter")
-	private PropertyAdapter<Plugin> pluginAdapter;
-
-	void setDependencyAdapter(final PropertyAdapter<Dependency> dependencyAdapter) {
-		this.dependencyAdapter = dependencyAdapter;
-	}
-
-	void setPluginAdapter(final PropertyAdapter<Plugin> pluginAdapter) {
-		this.pluginAdapter = pluginAdapter;
+	@Inject
+	DefaultVersionSubstitution(final PropertyAdapter<Dependency> pDependencyAdapter,
+			final PropertyAdapter<Plugin> pPluginAdapter) {
+		dependencyAdapter = pDependencyAdapter;
+		pluginAdapter = pPluginAdapter;
 	}
 
 	/**
@@ -76,8 +74,7 @@ class DefaultVersionSubstitution implements VersionSubstitution {
 	 * @param adapter
 	 * @return
 	 */
-	private <T> String getActualVersion(final List<T> substituted, final T origin,
-			final PropertyAdapter<T> adapter) {
+	private <T> String getActualVersion(final List<T> substituted, final T origin, final PropertyAdapter<T> adapter) {
 		for (final Artifact artifact : convert(substituted, adapter)) {
 			if (adapter.getGroupId(origin).equals(artifact.getGroupId())
 					&& adapter.getArtifactId(origin).equals(artifact.getArtifactId())) {

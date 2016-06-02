@@ -1,8 +1,10 @@
 package ch.sourcepond.maven.release.reactor;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 
 import ch.sourcepond.maven.release.version.VersionBuilderFactory;
 
@@ -10,21 +12,16 @@ import ch.sourcepond.maven.release.version.VersionBuilderFactory;
  * @author rolandhauser
  *
  */
-@Component(role = ReactorBuilderFactory.class)
+@Named
+@Singleton
 final class DefaultReactorBuilderFactory implements ReactorBuilderFactory {
+	private final Log log;
+	private final VersionBuilderFactory versionFactory;
 
-	@Requirement(role = Log.class)
-	private Log log;
-
-	@Requirement(role = VersionBuilderFactory.class)
-	private VersionBuilderFactory versionFactory;
-
-	void setLog(final Log log) {
-		this.log = log;
-	}
-
-	void setVersionFactory(final VersionBuilderFactory versionFactory) {
-		this.versionFactory = versionFactory;
+	@Inject
+	DefaultReactorBuilderFactory(final Log pLog, final VersionBuilderFactory pVersionFactory) {
+		log = pLog;
+		versionFactory = pVersionFactory;
 	}
 
 	@Override

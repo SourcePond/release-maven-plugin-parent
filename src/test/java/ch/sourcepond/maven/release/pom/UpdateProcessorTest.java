@@ -54,7 +54,7 @@ public class UpdateProcessorTest {
 	private final DefaultChangeSet changeSet = mock(DefaultChangeSet.class);
 	private final Model originalModel = mock(Model.class);
 	private final Model clonedModel = mock(Model.class);
-	private UpdateProcessor processor;
+	private final UpdateProcessor processor = new UpdateProcessor(log, contextFactory, writerFactory, commands);;
 
 	@SuppressWarnings("unchecked")
 	@Before
@@ -94,12 +94,6 @@ public class UpdateProcessorTest {
 		when(project.getFile()).thenReturn(ANY_POM);
 		when(project.getOriginalModel()).thenReturn(originalModel);
 		when(originalModel.clone()).thenReturn(clonedModel);
-
-		processor = new UpdateProcessor();
-		processor.setCommands(commands);
-		processor.setContextFactory(contextFactory);
-		processor.setLog(log);
-		processor.setCreatorFactory(writerFactory);
 	}
 
 	@Test

@@ -1,16 +1,16 @@
 package ch.sourcepond.maven.release.log;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 
-@Component(role = Log.class)
+@Named
 final class LogProvider implements Log {
+	private final LogHolder holder;
 
-	@Requirement(role = LogHolder.class)
-	private LogHolder holder;
-
-	void setLogHolder(final LogHolder holder) {
+	@Inject
+	LogProvider(final LogHolder holder) {
 		this.holder = holder;
 	}
 

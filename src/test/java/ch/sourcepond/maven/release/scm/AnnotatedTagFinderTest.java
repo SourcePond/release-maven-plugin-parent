@@ -13,10 +13,6 @@ import java.util.List;
 import org.apache.maven.plugin.logging.Log;
 import org.junit.Test;
 
-import ch.sourcepond.maven.release.scm.GitFactory;
-import ch.sourcepond.maven.release.scm.GitRepository;
-import ch.sourcepond.maven.release.scm.ProposedTag;
-import ch.sourcepond.maven.release.scm.ProposedTagsBuilder;
 import ch.sourcepond.maven.release.version.Version;
 import scaffolding.TestProject;
 
@@ -28,9 +24,7 @@ public class AnnotatedTagFinderTest {
 	public void findsTheLatestCommitWhereThereHaveBeenNoBranches() throws Exception {
 		final TestProject project = TestProject.independentVersionsProject();
 		when(gitFactory.newGit()).thenReturn(project.local);
-		final GitRepository repo = new GitRepository();
-		repo.setGitFactory(gitFactory);
-		repo.setLog(log);
+		final GitRepository repo = new GitRepository(log, gitFactory);
 
 		final ProposedTag tag1 = saveFileInModule(project, "console-app", "1.2", 3);
 		final ProposedTag tag2 = saveFileInModule(project, "core-utils", "2", 0);
@@ -52,9 +46,7 @@ public class AnnotatedTagFinderTest {
 			final long buildNumber) throws Exception {
 		final GitFactory gitFactory = mock(GitFactory.class);
 		when(gitFactory.newGit()).thenReturn(project.local);
-		final GitRepository repo = new GitRepository();
-		repo.setGitFactory(gitFactory);
-		repo.setLog(log);
+		final GitRepository repo = new GitRepository(log, gitFactory);
 		final ProposedTagsBuilder builder = repo.newProposedTagsBuilder(null);
 		final Version ver = mock(Version.class);
 		when(ver.getBusinessVersion()).thenReturn(version);
@@ -81,9 +73,7 @@ public class AnnotatedTagFinderTest {
 	public void returnsMultipleTagsOnASingleCommit() throws Exception {
 		final TestProject project = TestProject.independentVersionsProject();
 		when(gitFactory.newGit()).thenReturn(project.local);
-		final GitRepository repo = new GitRepository();
-		repo.setGitFactory(gitFactory);
-		repo.setLog(log);
+		final GitRepository repo = new GitRepository(log, gitFactory);
 		saveFileInModule(project, "console-app", "1.2", 1);
 		final ProposedTag tag1 = tagLocalRepo(project, "console-app-1.1.1.1", "1.1.1", 1);
 		final ProposedTag tag3 = tagLocalRepo(project, "console-app-1.1.1.3", "1.1.1", 3);

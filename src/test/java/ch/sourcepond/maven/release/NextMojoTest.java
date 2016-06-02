@@ -19,9 +19,6 @@ import org.eclipse.jgit.transport.JschConfigSessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.sourcepond.maven.release.NextMojo;
-import ch.sourcepond.maven.release.PluginException;
-import ch.sourcepond.maven.release.SshAgentSessionFactory;
 import ch.sourcepond.maven.release.log.LogHolder;
 import ch.sourcepond.maven.release.reactor.ReactorBuilderFactory;
 import ch.sourcepond.maven.release.scm.SCMRepository;
@@ -46,14 +43,10 @@ public class NextMojoTest {
 	private final SCMRepository repository = mock(SCMRepository.class);
 	private final LogHolder logHolder = mock(LogHolder.class);
 	private final Scm scm = mock(Scm.class);
-	private NextMojo mojo;
+	private final NextMojo mojo = new NextMojo(repository, reactorBuilderFactory, logHolder);
 
 	@Before
 	public void setup() {
-		mojo = new NextMojo();
-		mojo.setRepository(repository);
-		mojo.setReactorBuilderFactory(reactorBuilderFactory);
-		mojo.setLogHolder(logHolder);
 		mojo.project = mock(MavenProject.class);
 
 		when(server.getPrivateKey()).thenReturn(SETTINGS_IDENTITY_FILE);

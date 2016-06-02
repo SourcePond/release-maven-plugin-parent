@@ -1,9 +1,12 @@
 package ch.sourcepond.maven.release.log;
 
-import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.component.annotations.Component;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
-@Component(role = LogHolder.class)
+import org.apache.maven.plugin.logging.Log;
+
+@Named
+@Singleton
 final class DefaultLogHolder implements LogHolder {
 	private Log log;
 

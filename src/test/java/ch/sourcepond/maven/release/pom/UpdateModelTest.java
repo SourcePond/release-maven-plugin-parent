@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.apache.maven.model.Model;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +26,7 @@ public class UpdateModelTest {
 	private final MavenProject project = mock(MavenProject.class);
 	private final Model model = mock(Model.class);
 	private final Context context = mock(Context.class);
-	private final UpdateModel update = new UpdateModel();
+	private final UpdateModel update = new UpdateModel(mock(Log.class));
 
 	@Before
 	public void setup() throws Exception {

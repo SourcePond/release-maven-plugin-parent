@@ -8,12 +8,7 @@ import static org.mockito.Mockito.when;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
-import org.junit.Before;
 import org.junit.Test;
-
-import ch.sourcepond.maven.release.substitution.DefaultVersionSubstitution;
-import ch.sourcepond.maven.release.substitution.DependencyAdapter;
-import ch.sourcepond.maven.release.substitution.PluginAdapter;
 
 public class DefaultVersionSubstitutionTest {
 	private static final String ANY_GROUP_ID = "anyGroupId";
@@ -23,13 +18,8 @@ public class DefaultVersionSubstitutionTest {
 	private static final String EXPECTED_ARTIFACT_ID = "expectedArtifactId";
 	private static final String EXPECTED_VERSION = "10.0";
 	private final MavenProject project = mock(MavenProject.class);
-	private final DefaultVersionSubstitution substitution = new DefaultVersionSubstitution();
-
-	@Before
-	public void setup() {
-		substitution.setDependencyAdapter(new DependencyAdapter());
-		substitution.setPluginAdapter(new PluginAdapter());
-	}
+	private final DefaultVersionSubstitution substitution = new DefaultVersionSubstitution(new DependencyAdapter(),
+			new PluginAdapter());
 
 	@Test
 	public void getActualDependencyVersion() {

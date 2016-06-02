@@ -5,47 +5,35 @@ import static java.lang.String.format;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 
 import ch.sourcepond.maven.release.reactor.Reactor;
 import ch.sourcepond.maven.release.reactor.ReleasableModule;
 import ch.sourcepond.maven.release.version.Version;
 
-@Component(role = Updater.class)
+@Named
+@Singleton
 final class UpdateProcessor implements Updater {
 	static final String DEPENDENCY_ERROR_SUMMARY = "Cannot release with references to snapshot dependencies";
 	static final String DEPENDENCY_ERROR_INTRO = "The following dependency errors were found:";
+	private final ContextFactory contextFactory;
+	private final DefaultChangeSetFactory changeSetFactory;
+	private final Log log;
+	private final List<Command> commands;
 
-	@Requirement(role = ContextFactory.class)
-	private ContextFactory contextFactory;
-
-	@Requirement(role = DefaultChangeSetFactory.class)
-	private DefaultChangeSetFactory creatorFactory;
-
-	@Requirement(role = Log.class)
-	private Log log;
-
-	@Requirement(role = Command.class)
-	private List<Command> commands;
-
-	void setCommands(final List<Command> commands) {
-		this.commands = commands;
-	}
-
-	void setCreatorFactory(final DefaultChangeSetFactory creatorFactory) {
-		this.creatorFactory = creatorFactory;
-	}
-
-	void setContextFactory(final ContextFactory contextFactory) {
-		this.contextFactory = contextFactory;
-	}
-
-	void setLog(final Log log) {
-		this.log = log;
+	@Inject
+	UpdateProcessor(final Log pLog, final ContextFactory pContextFactory,
+			final DefaultChangeSetFactory pChangeSetFactory, final List<Command> pCommands) {
+		log = pLog;
+		contextFactory = pContextFactory;
+		changeSetFactory = pChangeSetFactory;
+		commands = pCommands;
 	}
 
 	private void process(final Context context, final List<String> errors) {
@@ -58,7 +46,7 @@ final class UpdateProcessor implements Updater {
 	@Override
 	public ChangeSet updatePoms(final Reactor reactor, final String remoteUrl,
 			final boolean incrementSnapshotVersionAfterRelease) throws POMUpdateException {
-		final DefaultChangeSet changeSet = creatorFactory.newChangeSet(remoteUrl);
+		final DefaultChangeSet changeSet = changeSetFactory.newChangeSet(remoteUrl);
 		final List<String> errors = new LinkedList<String>();
 
 		for (final ReleasableModule module : reactor) {

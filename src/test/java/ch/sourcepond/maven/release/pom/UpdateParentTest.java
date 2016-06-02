@@ -31,11 +31,10 @@ public class UpdateParentTest {
 	private final Parent parent = mock(Parent.class);
 	private final MavenProject parentProject = mock(MavenProject.class);
 	private final Context context = mock(Context.class);
-	private final UpdateParent cmd = new UpdateParent();
+	private final UpdateParent cmd = new UpdateParent(log);
 
 	@Before
 	public void setup() throws Exception {
-		cmd.setCommand(log);
 		when(context.getProject()).thenReturn(project);
 		when(context.getModel()).thenReturn(originalModel);
 		when(project.getArtifactId()).thenReturn(ANY_ARTIFACT_ID);

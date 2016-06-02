@@ -4,11 +4,14 @@ import static java.lang.String.format;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 
 import ch.sourcepond.maven.release.reactor.UnresolvedSnapshotDependencyException;
 import ch.sourcepond.maven.release.substitution.VersionSubstitution;
@@ -17,15 +20,16 @@ import ch.sourcepond.maven.release.substitution.VersionSubstitution;
  * @author rolandhauser
  *
  */
-@Component(role = Command.class, hint = "UpdateDependencies")
+@Named("UpdateDependencies")
+@Singleton
 class UpdateDependencies extends Command {
 	static final String ERROR_FORMAT = "%s references dependency %s %s";
+	private final VersionSubstitution substitution;
 
-	@Requirement(role = VersionSubstitution.class)
-	private VersionSubstitution substitution;
-
-	void setVersionSubstitution(final VersionSubstitution substitution) {
-		this.substitution = substitution;
+	@Inject
+	UpdateDependencies(final Log log, final VersionSubstitution pSubstitution) {
+		super(log);
+		substitution = pSubstitution;
 	}
 
 	@Override

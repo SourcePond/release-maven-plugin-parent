@@ -1,13 +1,16 @@
 package ch.sourcepond.maven.release.substitution;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.model.Plugin;
-import org.codehaus.plexus.component.annotations.Component;
 
 /**
  * @author rolandhauser
  *
  */
-@Component(role = PropertyAdapter.class, hint = "pluginAdapter")
+@Named("pluginAdapter")
+@Singleton
 final class PluginAdapter implements PropertyAdapter<Plugin> {
 
 	@Override

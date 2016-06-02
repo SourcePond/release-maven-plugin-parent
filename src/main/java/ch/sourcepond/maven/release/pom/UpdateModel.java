@@ -1,14 +1,24 @@
 package ch.sourcepond.maven.release.pom;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.model.Model;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.annotations.Component;
 
 import ch.sourcepond.maven.release.reactor.UnresolvedSnapshotDependencyException;
 
-@Component(role = Command.class, hint = "UpdateModel")
+@Named("UpdateModel")
+@Singleton
 final class UpdateModel extends Command {
 	static final String ERROR_FORMAT = "Project not found in reactor: %s";
+
+	@Inject
+	UpdateModel(final Log pLog) {
+		super(pLog);
+	}
 
 	@Override
 	public void alterModel(final Context updateContext) {

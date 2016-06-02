@@ -9,21 +9,16 @@ import org.apache.maven.plugin.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.sourcepond.maven.release.log.DefaultLogHolder;
-import ch.sourcepond.maven.release.log.LogHolder;
-import ch.sourcepond.maven.release.log.LogProvider;
-
 public class LogProviderTest {
 	private static final String TEST_STRING = "This is a test";
 	private final Throwable throwable = new Throwable();
 	private final LogHolder holder = new DefaultLogHolder();
 	private final Log log = mock(Log.class);
-	private final LogProvider provider = new LogProvider();
+	private final LogProvider provider = new LogProvider(holder);
 
 	@Before
 	public void setup() {
 		holder.setLog(log);
-		provider.setLogHolder(holder);
 	}
 
 	@Test(expected = IllegalStateException.class)

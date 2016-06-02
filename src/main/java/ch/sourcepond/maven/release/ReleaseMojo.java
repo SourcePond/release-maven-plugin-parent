@@ -3,16 +3,20 @@ package ch.sourcepond.maven.release;
 import java.io.File;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import ch.sourcepond.maven.release.log.LogHolder;
 import ch.sourcepond.maven.release.pom.ChangeSet;
 import ch.sourcepond.maven.release.pom.Updater;
 import ch.sourcepond.maven.release.reactor.Reactor;
 import ch.sourcepond.maven.release.reactor.ReactorBuilder;
+import ch.sourcepond.maven.release.reactor.ReactorBuilderFactory;
 import ch.sourcepond.maven.release.scm.ProposedTags;
+import ch.sourcepond.maven.release.scm.SCMRepository;
 
 /**
  * Releases the project.
@@ -99,11 +103,13 @@ public class ReleaseMojo extends NextMojo {
 	@Parameter(property = "localMavenRepo")
 	private File localMavenRepo;
 
-	@Component
-	private Updater pomUpdater;
+	private final Updater updater;
 
-	void setUpdater(final Updater pomUpdater) {
-		this.pomUpdater = pomUpdater;
+	@Inject
+	public ReleaseMojo(final SCMRepository pRepository, final ReactorBuilderFactory pBuilderFactory,
+			final LogHolder pLogHolder, final Updater pUpdater) {
+		super(pRepository, pBuilderFactory, pLogHolder);
+		updater = pUpdater;
 	}
 
 	@Override
@@ -114,7 +120,7 @@ public class ReleaseMojo extends NextMojo {
 	@Override
 	protected void execute(final Reactor reactor, final ProposedTags proposedTags, final String remoteUrl)
 			throws MojoExecutionException, PluginException {
-		try (final ChangeSet changedFiles = pomUpdater.updatePoms(reactor, remoteUrl,
+		try (final ChangeSet changedFiles = updater.updatePoms(reactor, remoteUrl,
 				incrementSnapshotVersionAfterRelease)) {
 
 			// Do this before running the maven build in case the build uploads

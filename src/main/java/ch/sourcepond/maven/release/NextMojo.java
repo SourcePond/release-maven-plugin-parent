@@ -4,12 +4,13 @@ import static java.lang.String.format;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.maven.model.Scm;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -132,25 +133,16 @@ public class NextMojo extends AbstractMojo {
 	@Parameter(property = "passphrase")
 	private String passphrase;
 
-	@Component
-	private ReactorBuilderFactory builderFactory;
+	private final ReactorBuilderFactory builderFactory;
+	protected final SCMRepository repository;
+	private final LogHolder logHolder;
 
-	@Component
-	protected SCMRepository repository;
-
-	@Component
-	private LogHolder logHolder;
-
-	final void setRepository(final SCMRepository repository) {
-		this.repository = repository;
-	}
-
-	final void setReactorBuilderFactory(final ReactorBuilderFactory builderFactory) {
-		this.builderFactory = builderFactory;
-	}
-
-	final void setLogHolder(final LogHolder logHolder) {
-		this.logHolder = logHolder;
+	@Inject
+	public NextMojo(final SCMRepository pRepository, final ReactorBuilderFactory pBuilderFactory,
+			final LogHolder pLogHolder) {
+		repository = pRepository;
+		builderFactory = pBuilderFactory;
+		logHolder = pLogHolder;
 	}
 
 	final void setSettings(final Settings settings) {

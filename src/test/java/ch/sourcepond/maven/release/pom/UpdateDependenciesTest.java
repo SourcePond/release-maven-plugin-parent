@@ -32,18 +32,16 @@ public class UpdateDependenciesTest {
 	private final MavenProject project = mock(MavenProject.class);
 	protected final Model model = mock(Model.class);
 	private final Dependency dependency = mock(Dependency.class);
-	private final VersionSubstitution substitution = mock(VersionSubstitution.class);
+	protected final VersionSubstitution substitution = mock(VersionSubstitution.class);
 	protected final List<Dependency> dependencies = asList(dependency);
 	private final UpdateDependencies cmd = newCommand();
 
 	protected UpdateDependencies newCommand() {
-		return new UpdateDependencies();
+		return new UpdateDependencies(log, substitution);
 	}
 
 	@Before
 	public void setup() throws Exception {
-		cmd.setCommand(log);
-		cmd.setVersionSubstitution(substitution);
 		setupDetermineDependencies();
 		when(substitution.getActualVersion(project, dependency)).thenReturn(ANY_VERSION);
 
