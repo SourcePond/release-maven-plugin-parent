@@ -18,7 +18,7 @@ import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.eclipse.jgit.transport.JschConfigSessionFactory;
 
-import ch.sourcepond.maven.release.log.MavenComponentSingletons;
+import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
 import ch.sourcepond.maven.release.reactor.Reactor;
 import ch.sourcepond.maven.release.reactor.ReactorBuilder;
 import ch.sourcepond.maven.release.reactor.ReactorBuilderFactory;

@@ -9,9 +9,9 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import ch.sourcepond.maven.release.log.MavenComponentSingletons;
 import ch.sourcepond.maven.release.pom.ChangeSet;
 import ch.sourcepond.maven.release.pom.Updater;
+import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
 import ch.sourcepond.maven.release.reactor.Reactor;
 import ch.sourcepond.maven.release.reactor.ReactorBuilder;
 import ch.sourcepond.maven.release.reactor.ReactorBuilderFactory;

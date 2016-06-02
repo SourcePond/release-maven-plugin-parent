@@ -19,7 +19,7 @@ import org.eclipse.jgit.transport.JschConfigSessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.sourcepond.maven.release.log.MavenComponentSingletons;
+import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
 import ch.sourcepond.maven.release.reactor.ReactorBuilderFactory;
 import ch.sourcepond.maven.release.scm.SCMRepository;
 

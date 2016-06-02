@@ -1,4 +1,4 @@
-package ch.sourcepond.maven.release.log;
+package ch.sourcepond.maven.release.providers;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
