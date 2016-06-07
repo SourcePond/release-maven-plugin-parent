@@ -40,18 +40,39 @@ public class UpdateModelTest {
 
 	@Test
 	public void verifyAlterModel() throws Exception {
+		when(model.getVersion()).thenReturn(VERSION);
 		update.alterModel(context);
+		verify(model).getVersion();
 		verify(model).setVersion(VERSION);
 	}
 
 	@Test
 	public void verifyAlterModelProjectNotFound() throws Exception {
+		when(model.getVersion()).thenReturn(VERSION);
 		final UnresolvedSnapshotDependencyException expected = new UnresolvedSnapshotDependencyException(GROUP_ID,
 				ARTIFACT_ID);
 		doThrow(expected).when(context).getVersionToDependOn(GROUP_ID, ARTIFACT_ID);
 		update.alterModel(context);
 		verify(model, never()).setVersion(VERSION);
 		verify(context).addError(ERROR_FORMAT, project);
+	}
+
+	@Test
+	public void verifyAlterModel_NoVersionOnModelSet() throws Exception {
+		when(model.getVersion()).thenReturn(null);
+		update.alterModel(context);
+		verify(model).getVersion();
+		verify(model, never()).setVersion(VERSION);
+	}
+
+	@Test
+	public void verifyAlterModelProjectNotFound_NoVersionOnModelSet() throws Exception {
+		final UnresolvedSnapshotDependencyException expected = new UnresolvedSnapshotDependencyException(GROUP_ID,
+				ARTIFACT_ID);
+		doThrow(expected).when(context).getVersionToDependOn(GROUP_ID, ARTIFACT_ID);
+		update.alterModel(context);
+		verify(model, never()).setVersion(VERSION);
+		verify(context, never()).addError(ERROR_FORMAT, project);
 	}
 
 }
