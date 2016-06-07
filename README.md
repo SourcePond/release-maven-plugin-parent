@@ -12,7 +12,7 @@ Development
 Contributing
 ------------
 
-To build and run the tests, you need Java 6 or later and Maven 3 or later. Simply clone and run `mvn install`
+To build and run the tests, you need Java 7 or later and Maven 3.1.0 or later. Simply clone and run `mvn install`
 
 Note that the tests run the plugin against a number of sample test projects, located in the `test-projects` folder.
 If adding new functionality, or fixing a bug, it is recommended that a sample project be set up so that the scenario
