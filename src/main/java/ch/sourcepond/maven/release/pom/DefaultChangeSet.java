@@ -42,12 +42,6 @@ class DefaultChangeSet implements ChangeSet {
 		return modelsToBeReleased;
 	}
 
-	private void writeChanges(final Map.Entry<File, Model> entry) throws IOException {
-		try (final Writer fileWriter = new FileWriter(entry.getKey())) {
-			writer.write(fileWriter, entry.getValue());
-		}
-	}
-
 	private void registerModel(final Map<File, Model> models, final File file, final Model model)
 			throws POMUpdateException {
 		try {
@@ -67,8 +61,8 @@ class DefaultChangeSet implements ChangeSet {
 
 	DefaultChangeSet writeChanges() throws POMUpdateException {
 		for (final Map.Entry<File, Model> entry : modelsToBeReleased.entrySet()) {
-			try {
-				writeChanges(entry);
+			try (final Writer fileWriter = new FileWriter(entry.getKey())) {
+				writer.write(fileWriter, entry.getValue());
 			} catch (final IOException e) {
 				setFailure(EXCEPTION_MESSAGE, e);
 				close();
@@ -99,8 +93,8 @@ class DefaultChangeSet implements ChangeSet {
 
 		if (!modelsToBeIncremented.isEmpty()) {
 			for (final Map.Entry<File, Model> entry : modelsToBeIncremented.entrySet()) {
-				try {
-					writeChanges(entry);
+				try (final Writer fileWriter = new VersionTransferWriter(entry.getKey())) {
+					writer.write(fileWriter, entry.getValue());
 				} catch (final IOException e) {
 					try {
 						repository.revertChanges(modelsToBeIncremented.keySet());
