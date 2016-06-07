@@ -12,7 +12,7 @@ final class DefaultVersionBuilder implements VersionBuilder {
 	private final BuildNumberFinder finder;
 	private final ChangeDetectorFactory detectorFactory;
 	private MavenProject project;
-	private boolean useLastDigitAsBuildNumber;
+	private boolean userLastNumber;
 	private Long buildNumber;
 	private String relativePathToModuleOrNull;
 	private String changedDependencyOrNull;
@@ -30,8 +30,8 @@ final class DefaultVersionBuilder implements VersionBuilder {
 	}
 
 	@Override
-	public VersionBuilder setUseLastDigitAsBuildNumber(final boolean useLastDigitAsBuildNumber) {
-		this.useLastDigitAsBuildNumber = useLastDigitAsBuildNumber;
+	public VersionBuilder setUseLastNumber(final boolean useLastNumber) {
+		this.userLastNumber = useLastNumber;
 		return this;
 	}
 
@@ -64,7 +64,7 @@ final class DefaultVersionBuilder implements VersionBuilder {
 		String businessVersion = project.getVersion().replace(SNAPSHOT_EXTENSION, "");
 		long actualBuildNumber;
 
-		if (useLastDigitAsBuildNumber) {
+		if (userLastNumber) {
 			final int idx = businessVersion.lastIndexOf('.');
 			actualBuildNumber = valueOf(businessVersion.substring(idx + 1));
 			businessVersion = businessVersion.substring(0, idx);

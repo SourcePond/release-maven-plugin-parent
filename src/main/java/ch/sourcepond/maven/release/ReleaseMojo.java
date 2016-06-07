@@ -114,7 +114,7 @@ public class ReleaseMojo extends NextMojo {
 
 	@Override
 	protected ReactorFactory configureReactorFactory() {
-		return super.configureReactorFactory().setUseLastDigitAsBuildNumber(incrementSnapshotVersionAfterRelease);
+		return super.configureReactorFactory().setUseLastNumber(incrementSnapshotVersionAfterRelease);
 	}
 
 	@Override

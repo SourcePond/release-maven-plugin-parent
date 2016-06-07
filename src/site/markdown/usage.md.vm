@@ -145,3 +145,50 @@ your plugin configuration:
 	</plugin>
 
 Note: Maven settings related to `known_hosts` will _not_ be considered by the plugin.
+
+Automatic snapshot increment
+----------------------------
+Like the [maven-release-plugin](http://maven.apache.org/maven-release/maven-release-plugin), the ${project.artifactId} supports to increment the snapshot versions
+of all released artifacts. This is especially useful if you work with version ranges in you projects. Suppose you have a project **A** which depends on project **B**. Furthermore,
+suppose project **A** needs project **B** in version >= 1.0 and < 2.0. In this case, you would add following dependency to project **A**:
+
+	<dependency>
+		<groupId>org.foo</groupId>
+		<artifactId>B</groupId>
+		<version>[0.999,1.999)</version>
+	</dependency>
+
+Note: Why [0.999,1.999) and not [1.0,2.0) you ask? Short answer: because Maven currently (3.3.9) does not support version ranges well; since Maven 3, SNAPSHOTS are included when version
+ranges are resolved. Following explanation will not cover details about how to implement a proper deployment process with version ranges, but, you can find interesting solutions 
+in the discussion section of (https://issues.apache.org/jira/browse/MNG-3092) (attention: long read!).
+
+Now, you would like to release project **B** which currently has version 1.0-SNAPSHOT. Project **A** remains untouched. After release, you have two artifacts in your 
+Maven repository: **B:1.0-SNAPSHOT** and **B:1.0.0**. After this, project **A** references **B:1.0.0** because a release is
+always newer than a SNAPSHOT, which means that **1.0.0** is newer than **1.0-SNAPSHOT**.
+
+This behavior causes troubles when you want to realize a (deployment-) process like this:
+
+* One time, you want to resolve **B:1.0-SNAPSHOT** because you are deploying to a development system.
+* Another time, you want to resolve **B:1.0.0** because you are deploying to production system.
+
+To achieve this, you cannot work with the *major.minor-SNAPSHOT* scheme in your projects and let the plugin simply add a build-number. The reason is, 
+that the development deployment process will always reference the latest release. In other words, your latest SNAPSHOT will never be deployed again after the first release.
+To avoid this, you firstly need to work with the same version scheme for SNAPSHOTs like for releases. For instance, if you want to release project **B** with version **1.0.0**,
+the SNAPSHOT version before that release must be **1.0.0-SNAPSHOT** (this differs to the default use-case of this plugin). Secondly, you need to enable following configuration
+parameter:
+
+	<plugin>
+		...
+		<configuration>
+			<incrementSnapshotVersionAfterRelease>true</incrementSnapshotVersionAfterRelease>
+		</configuration>
+	</plugin>	
+
+If enabled, the plugin will perform additional actions after the release had been done. For the scenario above, following would happen:
+
+* Update the version of project **B** to **1.0.1-SNAPSHOT**
+* Update in project **A** the dependency to project **B** with version **1.0.1-SNAPSHOT**
+* Commit and push the changes to the SCM repository
+
+In this mode, the release plugin will base the next build-number on the micro-version of the SNAPSHOT version incremented by 1. You can override this by specifying a build-number which
+is greater than the micro-version, see "Usage" section of this document.

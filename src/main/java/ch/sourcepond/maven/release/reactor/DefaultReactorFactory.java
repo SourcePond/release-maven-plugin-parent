@@ -21,7 +21,7 @@ final class DefaultReactorFactory implements ReactorFactory {
 	private final VersionBuilderFactory versionBuilderFactory;
 	private final RootProject rootProject;
 	private final ReactorProjects projects;
-	private boolean useLastDigitAsBuildNumber;
+	private boolean useLastNumber;
 	private Long buildNumber;
 	private List<String> modulesToForceRelease;
 	private String remoteUrl;
@@ -42,8 +42,8 @@ final class DefaultReactorFactory implements ReactorFactory {
 	}
 
 	@Override
-	public ReactorFactory setUseLastDigitAsBuildNumber(final boolean useLastDigitAsBuildNumber) {
-		this.useLastDigitAsBuildNumber = useLastDigitAsBuildNumber;
+	public ReactorFactory setUseLastNumber(final boolean useLastNumber) {
+		this.useLastNumber = useLastNumber;
 		return this;
 	}
 
@@ -63,7 +63,7 @@ final class DefaultReactorFactory implements ReactorFactory {
 				final String changedDependencyOrNull = reactor.getChangedDependencyOrNull(project);
 				final VersionBuilder versionBuilder = versionBuilderFactory.newBuilder();
 				versionBuilder.setProject(project);
-				versionBuilder.setUseLastDigitAsBuildNumber(useLastDigitAsBuildNumber);
+				versionBuilder.setUseLastNumber(useLastNumber);
 				versionBuilder.setBuildNumber(buildNumber);
 				versionBuilder.setChangedDependency(changedDependencyOrNull);
 				versionBuilder.setRemoteUrl(remoteUrl);

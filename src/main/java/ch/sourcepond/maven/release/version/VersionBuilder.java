@@ -6,7 +6,7 @@ public interface VersionBuilder {
 
 	VersionBuilder setProject(MavenProject project);
 
-	VersionBuilder setUseLastDigitAsBuildNumber(boolean useLastDigitAsBuildNumber);
+	VersionBuilder setUseLastNumber(boolean useLastNumber);
 
 	VersionBuilder setBuildNumber(Long buildNumberOrNull);
 

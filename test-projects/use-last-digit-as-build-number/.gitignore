@@ -1,7 +1,0 @@
-target
-.idea/
-*.iml
-.classpath
-.settings
-.project
-maven-repo

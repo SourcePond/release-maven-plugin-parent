@@ -128,8 +128,8 @@ public class TestProject {
 		return project("single-module");
 	}
 
-	public static TestProject useLastDigitAsBuildNumber() {
-		return project("use-last-digit-as-build-number");
+	public static TestProject useLastNumber() {
+		return project("use-last-number");
 	}
 
 	public static TestProject nestedProject() {

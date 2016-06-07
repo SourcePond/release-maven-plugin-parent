@@ -4,6 +4,17 @@ Documentation, download, and usage instructions
 Full usage details, FAQs, background and more are available on the
 **[project documention website](http://sourcepond.github.io/multi-module-maven-release-plugin/index.html)**.
 
+Difference to original project
+==============================
+This project was originally forked from https://github.com/danielflower/multi-module-maven-release-plugin and provides following enhancements/bugfixes
+
+* Major refactoring to use JSR-330 internally (needs at least Maven 3.1.0)
+* Preparations to support more SCMs like Subversion (work in progress, currently only Git supported)
+* Proper support for managed dependencies (*dependencyManagemend* element)
+* Proper support for managed plugins (*pluginManagement* element)
+* Proper support for dependency/plugin version substitution (versions specified as properties)
+* Mechanism to increment snapshot versions of released modules like the [maven-release-plugin](http://maven.apache.org/maven-release/maven-release-plugin) (see usage page for further information)
+
 Development
 ===========
 
@@ -18,7 +29,7 @@ Note that the tests run the plugin against a number of sample test projects, loc
 If adding new functionality, or fixing a bug, it is recommended that a sample project be set up so that the scenario
 can be tested end-to-end.
 
-See also [CONTRIBUTING.md](CONTRIBUTING.md) for information on deploying to Nexus and releasing the plugin. This project has originally been forked from https://github.com/danielflower/multi-module-maven-release-plugin.
+See also [CONTRIBUTING.md](CONTRIBUTING.md) for information on deploying to Nexus and releasing the plugin. 
 
 TODO
 ====

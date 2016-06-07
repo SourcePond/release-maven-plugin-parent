@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface ReactorFactory {
 
-	ReactorFactory setUseLastDigitAsBuildNumber(boolean useLastDigitAsVersionNumber);
+	ReactorFactory setUseLastNumber(boolean useLastDigitAsVersionNumber);
 
 	ReactorFactory setBuildNumber(final Long buildNumber);
 
