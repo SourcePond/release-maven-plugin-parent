@@ -315,7 +315,7 @@ public final class GitRepository implements SCMRepository {
 			}
 			getGit().commit().setMessage("Incremented SNAPSHOT-version for next development iteration").call();
 			if (remoteUrlOrNull != null) {
-				getGit().push().setRemote(remoteUrlOrNull).setAtomic(true).call();
+				getGit().push().setRemote(remoteUrlOrNull).call();
 			}
 		} catch (final GitAPIException | IOException e) {
 			throw new SCMException(e, "Changed POM files could not be committed and pushed!");
