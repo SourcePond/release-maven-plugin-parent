@@ -61,9 +61,19 @@ public class DefaultVersionBuilderFactoryTest {
 	@Test
 	public void buildWhenUseLastDigitAsBuildNumberAndBuildNumberAreSet_BuildNumberIsHigher() throws VersionException {
 		when(project.getVersion()).thenReturn("1.0.9-SNAPSHOT");
-		when(detector.setBuildNumber(11)).thenReturn(detector);
+		when(detector.setBuildNumber(11l)).thenReturn(detector);
 		builder.setUseLastDigitAsBuildNumber(true);
 		builder.setBuildNumber(11l);
+		final Version version = builder.build();
+		assertEquals(11l, version.getBuildNumber());
+	}
+
+	@Test
+	public void buildWhenUseLastDigitAsBuildNumberAndBuildNumberNotSet() throws VersionException {
+		when(project.getVersion()).thenReturn("1.0.11-SNAPSHOT");
+		when(detector.setBuildNumber(11l)).thenReturn(detector);
+		builder.setUseLastDigitAsBuildNumber(true);
+		builder.setBuildNumber(null);
 		final Version version = builder.build();
 		assertEquals(11l, version.getBuildNumber());
 	}

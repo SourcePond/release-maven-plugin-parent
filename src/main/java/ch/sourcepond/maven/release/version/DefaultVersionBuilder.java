@@ -63,18 +63,17 @@ final class DefaultVersionBuilder implements VersionBuilder {
 	public Version build() throws VersionException {
 		String businessVersion = project.getVersion().replace(SNAPSHOT_EXTENSION, "");
 		long actualBuildNumber;
-		if (buildNumber != null) {
-			if (useLastDigitAsBuildNumber) {
-				final int idx = businessVersion.lastIndexOf('.');
-				actualBuildNumber = valueOf(businessVersion.substring(idx + 1));
-				businessVersion = businessVersion.substring(0, idx);
 
-				if (buildNumber > actualBuildNumber) {
-					actualBuildNumber = buildNumber;
-				}
-			} else {
+		if (useLastDigitAsBuildNumber) {
+			final int idx = businessVersion.lastIndexOf('.');
+			actualBuildNumber = valueOf(businessVersion.substring(idx + 1));
+			businessVersion = businessVersion.substring(0, idx);
+
+			if (buildNumber != null && buildNumber > actualBuildNumber) {
 				actualBuildNumber = buildNumber;
 			}
+		} else if (buildNumber != null) {
+			actualBuildNumber = buildNumber;
 		} else {
 			actualBuildNumber = finder.findBuildNumber(project, remoteUrl, businessVersion);
 		}

@@ -13,8 +13,8 @@ abstract class Command {
 		log = pLog;
 	}
 
-	static boolean isSnapshot(final String version) {
-		return version != null && version.endsWith("-SNAPSHOT");
+	static boolean isSnapshot(final String versionOrNull) {
+		return versionOrNull != null && versionOrNull.endsWith("-SNAPSHOT");
 	}
 
 	public abstract void alterModel(Context updateContext);
