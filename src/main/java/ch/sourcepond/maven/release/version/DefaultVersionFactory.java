@@ -1,21 +1,25 @@
 package ch.sourcepond.maven.release.version;
 
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 /**
  * Default implementation of the {@link VersionBuilderFactory} interface.
  *
  */
-@Component(role = VersionBuilderFactory.class)
+@Named
+@Singleton
 final class DefaultVersionFactory implements VersionBuilderFactory {
 	static final String SNAPSHOT_EXTENSION = "-SNAPSHOT";
-
-	@Requirement(role = BuildNumberFinder.class)
 	private BuildNumberFinder finder;
-
-	@Requirement(role = ChangeDetectorFactory.class)
 	private ChangeDetectorFactory detectorFactory;
+
+	@Inject
+	DefaultVersionFactory(final BuildNumberFinder pFinder, final ChangeDetectorFactory pDetectorFactory) {
+		finder = pFinder;
+		detectorFactory = pDetectorFactory;
+	}
 
 	void setFinder(final BuildNumberFinder finder) {
 		this.finder = finder;

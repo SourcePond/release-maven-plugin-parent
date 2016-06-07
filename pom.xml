@@ -14,14 +14,13 @@
 	<packaging>maven-plugin</packaging>
 	<prerequisites>
 		<!-- if this changes, please update the MavenCompatibilityTest -->
-		<maven>3.0.1</maven>
+		<maven>3.1.0</maven>
 	</prerequisites>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<github.global.server>github</github.global.server>
 		<jsch.agentproxy.version>0.0.9</jsch.agentproxy.version>
-		<maven.version>3.3.9</maven.version>
 		<aetherVersion>1.1.0</aetherVersion>
 		<maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
 	</properties>
@@ -32,8 +31,8 @@
 	</ciManagement>
 
 	<scm>
-		<url>https://github.com/SourcePond/multi-module-release-maven-plugin.git</url>
-		<connection>scm:git:git@github.com/SourcePond/multi-module-release-maven-plugin.git</connection>
+		<url>https://git.bechtle.de/arp/multi-module-release-maven-plugin.git</url>
+		<connection>scm:git:git@git.bechtle.de:arp/multi-module-release-maven-plugin.git</connection>
 	</scm>
 
 	<inceptionYear>2015</inceptionYear>
@@ -68,6 +67,17 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<classifier>no_aop</classifier>
+			<version>4.0</version>
+		</dependency>
+		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jsch</artifactId>
 			<version>0.1.53</version>
@@ -100,33 +110,28 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
-			<version>${maven.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.plexus</groupId>
-			<artifactId>plexus-component-annotations</artifactId>
-			<version>1.6</version>
+			<version>${project.prerequisites.maven}</version>
 		</dependency>
 		<dependency>
 			<scope>test</scope>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-artifact</artifactId>
-			<version>${maven.version}</version>
+			<version>${project.prerequisites.maven}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-model</artifactId>
-			<version>${maven.version}</version>
+			<version>${project.prerequisites.maven}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-core</artifactId>
-			<version>${maven.version}</version>
+			<version>${project.prerequisites.maven}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-settings</artifactId>
-			<version>${maven.version}</version>
+			<version>${project.prerequisites.maven}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.shared</groupId>
@@ -189,7 +194,7 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-model-builder</artifactId>
-			<version>${maven.version}</version>
+			<version>${project.prerequisites.maven}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -231,7 +236,7 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-aether-provider</artifactId>
-			<version>${maven.version}</version>
+			<version>${project.prerequisites.maven}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -288,13 +293,14 @@
 		</pluginManagement>
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.plexus</groupId>
-				<artifactId>plexus-component-metadata</artifactId>
-				<version>1.6</version>
+				<groupId>org.eclipse.sisu</groupId>
+				<artifactId>sisu-maven-plugin</artifactId>
+				<version>0.3.3</version>
 				<executions>
 					<execution>
+						<id>generate-index</id>
 						<goals>
-							<goal>generate-metadata</goal>
+							<goal>main-index</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -306,12 +312,8 @@
 				<configuration>
 					<releaseGoals>
 						<releaseGoal>clean</releaseGoal>
-						<releaseGoal>site</releaseGoal>
 						<releaseGoal>deploy</releaseGoal>
 					</releaseGoals>
-					<releaseProfiles>
-						<releaseProfile>release</releaseProfile>
-					</releaseProfiles>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -378,92 +380,14 @@
 		</plugins>
 	</build>
 
-	<profiles>
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.sonatype.plugins</groupId>
-						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.7</version>
-						<extensions>true</extensions>
-						<configuration>
-							<serverId>ossrh-stage</serverId>
-							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-							<autoReleaseAfterClose>true</autoReleaseAfterClose>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<version>3.0.0</version>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>jar-no-fork</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.10.3</version>
-						<executions>
-							<execution>
-								<id>attach-javadocs</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-
-					<plugin>
-						<groupId>com.github.github</groupId>
-						<artifactId>site-maven-plugin</artifactId>
-						<version>0.12</version>
-						<configuration>
-							<message>Creating site for ${project.version}</message>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>site</goal>
-								</goals>
-								<phase>site</phase>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
 	<distributionManagement>
 		<snapshotRepository>
-			<id>ossrh-stage</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<id>snapshots</id>
+			<url>http://lorze.bechtle.de:8081/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 		<repository>
-			<id>ossrh-snapshot</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<id>releases</id>
+			<url>http://lorze.bechtle.de:8081/nexus/content/repositories/releases</url>
 		</repository>
 	</distributionManagement>
 

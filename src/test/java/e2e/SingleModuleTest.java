@@ -56,9 +56,7 @@ public class SingleModuleTest extends E2ETest {
 
 		final GitFactory gitFactory = mock(GitFactory.class);
 		when(gitFactory.newGit()).thenReturn(testProject.local);
-		final GitRepository repo = new GitRepository();
-		repo.setGitFactory(gitFactory);
-		repo.setLog(mock(Log.class));
+		final GitRepository repo = new GitRepository(mock(Log.class), gitFactory);
 		final ProposedTagsBuilder builder = repo.newProposedTagsBuilder(null);
 		final Version version = mock(Version.class);
 		when(version.getBusinessVersion()).thenReturn("1.0");

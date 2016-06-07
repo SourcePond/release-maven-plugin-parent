@@ -9,21 +9,26 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import java.io.File;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.logging.Log;
 import org.junit.Test;
 
-import ch.sourcepond.maven.release.pom.ChangeSetCloseException;
-import ch.sourcepond.maven.release.pom.DefaultChangeSet;
-import ch.sourcepond.maven.release.pom.SnapshotIncrementChangeSet;
 import ch.sourcepond.maven.release.scm.SCMException;
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
 public class DefaultChangeSetTest {
 	private static final String ANY_MESSAGE = "anyMessage";
+	private static final String ANY_REMOTE_URL = "anyRemoteUrl";
 	private final Log log = mock(Log.class);
 	private final SCMRepository repository = mock(SCMRepository.class);
-	private final SnapshotIncrementChangeSet snapshotIncrementChangeSet = mock(SnapshotIncrementChangeSet.class);
-	private final DefaultChangeSet set = new DefaultChangeSet(log, repository, snapshotIncrementChangeSet);
+	private final MavenXpp3Writer writer = mock(MavenXpp3Writer.class);
+	private final Map<File, Model> releasedModels = new LinkedHashMap<>();
+	private final DefaultChangeSet set = new DefaultChangeSet(log, repository, writer, ANY_REMOTE_URL);
 
 	/**
 	 * @throws Exception
@@ -31,7 +36,7 @@ public class DefaultChangeSetTest {
 	@Test
 	public void closeNoFailureSetRevertSuccess() throws Exception {
 		set.close();
-		verify(repository).revertChanges(set);
+		verify(repository).revertChanges(releasedModels.keySet());
 		verify(log, never()).warn(REVERT_ERROR_MESSAGE);
 	}
 
@@ -52,7 +57,7 @@ public class DefaultChangeSetTest {
 	@Test
 	public void closeFailureSetRevertFailed() throws Exception {
 		final SCMException revertException = new SCMException("any");
-		doThrow(revertException).when(repository).revertChanges(set);
+		doThrow(revertException).when(repository).revertChanges(releasedModels.keySet());
 
 		final Exception expected = new Exception();
 		set.setFailure(ANY_MESSAGE, expected);
@@ -69,7 +74,7 @@ public class DefaultChangeSetTest {
 	@Test
 	public void closeSCMExceptionOccurred() throws Exception {
 		final SCMException expected = new SCMException("any");
-		doThrow(expected).when(repository).revertChanges(set);
+		doThrow(expected).when(repository).revertChanges(releasedModels.keySet());
 		try {
 			set.close();
 			fail("Exception expected!");

@@ -3,16 +3,20 @@ package ch.sourcepond.maven.release;
 import java.io.File;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import ch.sourcepond.maven.release.pom.ChangeSet;
 import ch.sourcepond.maven.release.pom.Updater;
+import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
+import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.reactor.Reactor;
-import ch.sourcepond.maven.release.reactor.ReactorBuilder;
+import ch.sourcepond.maven.release.reactor.ReactorFactory;
 import ch.sourcepond.maven.release.scm.ProposedTags;
+import ch.sourcepond.maven.release.scm.SCMRepository;
 
 /**
  * Releases the project.
@@ -99,22 +103,24 @@ public class ReleaseMojo extends NextMojo {
 	@Parameter(property = "localMavenRepo")
 	private File localMavenRepo;
 
-	@Component
-	private Updater pomUpdater;
+	private final Updater updater;
 
-	void setUpdater(final Updater pomUpdater) {
-		this.pomUpdater = pomUpdater;
+	@Inject
+	public ReleaseMojo(final SCMRepository pRepository, final ReactorFactory pBuilderFactory,
+			final MavenComponentSingletons singletons, final RootProject pRootProject, final Updater pUpdater) {
+		super(pRepository, pBuilderFactory, singletons, pRootProject);
+		updater = pUpdater;
 	}
 
 	@Override
-	protected ReactorBuilder newReactorBuilder() {
-		return super.newReactorBuilder().setUseLastDigitAsBuildNumber(incrementSnapshotVersionAfterRelease);
+	protected ReactorFactory configureReactorFactory() {
+		return super.configureReactorFactory().setUseLastDigitAsBuildNumber(incrementSnapshotVersionAfterRelease);
 	}
 
 	@Override
 	protected void execute(final Reactor reactor, final ProposedTags proposedTags, final String remoteUrl)
 			throws MojoExecutionException, PluginException {
-		try (final ChangeSet changedFiles = pomUpdater.updatePoms(reactor, remoteUrl,
+		try (final ChangeSet changedFiles = updater.updatePoms(reactor, remoteUrl,
 				incrementSnapshotVersionAfterRelease)) {
 
 			// Do this before running the maven build in case the build uploads
@@ -126,7 +132,7 @@ public class ReleaseMojo extends NextMojo {
 			proposedTags.tagAndPushRepo();
 
 			try {
-				final ReleaseInvoker invoker = new ReleaseInvoker(getLog(), project);
+				final ReleaseInvoker invoker = new ReleaseInvoker(getLog(), rootProject);
 				invoker.setGlobalSettings(globalSettings);
 				invoker.setUserSettings(userSettings);
 				invoker.setLocalMavenRepo(localMavenRepo);

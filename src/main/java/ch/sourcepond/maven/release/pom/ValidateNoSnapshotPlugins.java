@@ -1,9 +1,12 @@
 package ch.sourcepond.maven.release.pom;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.model.Plugin;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 
 import ch.sourcepond.maven.release.substitution.VersionSubstitution;
 
@@ -13,17 +16,18 @@ import ch.sourcepond.maven.release.substitution.VersionSubstitution;
  * (necessary for testing).
  *
  */
-@Component(role = Command.class, hint = "ValidateNoSnapshotPlugins")
+@Named("ValidateNoSnapshotPlugins")
+@Singleton
 final class ValidateNoSnapshotPlugins extends Command {
 	static final String ERROR_FORMAT = "%s references plugin %s %s";
 	static final String MULTI_MODULE_MAVEN_PLUGIN_GROUP_ID = "ch.sourcepond.maven.plugins";
 	static final String MULTI_MODULE_MAVEN_PLUGIN_ARTIFACT_ID = "multi-module-release-maven-plugin";
+	private final VersionSubstitution substitution;
 
-	@Requirement(role = VersionSubstitution.class)
-	private VersionSubstitution substitution;
-
-	void setVersionSubstitution(final VersionSubstitution substitution) {
-		this.substitution = substitution;
+	@Inject
+	ValidateNoSnapshotPlugins(final Log log, final VersionSubstitution pSubstitution) {
+		super(log);
+		substitution = pSubstitution;
 	}
 
 	@Override

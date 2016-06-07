@@ -22,25 +22,19 @@ import org.eclipse.jgit.lib.Ref;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.sourcepond.maven.release.scm.GitFactory;
-import ch.sourcepond.maven.release.scm.GitRepository;
-import ch.sourcepond.maven.release.scm.ProposedTag;
-import ch.sourcepond.maven.release.scm.SCMException;
 import scaffolding.TestProject;
 
 public class GitRepositoryTest {
 	private static final String ANY_REMOTE_URL = "anyRemoteUrl";
 	private final Log log = mock(Log.class);
 	private final GitFactory gitFactory = mock(GitFactory.class);
-	private final GitRepository repository = new GitRepository();
+	private final GitRepository repository = new GitRepository(log, gitFactory);
 	private final Git git = mock(Git.class);
 	private final Ref ref = mock(Ref.class);
 
 	@Before
 	public void setup() throws SCMException {
 		when(gitFactory.newGit()).thenReturn(git);
-		repository.setGitFactory(gitFactory);
-		repository.setLog(log);
 	}
 
 	@Test
@@ -77,9 +71,8 @@ public class GitRepositoryTest {
 		final ProposedTag tag2 = saveFileInModule(project, "core-utils", "2", 0);
 		final ProposedTag tag3 = saveFileInModule(project, "console-app", "1.2", 4);
 
-		final GitRepository detector = new GitRepository();
+		final GitRepository detector = new GitRepository(log, gitFactory);
 		when(gitFactory.newGit()).thenReturn(project.local);
-		detector.setGitFactory(gitFactory);
 
 		assertThat(detector.hasChangedSince("core-utils", noChildModules(), asList(tag2)), is(false));
 		assertThat(detector.hasChangedSince("console-app", noChildModules(), asList(tag2)), is(true));
@@ -91,9 +84,8 @@ public class GitRepositoryTest {
 		final TestProject simple = TestProject.singleModuleProject();
 		final ProposedTag tag1 = saveFileInModule(simple, ".", "1.0", 1);
 		simple.commitRandomFile(".");
-		final GitRepository detector = new GitRepository();
+		final GitRepository detector = new GitRepository(log, gitFactory);
 		when(gitFactory.newGit()).thenReturn(simple.local);
-		detector.setGitFactory(gitFactory);
 		assertThat(detector.hasChangedSince(".", noChildModules(), asList(tag1)), is(true));
 
 		final ProposedTag tag2 = saveFileInModule(simple, ".", "1.0", 2);
@@ -109,9 +101,8 @@ public class GitRepositoryTest {
 		final ProposedTag tag3 = saveFileInModule(project, "console-app", "1.2", 4);
 		project.commitRandomFile("console-app");
 
-		final GitRepository detector = new GitRepository();
+		final GitRepository detector = new GitRepository(log, gitFactory);
 		when(gitFactory.newGit()).thenReturn(project.local);
-		detector.setGitFactory(gitFactory);
 		assertThat(detector.hasChangedSince("console-app", noChildModules(), asList(tag3)), is(true));
 	}
 
@@ -124,9 +115,8 @@ public class GitRepositoryTest {
 		final ProposedTag tag3 = saveFileInModule(project, "console-app", "1.2", 4);
 		project.commitRandomFile("console-app");
 
-		final GitRepository detector = new GitRepository();
+		final GitRepository detector = new GitRepository(log, gitFactory);
 		when(gitFactory.newGit()).thenReturn(project.local);
-		detector.setGitFactory(gitFactory);
 		assertThat(detector.hasChangedSince("console-app", asList("console-app"), asList(tag3)), is(false));
 	}
 

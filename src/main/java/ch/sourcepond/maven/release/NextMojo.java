@@ -4,12 +4,13 @@ import static java.lang.String.format;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.maven.model.Scm;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -17,10 +18,10 @@ import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.eclipse.jgit.transport.JschConfigSessionFactory;
 
-import ch.sourcepond.maven.release.log.LogHolder;
+import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
+import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.reactor.Reactor;
-import ch.sourcepond.maven.release.reactor.ReactorBuilder;
-import ch.sourcepond.maven.release.reactor.ReactorBuilderFactory;
+import ch.sourcepond.maven.release.reactor.ReactorFactory;
 import ch.sourcepond.maven.release.reactor.ReactorException;
 import ch.sourcepond.maven.release.reactor.ReleasableModule;
 import ch.sourcepond.maven.release.scm.ProposedTags;
@@ -132,25 +133,19 @@ public class NextMojo extends AbstractMojo {
 	@Parameter(property = "passphrase")
 	private String passphrase;
 
-	@Component
-	private ReactorBuilderFactory builderFactory;
+	private final ReactorFactory reactorFactory;
+	protected final SCMRepository repository;
+	private final MavenComponentSingletons singletons;
 
-	@Component
-	protected SCMRepository repository;
+	protected RootProject rootProject;
 
-	@Component
-	private LogHolder logHolder;
-
-	final void setRepository(final SCMRepository repository) {
-		this.repository = repository;
-	}
-
-	final void setReactorBuilderFactory(final ReactorBuilderFactory builderFactory) {
-		this.builderFactory = builderFactory;
-	}
-
-	final void setLogHolder(final LogHolder logHolder) {
-		this.logHolder = logHolder;
+	@Inject
+	public NextMojo(final SCMRepository pRepository, final ReactorFactory pReactorFactory,
+			final MavenComponentSingletons pSingletons, final RootProject pRootProject) {
+		repository = pRepository;
+		reactorFactory = pReactorFactory;
+		singletons = pSingletons;
+		rootProject = pRootProject;
 	}
 
 	final void setSettings(final Settings settings) {
@@ -208,13 +203,8 @@ public class NextMojo extends AbstractMojo {
 		return builder.build();
 	}
 
-	protected ReactorBuilder newReactorBuilder() {
-		return builderFactory.newBuilder().setRootProject(project).setProjects(projects).setBuildNumber(buildNumber)
-				.setModulesToForceRelease(modulesToForceRelease);
-	}
-
-	private Reactor newReactor(final String remoteUrl) throws ReactorException {
-		return newReactorBuilder().setRemoteUrl(remoteUrl).build();
+	protected ReactorFactory configureReactorFactory() {
+		return reactorFactory.setBuildNumber(buildNumber).setModulesToForceRelease(modulesToForceRelease);
 	}
 
 	protected final void configureJsch() {
@@ -237,7 +227,7 @@ public class NextMojo extends AbstractMojo {
 	@Override
 	public final void setLog(final Log log) {
 		super.setLog(log);
-		logHolder.setLog(log);
+		singletons.setLog(log);
 	}
 
 	protected void execute(final Reactor reactor, final ProposedTags proposedTags, final String remoteUrl)
@@ -247,11 +237,14 @@ public class NextMojo extends AbstractMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		singletons.setRootProject(project);
+		singletons.setReactorProjects(projects);
+
 		try {
 			repository.errorIfNotClean();
 			configureJsch();
 			final String remoteUrl = getRemoteUrlOrNullIfNoneSet(project.getScm());
-			final Reactor reactor = newReactor(remoteUrl);
+			final Reactor reactor = configureReactorFactory().setRemoteUrl(remoteUrl).newReactor();
 			execute(reactor, figureOutTagNamesAndThrowIfAlreadyExists(reactor, remoteUrl), remoteUrl);
 		} catch (final PluginException e) {
 			e.printBigErrorMessageAndThrow(getLog());

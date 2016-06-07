@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.apache.maven.model.Model;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,13 +26,14 @@ public class UpdateModelTest {
 	private final MavenProject project = mock(MavenProject.class);
 	private final Model model = mock(Model.class);
 	private final Context context = mock(Context.class);
-	private final UpdateModel update = new UpdateModel();
+	private final UpdateModel update = new UpdateModel(mock(Log.class));
 
 	@Before
 	public void setup() throws Exception {
 		when(project.getGroupId()).thenReturn(GROUP_ID);
 		when(project.getArtifactId()).thenReturn(ARTIFACT_ID);
 		when(project.getOriginalModel()).thenReturn(model);
+		when(context.getModel()).thenReturn(model);
 		when(context.getProject()).thenReturn(project);
 		when(context.getVersionToDependOn(GROUP_ID, ARTIFACT_ID)).thenReturn(VERSION);
 	}

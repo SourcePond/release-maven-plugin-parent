@@ -3,23 +3,26 @@ package ch.sourcepond.maven.release.version;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 
 import ch.sourcepond.maven.release.scm.ProposedTag;
 import ch.sourcepond.maven.release.scm.SCMException;
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
-@Component(role = BuildNumberFinder.class)
+@Named
+@Singleton
 class BuildNumberFinder {
 	static final String SNAPSHOT_EXTENSION = "-SNAPSHOT";
 
-	@Requirement(role = SCMRepository.class)
-	private SCMRepository repository;
+	private final SCMRepository repository;
 
-	void setRepository(final SCMRepository repository) {
-		this.repository = repository;
+	@Inject
+	BuildNumberFinder(final SCMRepository pRepository) {
+		repository = pRepository;
 	}
 
 	public long findBuildNumber(final MavenProject project, final String remoteUrl, final String businessVersion)

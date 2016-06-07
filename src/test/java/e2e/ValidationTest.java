@@ -85,7 +85,7 @@ public class ValidationTest extends E2ETest {
 	@Test
 	public void ifIOErrorOccursWhileUpdatingPomsThenThisIsReported() throws IOException, InterruptedException {
 		final TestProject testProject = TestProject.independentVersionsProject();
-		final File pom = new File(testProject.localDir, "console-app/pom.xml");
+		final File pom = new File(testProject.localDir, "console-app/pom.xml").getCanonicalFile();
 		pom.setWritable(false); // this should cause an IO exception when
 								// writing the pom
 		try {

@@ -24,7 +24,6 @@ import scaffolding.MavenExecutionException;
 import scaffolding.MvnRunner;
 import scaffolding.TestProject;
 
-@Ignore
 public class IncrementSnapshotVersionAfterReleaseTest extends E2ETest {
 
 	final String buildNumber = String.valueOf(System.currentTimeMillis());
@@ -36,8 +35,8 @@ public class IncrementSnapshotVersionAfterReleaseTest extends E2ETest {
 	@Test
 	public void buildsAndInstallsAndTagsAllModules() throws Exception {
 		buildsEachProjectOnceAndOnlyOnce(testProject.mvnRelease(buildNumber));
-		// installsAllModulesIntoTheRepoWithTheBuildNumber();
-		// theLocalAndRemoteGitReposAreTaggedWithTheModuleNameAndVersion();
+		installsAllModulesIntoTheRepoWithTheBuildNumber();
+		theLocalAndRemoteGitReposAreTaggedWithTheModuleNameAndVersion();
 	}
 
 	private void buildsEachProjectOnceAndOnlyOnce(final List<String> commandOutput) throws Exception {

@@ -1,19 +1,16 @@
 package ch.sourcepond.maven.release.pom;
 
 import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.component.annotations.Requirement;
 
 /**
  * @author rolandhauser
  *
  */
 abstract class Command {
+	protected final Log log;
 
-	@Requirement(role = Log.class)
-	protected Log log;
-
-	void setCommand(final Log log) {
-		this.log = log;
+	Command(final Log pLog) {
+		log = pLog;
 	}
 
 	static boolean isSnapshot(final String version) {

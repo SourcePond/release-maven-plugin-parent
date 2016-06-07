@@ -19,11 +19,9 @@ import org.eclipse.jgit.transport.JschConfigSessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.sourcepond.maven.release.NextMojo;
-import ch.sourcepond.maven.release.PluginException;
-import ch.sourcepond.maven.release.SshAgentSessionFactory;
-import ch.sourcepond.maven.release.log.LogHolder;
-import ch.sourcepond.maven.release.reactor.ReactorBuilderFactory;
+import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
+import ch.sourcepond.maven.release.providers.RootProject;
+import ch.sourcepond.maven.release.reactor.ReactorFactory;
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
 /**
@@ -42,18 +40,15 @@ public class NextMojoTest {
 	private final Log log = mock(Log.class);
 	private final Settings settings = mock(Settings.class);
 	private final Server server = mock(Server.class);
-	private final ReactorBuilderFactory reactorBuilderFactory = mock(ReactorBuilderFactory.class);
+	private final ReactorFactory reactorFactory = mock(ReactorFactory.class);
 	private final SCMRepository repository = mock(SCMRepository.class);
-	private final LogHolder logHolder = mock(LogHolder.class);
+	private final MavenComponentSingletons singletons = mock(MavenComponentSingletons.class);
+	private final RootProject rootProject = mock(RootProject.class);
 	private final Scm scm = mock(Scm.class);
-	private NextMojo mojo;
+	private final NextMojo mojo = new NextMojo(repository, reactorFactory, singletons, rootProject);
 
 	@Before
 	public void setup() {
-		mojo = new NextMojo();
-		mojo.setRepository(repository);
-		mojo.setReactorBuilderFactory(reactorBuilderFactory);
-		mojo.setLogHolder(logHolder);
 		mojo.project = mock(MavenProject.class);
 
 		when(server.getPrivateKey()).thenReturn(SETTINGS_IDENTITY_FILE);

@@ -15,9 +15,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.LsRemoteCommand;
 import org.eclipse.jgit.api.Status;
@@ -36,28 +38,21 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 // TODO: Make this class package private when SingleModuleTest is working with a Guice injector
-@Component(role = SCMRepository.class)
+@Named
+@Singleton
 public final class GitRepository implements SCMRepository {
 	private static final String REFS_TAGS = "refs/tags/";
-
 	static final String INVALID_REF_NAME_MESSAGE = "Sorry, '%s' is not a valid version.";
-
-	@Requirement(role = Log.class)
-	private Log log;
-
-	@Requirement(role = GitFactory.class)
-	private GitFactory gitFactory;
-
+	private final Log log;
+	private final GitFactory gitFactory;
 	private Git git;
 	private SCMException gitInstantiationException;
 	private Collection<Ref> remoteTags;
 
-	public void setLog(final Log log) {
-		this.log = log;
-	}
-
-	public void setGitFactory(final GitFactory gitFactory) {
-		this.gitFactory = gitFactory;
+	@Inject
+	public GitRepository(final Log pLog, final GitFactory pGitFactory) {
+		log = pLog;
+		gitFactory = pGitFactory;
 	}
 
 	private Git getGit() throws SCMException {
@@ -311,13 +306,18 @@ public final class GitRepository implements SCMRepository {
 	}
 
 	@Override
-	public void pushChanges(final String remoteUrlOrNull) throws SCMException {
+	public void pushChanges(final String remoteUrlOrNull, final Collection<File> changedFiles) throws SCMException {
 		try {
-			git.commit().setMessage("Incremented SNAPSHOT-version for next development iteration").call();
-			if (remoteUrlOrNull != null) {
-				git.push().setRemote(remoteUrlOrNull).setAtomic(true).call();
+			final File workTree = getGit().getRepository().getWorkTree().getCanonicalFile();
+			for (final File changedFile : changedFiles) {
+				final String pathRelativeToWorkingTree = Repository.stripWorkDir(workTree, changedFile);
+				getGit().add().setUpdate(true).addFilepattern(pathRelativeToWorkingTree).call();
 			}
-		} catch (final GitAPIException e) {
+			getGit().commit().setMessage("Incremented SNAPSHOT-version for next development iteration").call();
+			if (remoteUrlOrNull != null) {
+				getGit().push().setRemote(remoteUrlOrNull).setAtomic(true).call();
+			}
+		} catch (final GitAPIException | IOException e) {
 			throw new SCMException(e, "Changed POM files could not be committed and pushed!");
 		}
 	}

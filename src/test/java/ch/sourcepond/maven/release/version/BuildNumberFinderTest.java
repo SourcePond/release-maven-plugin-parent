@@ -14,7 +14,6 @@ import org.junit.Test;
 
 import ch.sourcepond.maven.release.scm.ProposedTag;
 import ch.sourcepond.maven.release.scm.SCMRepository;
-import ch.sourcepond.maven.release.version.BuildNumberFinder;
 
 public class BuildNumberFinderTest {
 	private static final String ANY_ARTIFACT_ID = "anyArtifactId";
@@ -25,13 +24,12 @@ public class BuildNumberFinderTest {
 	private final ProposedTag tag = mock(ProposedTag.class);
 	private final List<ProposedTag> tags = asList(tag);
 	private final List<Long> remoteBuildNumbers = asList(9l, 2l, 7l);
-	private final BuildNumberFinder finder = new BuildNumberFinder();
+	private final BuildNumberFinder finder = new BuildNumberFinder(repository);
 
 	@Before
 	public void setup() {
 		when(project.getArtifactId()).thenReturn(ANY_ARTIFACT_ID);
 		when(tag.getBuildNumber()).thenReturn(6l);
-		finder.setRepository(repository);
 	}
 
 	@Test

@@ -19,8 +19,6 @@ import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.sourcepond.maven.release.pom.Context;
-import ch.sourcepond.maven.release.pom.ValidateNoSnapshotPlugins;
 import ch.sourcepond.maven.release.substitution.VersionSubstitution;
 
 public class ValidateNoSnapshotPluginsTest {
@@ -37,12 +35,10 @@ public class ValidateNoSnapshotPluginsTest {
 	private final Plugin plugin = mock(Plugin.class);
 	private final List<Plugin> plugins = asList(plugin);
 	private final VersionSubstitution substitution = mock(VersionSubstitution.class);
-	private final ValidateNoSnapshotPlugins vld = new ValidateNoSnapshotPlugins();
+	private final ValidateNoSnapshotPlugins vld = new ValidateNoSnapshotPlugins(log, substitution);
 
 	@Before
 	public void setup() {
-		vld.setVersionSubstitution(substitution);
-		vld.setCommand(log);
 		when(context.getProject()).thenReturn(project);
 		when(project.getModel()).thenReturn(model);
 		when(model.getBuild()).thenReturn(build);

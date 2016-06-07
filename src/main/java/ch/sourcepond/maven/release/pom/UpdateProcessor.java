@@ -5,50 +5,38 @@ import static java.lang.String.format;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.apache.maven.model.Model;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 
 import ch.sourcepond.maven.release.reactor.Reactor;
 import ch.sourcepond.maven.release.reactor.ReleasableModule;
 import ch.sourcepond.maven.release.version.Version;
 
-@Component(role = Updater.class)
+@Named
+@Singleton
 final class UpdateProcessor implements Updater {
 	static final String DEPENDENCY_ERROR_SUMMARY = "Cannot release with references to snapshot dependencies";
 	static final String DEPENDENCY_ERROR_INTRO = "The following dependency errors were found:";
+	private final ContextFactory contextFactory;
+	private final DefaultChangeSetFactory changeSetFactory;
+	private final Log log;
+	private final List<Command> commands;
 
-	@Requirement(role = ContextFactory.class)
-	private ContextFactory contextFactory;
-
-	@Requirement(role = PomWriterFactory.class)
-	private PomWriterFactory writerFactory;
-
-	@Requirement(role = Log.class)
-	private Log log;
-
-	@Requirement(role = Command.class)
-	private List<Command> commands;
-
-	void setCommands(final List<Command> commands) {
-		this.commands = commands;
+	@Inject
+	UpdateProcessor(final Log pLog, final ContextFactory pContextFactory,
+			final DefaultChangeSetFactory pChangeSetFactory, final List<Command> pCommands) {
+		log = pLog;
+		contextFactory = pContextFactory;
+		changeSetFactory = pChangeSetFactory;
+		commands = pCommands;
 	}
 
-	void setPomWriterFactory(final PomWriterFactory writerFactory) {
-		this.writerFactory = writerFactory;
-	}
-
-	void setContextFactory(final ContextFactory contextFactory) {
-		this.contextFactory = contextFactory;
-	}
-
-	void setLog(final Log log) {
-		this.log = log;
-	}
-
-	private void process(final MavenProject project, final Context context, final List<String> errors,
-			final String newVersion) {
+	private void process(final Context context, final List<String> errors) {
 		for (final Command cmd : commands) {
 			cmd.alterModel(context);
 		}
@@ -58,7 +46,7 @@ final class UpdateProcessor implements Updater {
 	@Override
 	public ChangeSet updatePoms(final Reactor reactor, final String remoteUrl,
 			final boolean incrementSnapshotVersionAfterRelease) throws POMUpdateException {
-		final PomWriter writer = writerFactory.newWriter();
+		final DefaultChangeSet changeSet = changeSetFactory.newChangeSet(remoteUrl);
 		final List<String> errors = new LinkedList<String>();
 
 		for (final ReleasableModule module : reactor) {
@@ -70,18 +58,17 @@ final class UpdateProcessor implements Updater {
 				log.info(format("Going to release %s %s", module.getArtifactId(), version.getReleaseVersion()));
 			}
 
-			final MavenProject releaseClone = module.getProject().clone();
-			process(releaseClone, contextFactory.newContext(reactor, releaseClone, false), errors,
-					version.getReleaseVersion());
+			final MavenProject project = module.getProject();
+			final Model releaseModel = project.getOriginalModel().clone();
+			process(contextFactory.newContext(reactor, project, releaseModel, false), errors);
 			// Mark project to be written at a later stage; if an exception
 			// occurs, we don't need to revert anything.
-			writer.markRelease(releaseClone);
+			changeSet.markRelease(project.getFile(), releaseModel);
 
 			if (incrementSnapshotVersionAfterRelease) {
-				final MavenProject snapshotIncrementClone = module.getProject().clone();
-				process(snapshotIncrementClone, contextFactory.newContext(reactor, snapshotIncrementClone, true),
-						errors, format("%s.%d", version.getBusinessVersion(), version.getBuildNumber() + 1));
-				writer.markSnapshotVersionIncrement(snapshotIncrementClone);
+				final Model snapshotModel = project.getOriginalModel().clone();
+				process(contextFactory.newContext(reactor, project, snapshotModel, true), errors);
+				changeSet.markSnapshotVersionIncrement(project.getFile(), snapshotModel);
 			}
 		}
 
@@ -95,6 +82,6 @@ final class UpdateProcessor implements Updater {
 		}
 
 		// At this point it's guaranteed that no dependency errors occurred.
-		return writer.writePoms(remoteUrl);
+		return changeSet.writeChanges();
 	}
 }

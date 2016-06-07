@@ -28,5 +28,5 @@ public interface SCMRepository {
 	boolean hasChangedSince(String modulePath, List<String> childModules, Collection<ProposedTag> tags)
 			throws SCMException;
 
-	void pushChanges(String remoteUrlOrNull) throws SCMException;
+	void pushChanges(String remoteUrlOrNull, Collection<File> changedFiles) throws SCMException;
 }

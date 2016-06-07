@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
@@ -18,6 +17,7 @@ import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 
+import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.reactor.Reactor;
 import ch.sourcepond.maven.release.reactor.ReleasableModule;
 
@@ -30,7 +30,7 @@ class ReleaseInvoker {
 	static final String SKIP_TESTS = "-DskipTests=true";
 	static final String LOCAL_REPO = "-Dmaven.repo.local=%s";
 	private final Log log;
-	private final MavenProject project;
+	private final RootProject project;
 	private final InvocationRequest request;
 	private final Invoker invoker;
 	private boolean skipTests;
@@ -41,11 +41,11 @@ class ReleaseInvoker {
 	private List<String> modulesToRelease;
 	private List<String> releaseProfiles;
 
-	public ReleaseInvoker(final Log log, final MavenProject project) {
+	public ReleaseInvoker(final Log log, final RootProject project) {
 		this(log, project, new DefaultInvocationRequest(), new DefaultInvoker());
 	}
 
-	public ReleaseInvoker(final Log log, final MavenProject project, final InvocationRequest request,
+	public ReleaseInvoker(final Log log, final RootProject project, final InvocationRequest request,
 			final Invoker invoker) {
 		this.log = log;
 		this.project = project;
@@ -167,9 +167,7 @@ class ReleaseInvoker {
 				profiles.add(releaseProfile);
 			}
 		}
-		for (final Object activatedProfile : project.getActiveProfiles()) {
-			profiles.add(((org.apache.maven.model.Profile) activatedProfile).getId());
-		}
+		profiles.addAll(project.getActiveProfileIds());
 		return profiles;
 	}
 }
