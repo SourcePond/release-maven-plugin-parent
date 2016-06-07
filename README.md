@@ -4,8 +4,8 @@ Documentation, download, and usage instructions
 Full usage details, FAQs, background and more are available on the
 **[project documention website](http://sourcepond.github.io/multi-module-maven-release-plugin/index.html)**.
 
-Difference to original project
-==============================
+Difference to the original project
+==================================
 This project was originally forked from https://github.com/danielflower/multi-module-maven-release-plugin and provides following enhancements/bugfixes
 
 * Major refactoring to use JSR-330 internally (needs at least Maven 3.1.0)
