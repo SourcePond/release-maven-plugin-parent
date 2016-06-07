@@ -30,7 +30,7 @@ public interface VersionSubstitution {
 	 *             Thrown, if no substituted dependency could be found for the
 	 *             dependency specified.
 	 */
-	String getActualVersion(MavenProject project, Dependency originalDependency);
+	String getActualVersionOrNull(MavenProject project, Dependency originalDependency);
 
 	/**
 	 * Determines the actual version of the original {@link Plugin} specified.
@@ -44,5 +44,5 @@ public interface VersionSubstitution {
 	 *             Thrown, if no substituted dependency could be found for the
 	 *             dependency specified.
 	 */
-	String getActualVersion(MavenProject project, Plugin originalPlugin);
+	String getActualVersionOrNull(MavenProject project, Plugin originalPlugin);
 }

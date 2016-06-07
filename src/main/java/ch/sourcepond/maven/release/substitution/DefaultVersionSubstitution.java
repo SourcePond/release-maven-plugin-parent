@@ -1,7 +1,5 @@
 package ch.sourcepond.maven.release.substitution;
 
-import static java.lang.String.format;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -74,23 +72,24 @@ class DefaultVersionSubstitution implements VersionSubstitution {
 	 * @param adapter
 	 * @return
 	 */
-	private <T> String getActualVersion(final List<T> substituted, final T origin, final PropertyAdapter<T> adapter) {
+	private <T> String getActualVersionOrNull(final List<T> substituted, final T origin,
+			final PropertyAdapter<T> adapter) {
 		for (final Artifact artifact : convert(substituted, adapter)) {
 			if (adapter.getGroupId(origin).equals(artifact.getGroupId())
 					&& adapter.getArtifactId(origin).equals(artifact.getArtifactId())) {
 				return artifact.getVersion();
 			}
 		}
-		throw new IllegalStateException(format("No matching substituted object found for %s", origin));
+		return null;
 	}
 
 	@Override
-	public String getActualVersion(final MavenProject project, final Dependency originalDependency) {
-		return getActualVersion(project.getDependencies(), originalDependency, dependencyAdapter);
+	public String getActualVersionOrNull(final MavenProject project, final Dependency originalDependency) {
+		return getActualVersionOrNull(project.getDependencies(), originalDependency, dependencyAdapter);
 	}
 
 	@Override
-	public String getActualVersion(final MavenProject project, final Plugin originalPlugin) {
-		return getActualVersion(project.getBuildPlugins(), originalPlugin, pluginAdapter);
+	public String getActualVersionOrNull(final MavenProject project, final Plugin originalPlugin) {
+		return getActualVersionOrNull(project.getBuildPlugins(), originalPlugin, pluginAdapter);
 	}
 }

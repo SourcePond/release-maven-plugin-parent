@@ -2,6 +2,7 @@ package ch.sourcepond.maven.release.substitution;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,10 +35,10 @@ public class DefaultVersionSubstitutionTest {
 		when(substitutedDependency.getVersion()).thenReturn(EXPECTED_VERSION);
 
 		when(project.getDependencies()).thenReturn(asList(substitutedDependency));
-		assertEquals(EXPECTED_VERSION, substitution.getActualVersion(project, originalDependency));
+		assertEquals(EXPECTED_VERSION, substitution.getActualVersionOrNull(project, originalDependency));
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void getActualDependencyVersionNoMatchingSubstitution() {
 		final Dependency originalDependency = mock(Dependency.class);
 		when(originalDependency.getGroupId()).thenReturn(ANY_GROUP_ID);
@@ -51,8 +52,7 @@ public class DefaultVersionSubstitutionTest {
 
 		when(project.getDependencies()).thenReturn(asList(substitutedDependency));
 
-		// Should throw an exception
-		substitution.getActualVersion(project, originalDependency);
+		assertNull(substitution.getActualVersionOrNull(project, originalDependency));
 	}
 
 	@Test
@@ -68,10 +68,10 @@ public class DefaultVersionSubstitutionTest {
 		when(substitutedPlugins.getVersion()).thenReturn(EXPECTED_VERSION);
 
 		when(project.getBuildPlugins()).thenReturn(asList(substitutedPlugins));
-		assertEquals(EXPECTED_VERSION, substitution.getActualVersion(project, originalPlugin));
+		assertEquals(EXPECTED_VERSION, substitution.getActualVersionOrNull(project, originalPlugin));
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void getActualPluginVersionNoMatchingSubstitution() {
 		final Plugin originalPlugin = mock(Plugin.class);
 		when(originalPlugin.getGroupId()).thenReturn(ANY_GROUP_ID);
@@ -85,7 +85,6 @@ public class DefaultVersionSubstitutionTest {
 
 		when(project.getBuildPlugins()).thenReturn(asList(substitutedPlugins));
 
-		// Should throw an exception
-		substitution.getActualVersion(project, originalPlugin);
+		assertNull(substitution.getActualVersionOrNull(project, originalPlugin));
 	}
 }

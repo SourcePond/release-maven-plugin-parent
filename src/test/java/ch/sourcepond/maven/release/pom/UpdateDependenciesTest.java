@@ -43,7 +43,7 @@ public class UpdateDependenciesTest {
 	@Before
 	public void setup() throws Exception {
 		setupDetermineDependencies();
-		when(substitution.getActualVersion(project, dependency)).thenReturn(ANY_VERSION);
+		when(substitution.getActualVersionOrNull(project, dependency)).thenReturn(ANY_VERSION);
 
 		// Setup reactor
 		when(context.getVersionToDependOn(ANY_GROUP_ID, ANY_ARTIFACT_ID)).thenReturn(ANY_VERSION);
@@ -67,7 +67,7 @@ public class UpdateDependenciesTest {
 
 	@Test
 	public void alterModelSnapshotDependencyUpdated() {
-		when(substitution.getActualVersion(project, dependency)).thenReturn(ANY_SNAPSHOT_VERSION);
+		when(substitution.getActualVersionOrNull(project, dependency)).thenReturn(ANY_SNAPSHOT_VERSION);
 		cmd.alterModel(context);
 		final InOrder order = inOrder(dependency, log);
 		order.verify(dependency).setVersion(ANY_VERSION);
@@ -87,7 +87,7 @@ public class UpdateDependenciesTest {
 	public void exceptionOccurred() throws Exception {
 		final UnresolvedSnapshotDependencyException expected = new UnresolvedSnapshotDependencyException(ANY_GROUP_ID,
 				ANY_ARTIFACT_ID);
-		when(substitution.getActualVersion(project, dependency)).thenReturn(ANY_SNAPSHOT_VERSION);
+		when(substitution.getActualVersionOrNull(project, dependency)).thenReturn(ANY_SNAPSHOT_VERSION);
 		doThrow(expected).when(context).getVersionToDependOn(ANY_GROUP_ID, ANY_ARTIFACT_ID);
 		cmd.alterModel(context);
 		verify(dependency, never()).setVersion(ANY_VERSION);

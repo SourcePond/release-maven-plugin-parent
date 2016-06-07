@@ -34,9 +34,10 @@ final class ValidateNoSnapshotPlugins extends Command {
 	public void alterModel(final Context updateContext) {
 		final MavenProject project = updateContext.getProject();
 		for (final Plugin plugin : project.getModel().getBuild().getPlugins()) {
-			final String version = substitution.getActualVersion(project, plugin);
-			if (isSnapshot(version) && !isMultiModuleReleasePlugin(plugin)) {
-				updateContext.addError(ERROR_FORMAT, project.getArtifactId(), plugin.getArtifactId(), version);
+			final String substitutedVersionOrNull = substitution.getActualVersionOrNull(project, plugin);
+			if (isSnapshot(substitutedVersionOrNull) && !isMultiModuleReleasePlugin(plugin)) {
+				updateContext.addError(ERROR_FORMAT, project.getArtifactId(), plugin.getArtifactId(),
+						substitutedVersionOrNull);
 			}
 		}
 	}
