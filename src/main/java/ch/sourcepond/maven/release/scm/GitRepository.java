@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -44,6 +45,7 @@ import ch.sourcepond.maven.release.config.Configuration;
 @Singleton
 public final class GitRepository implements SCMRepository {
 	private static final String REFS_TAGS = "refs/tags/";
+	static final String SNAPSHOT_COMMIT_MESSAGE = "Incremented SNAPSHOT-version for next development iteration";
 	static final String INVALID_REF_NAME_MESSAGE = "Sorry, '%s' is not a valid version.";
 	private final Log log;
 	private final GitFactory gitFactory;
@@ -266,7 +268,15 @@ public final class GitRepository implements SCMRepository {
 			walk.markStart(walk.parseCommit(getGit().getRepository().findRef("HEAD").getObjectId()));
 			filterOutOtherModulesChanges(modulePath, childModules, walk);
 			stopWalkingWhenTheTagsAreHit(tags, walk);
-			return walk.iterator().hasNext();
+
+			final Iterator<RevCommit> it = walk.iterator();
+			boolean changed = it.hasNext();
+
+			if (config.isIncrementSnapshotVersionAfterRelease() && changed) {
+				changed = !SNAPSHOT_COMMIT_MESSAGE.equals(it.next().getShortMessage()) || it.hasNext();
+			}
+
+			return changed;
 		} catch (final IOException e) {
 			throw new SCMException(e, "Diff detector could not determine whether module %s has been changed!",
 					modulePath);
@@ -317,7 +327,7 @@ public final class GitRepository implements SCMRepository {
 				final String pathRelativeToWorkingTree = Repository.stripWorkDir(workTree, changedFile);
 				getGit().add().setUpdate(true).addFilepattern(pathRelativeToWorkingTree).call();
 			}
-			getGit().commit().setMessage("Incremented SNAPSHOT-version for next development iteration").call();
+			getGit().commit().setMessage(SNAPSHOT_COMMIT_MESSAGE).call();
 			if (remoteUrlOrNull != null) {
 				getGit().push().setRemote(remoteUrlOrNull).call();
 			}
