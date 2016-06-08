@@ -66,6 +66,15 @@ public class UpdateDependenciesTest {
 	}
 
 	@Test
+	public void alterModelReleaseVersionNotSetOnDependency() {
+		when(dependency.getVersion()).thenReturn(null);
+		cmd.alterModel(context);
+		verify(substitution, never()).getActualVersionOrNull(project, dependency);
+		verify(dependency, never()).setVersion(ANY_VERSION);
+		verify(log, never()).debug(" Dependency on anyArtifactId kept at version anyVersion");
+	}
+
+	@Test
 	public void alterModelSnapshotDependencyUpdated() {
 		when(substitution.getActualVersionOrNull(project, dependency)).thenReturn(ANY_SNAPSHOT_VERSION);
 		cmd.alterModel(context);
