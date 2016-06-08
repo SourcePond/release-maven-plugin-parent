@@ -18,11 +18,12 @@ import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.eclipse.jgit.transport.JschConfigSessionFactory;
 
+import ch.sourcepond.maven.release.config.ParameterRegistration;
 import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
 import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.reactor.Reactor;
-import ch.sourcepond.maven.release.reactor.ReactorFactory;
 import ch.sourcepond.maven.release.reactor.ReactorException;
+import ch.sourcepond.maven.release.reactor.ReactorFactory;
 import ch.sourcepond.maven.release.reactor.ReleasableModule;
 import ch.sourcepond.maven.release.scm.ProposedTags;
 import ch.sourcepond.maven.release.scm.ProposedTagsBuilder;
@@ -136,16 +137,18 @@ public class NextMojo extends AbstractMojo {
 	private final ReactorFactory reactorFactory;
 	protected final SCMRepository repository;
 	private final MavenComponentSingletons singletons;
-
+	private final ParameterRegistration registration;
 	protected RootProject rootProject;
 
 	@Inject
 	public NextMojo(final SCMRepository pRepository, final ReactorFactory pReactorFactory,
-			final MavenComponentSingletons pSingletons, final RootProject pRootProject) {
+			final MavenComponentSingletons pSingletons, final RootProject pRootProject,
+			final ParameterRegistration pRegistration) {
 		repository = pRepository;
 		reactorFactory = pReactorFactory;
 		singletons = pSingletons;
 		rootProject = pRootProject;
+		registration = pRegistration;
 	}
 
 	final void setSettings(final Settings settings) {
@@ -235,10 +238,28 @@ public class NextMojo extends AbstractMojo {
 		// noop by default
 	}
 
+	protected void registerParemeters(final ParameterRegistration pRegistration) {
+		pRegistration.setBuildNumber(buildNumber);
+		pRegistration.setDebugEnabled(debugEnabled);
+		pRegistration.setDisableSshAgent(disableSshAgent);
+		pRegistration.setKnownHosts(knownHosts);
+		pRegistration.setModulesToForceRelease(modulesToForceRelease);
+		pRegistration.setModulesToRelease(modulesToRelease);
+		pRegistration.setPassphrase(passphrase);
+		pRegistration.setPrivateKey(privateKey);
+		pRegistration.setServerId(serverId);
+		pRegistration.setSettings(settings);
+		pRegistration.setStacktraceEnabled(stacktraceEnabled);
+	}
+
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		// Register singletons for injection
 		singletons.setRootProject(project);
 		singletons.setReactorProjects(projects);
+
+		// Register parameters for usage with Configuration
+		registerParemeters(registration);
 
 		try {
 			repository.errorIfNotClean();

@@ -9,6 +9,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import ch.sourcepond.maven.release.config.ParameterRegistration;
 import ch.sourcepond.maven.release.pom.ChangeSet;
 import ch.sourcepond.maven.release.pom.Updater;
 import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
@@ -107,14 +108,27 @@ public class ReleaseMojo extends NextMojo {
 
 	@Inject
 	public ReleaseMojo(final SCMRepository pRepository, final ReactorFactory pBuilderFactory,
-			final MavenComponentSingletons singletons, final RootProject pRootProject, final Updater pUpdater) {
-		super(pRepository, pBuilderFactory, singletons, pRootProject);
+			final MavenComponentSingletons singletons, final RootProject pRootProject,
+			final ParameterRegistration pRegistration, final Updater pUpdater) {
+		super(pRepository, pBuilderFactory, singletons, pRootProject, pRegistration);
 		updater = pUpdater;
 	}
 
 	@Override
 	protected ReactorFactory configureReactorFactory() {
 		return super.configureReactorFactory().setUseLastNumber(incrementSnapshotVersionAfterRelease);
+	}
+
+	@Override
+	protected void registerParemeters(final ParameterRegistration pRegistration) {
+		super.registerParemeters(pRegistration);
+		pRegistration.setGlobalSettings(globalSettings);
+		pRegistration.setGoals(goals);
+		pRegistration.setIncrementSnapshotVersionAfterRelease(incrementSnapshotVersionAfterRelease);
+		pRegistration.setLocalMavenRepo(localMavenRepo);
+		pRegistration.setReleaseProfiles(releaseProfiles);
+		pRegistration.setSkipTests(skipTests);
+		pRegistration.setUserSettings(userSettings);
 	}
 
 	@Override
