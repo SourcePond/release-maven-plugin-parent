@@ -2,7 +2,7 @@ package ch.sourcepond.maven.release.version;
 
 import static java.lang.String.format;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
@@ -81,7 +81,7 @@ class ChangeDetector {
 
 	private ProposedTag hasChangedSinceLastRelease() throws VersionException {
 		try {
-			final List<ProposedTag> previousTagsForThisModule = repository.tagsForVersion(project.getArtifactId(),
+			final Collection<ProposedTag> previousTagsForThisModule = repository.tagsForVersion(project.getArtifactId(),
 					businessVersion);
 			if (previousTagsForThisModule.size() == 0) {
 				return null;
@@ -95,7 +95,7 @@ class ChangeDetector {
 		}
 	}
 
-	private ProposedTag tagWithHighestBuildNumber(final List<ProposedTag> previousTagsForThisModule) {
+	private ProposedTag tagWithHighestBuildNumber(final Collection<ProposedTag> previousTagsForThisModule) {
 		ProposedTag cur = null;
 		for (final ProposedTag tag : previousTagsForThisModule) {
 			if (cur == null || tag.getBuildNumber() > cur.getBuildNumber()) {

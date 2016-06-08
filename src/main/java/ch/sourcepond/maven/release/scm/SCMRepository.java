@@ -19,7 +19,7 @@ public interface SCMRepository {
 	Collection<Long> getRemoteBuildNumbers(String remoteUrlOrNull, String artifactId, String versionWithoutBuildNumber)
 			throws SCMException;
 
-	List<ProposedTag> tagsForVersion(String module, String versionWithoutBuildNumber) throws SCMException;
+	Collection<ProposedTag> tagsForVersion(String module, String versionWithoutBuildNumber) throws SCMException;
 
 	ProposedTagsBuilder newProposedTagsBuilder(String remoteUrlNull) throws SCMException;
 
