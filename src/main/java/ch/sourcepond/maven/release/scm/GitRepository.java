@@ -37,6 +37,8 @@ import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import ch.sourcepond.maven.release.config.Configuration;
+
 // TODO: Make this class package private when SingleModuleTest is working with a Guice injector
 @Named
 @Singleton
@@ -45,14 +47,16 @@ public final class GitRepository implements SCMRepository {
 	static final String INVALID_REF_NAME_MESSAGE = "Sorry, '%s' is not a valid version.";
 	private final Log log;
 	private final GitFactory gitFactory;
+	private final Configuration config;
 	private Git git;
 	private SCMException gitInstantiationException;
 	private Collection<Ref> remoteTags;
 
 	@Inject
-	public GitRepository(final Log pLog, final GitFactory pGitFactory) {
+	public GitRepository(final Log pLog, final GitFactory pGitFactory, final Configuration pConfig) {
 		log = pLog;
 		gitFactory = pGitFactory;
+		config = pConfig;
 	}
 
 	private Git getGit() throws SCMException {
