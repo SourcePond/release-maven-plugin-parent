@@ -41,7 +41,6 @@ final class DefaultProposedTagsBuilder implements ProposedTagsBuilder {
 		final JSONObject message = new JSONObject();
 		message.put(VERSION, version.getBusinessVersion());
 		message.put(BUILD_NUMBER, String.valueOf(version.getBuildNumber()));
-		final ProposedTag proposedTag = new DefaultProposedTag(git, log, null, tag, message);
 		proposedTags.put(toKey(tag, version), new DefaultProposedTag(git, log, null, tag, message));
 		return this;
 	}
