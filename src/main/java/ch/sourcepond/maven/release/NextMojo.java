@@ -196,7 +196,7 @@ public class NextMojo extends AbstractMojo {
 			throws ReactorException, SCMException {
 		final ProposedTagsBuilder builder = repository.newProposedTagsBuilder(remoteUrl);
 		for (final ReleasableModule module : reactor) {
-			if (!module.willBeReleased()) {
+			if (!module.getVersion().hasChanged()) {
 				continue;
 			}
 			if (modulesToRelease == null || modulesToRelease.size() == 0 || module.isOneOf(modulesToRelease)) {

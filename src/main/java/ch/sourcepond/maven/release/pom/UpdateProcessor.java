@@ -54,7 +54,7 @@ final class UpdateProcessor implements Updater {
 
 			// TODO: If a module will not be released, is further processing
 			// necessary or should we continue the loop here?
-			if (module.willBeReleased()) {
+			if (module.getVersion().hasChanged()) {
 				log.info(format("Going to release %s %s", module.getArtifactId(), version.getReleaseVersion()));
 			}
 

@@ -49,10 +49,6 @@ public class ReleasableModule {
 		return false;
 	}
 
-	public boolean willBeReleased() {
-		return version.getEquivalentVersionOrNull() == null;
-	}
-
 	public String getRelativePathToModule() {
 		return relativePathToModule;
 	}

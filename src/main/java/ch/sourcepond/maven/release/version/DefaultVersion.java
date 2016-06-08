@@ -52,4 +52,9 @@ final class DefaultVersion extends BaseVersion implements Version {
 	public void makeReleaseable() {
 		setEquivalentVersion(null);
 	}
+
+	@Override
+	public boolean hasChanged() {
+		return getEquivalentVersionOrNull() == null;
+	}
 }

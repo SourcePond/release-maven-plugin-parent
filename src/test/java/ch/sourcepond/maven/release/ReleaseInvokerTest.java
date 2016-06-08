@@ -30,6 +30,7 @@ import org.mockito.Mockito;
 import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.reactor.Reactor;
 import ch.sourcepond.maven.release.reactor.ReleasableModule;
+import ch.sourcepond.maven.release.version.Version;
 
 /**
  * @author Roland Hauser sourcepond@gmail.com
@@ -52,6 +53,7 @@ public class ReleaseInvokerTest {
 	private final List<String> releaseProfiles = new LinkedList<String>();
 	@SuppressWarnings("unchecked")
 	private final Iterator<ReleasableModule> modulesInBuildOrder = mock(Iterator.class);
+	private final Version version = mock(Version.class);
 	private final Reactor reactor = mock(Reactor.class);
 	private final ReleasableModule module = mock(ReleasableModule.class);
 	private final ReleaseInvoker releaseInvoker = new ReleaseInvoker(log, project, request, invoker);
@@ -65,6 +67,7 @@ public class ReleaseInvokerTest {
 		when(log.isDebugEnabled()).thenReturn(true);
 		when(invoker.execute(request)).thenReturn(result);
 		when(module.getRelativePathToModule()).thenReturn(MODULE_PATH);
+		when(module.getVersion()).thenReturn(version);
 	}
 
 	@Test
@@ -196,7 +199,7 @@ public class ReleaseInvokerTest {
 
 	@Test
 	public void runMavenBuild_UserImplicitlyWantsThisToBeReleased() throws Exception {
-		when(module.willBeReleased()).thenReturn(true);
+		when(version.hasChanged()).thenReturn(true);
 		releaseInvoker.setModulesToRelease(modulesToRelease);
 		releaseInvoker.runMavenBuild(reactor);
 		verify(request).setProjects(Mockito.argThat(new ArgumentMatcher<List<String>>() {

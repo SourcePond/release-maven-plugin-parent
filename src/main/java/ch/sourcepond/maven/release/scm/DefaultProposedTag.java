@@ -112,4 +112,10 @@ class DefaultProposedTag extends BaseVersion implements ProposedTag {
 	public void makeReleaseable() {
 		// noop
 	}
+
+	@Override
+	public boolean hasChanged() {
+		// Always false for a tag
+		return false;
+	}
 }

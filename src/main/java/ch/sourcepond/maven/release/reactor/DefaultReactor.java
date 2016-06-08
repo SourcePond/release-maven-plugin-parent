@@ -32,7 +32,7 @@ final class DefaultReactor implements Reactor {
 
 	private boolean atLeastOneBeingReleased() {
 		for (final ReleasableModule module : this) {
-			if (module.willBeReleased()) {
+			if (module.getVersion().hasChanged()) {
 				return true;
 			}
 		}
@@ -63,7 +63,7 @@ final class DefaultReactor implements Reactor {
 	public String getChangedDependencyOrNull(final MavenProject project) {
 		String changedDependency = null;
 		for (final ReleasableModule module : this) {
-			if (module.willBeReleased()) {
+			if (module.getVersion().hasChanged()) {
 				for (final Dependency dependency : project.getDependencies()) {
 					if (dependency.getGroupId().equals(module.getGroupId())
 							&& dependency.getArtifactId().equals(module.getArtifactId())) {

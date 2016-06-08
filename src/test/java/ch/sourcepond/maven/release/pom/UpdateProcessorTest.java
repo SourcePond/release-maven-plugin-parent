@@ -45,6 +45,7 @@ public class UpdateProcessorTest {
 	private final Log log = mock(Log.class);
 	private final Reactor reactor = mock(Reactor.class);
 	private final ReleasableModule module = mock(ReleasableModule.class);
+	private final Version version = mock(Version.class);
 	private final ContextFactory contextFactory = mock(ContextFactory.class);
 	private final DefaultChangeSetFactory writerFactory = mock(DefaultChangeSetFactory.class);
 	private final Context context = mock(Context.class);
@@ -82,9 +83,8 @@ public class UpdateProcessorTest {
 		when(reactor.iterator()).thenReturn(it);
 
 		// Setup module
-		final Version version = mock(Version.class);
 		when(version.getReleaseVersion()).thenReturn(ANY_VERSION);
-		when(module.willBeReleased()).thenReturn(true);
+		when(version.hasChanged()).thenReturn(true);
 		when(module.getProject()).thenReturn(project);
 		when(module.getArtifactId()).thenReturn(ANY_ARTIFACT_ID);
 		when(module.getVersion()).thenReturn(version);
@@ -132,7 +132,7 @@ public class UpdateProcessorTest {
 	 */
 	@Test
 	public void updatePomsModuleWillNotBeReleased() throws Exception {
-		when(module.willBeReleased()).thenReturn(false);
+		when(version.hasChanged()).thenReturn(false);
 		final DefaultChangeSet updatedPoms = (DefaultChangeSet) processor.updatePoms(reactor, ANY_REMOTE_URL, false);
 		final Iterator<File> it = updatedPoms.getModelsToBeReleased().keySet().iterator();
 		assertTrue(it.hasNext());

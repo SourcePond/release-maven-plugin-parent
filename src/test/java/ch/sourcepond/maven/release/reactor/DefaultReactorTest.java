@@ -17,9 +17,6 @@ import org.apache.maven.plugin.logging.Log;
 import org.junit.Assert;
 import org.junit.Test;
 
-import ch.sourcepond.maven.release.reactor.DefaultReactor;
-import ch.sourcepond.maven.release.reactor.ReleasableModule;
-import ch.sourcepond.maven.release.reactor.UnresolvedSnapshotDependencyException;
 import ch.sourcepond.maven.release.version.Version;
 
 public class DefaultReactorTest {
@@ -58,7 +55,9 @@ public class DefaultReactorTest {
 	@Test
 	public void finalizeReleaseVersionsWhenReleasableModuleIsAvailable() {
 		final ReleasableModule willBeReleased = mock(ReleasableModule.class);
-		when(willBeReleased.willBeReleased()).thenReturn(true);
+		final Version version = mock(Version.class);
+		when(version.hasChanged()).thenReturn(true);
+		when(willBeReleased.getVersion()).thenReturn(version);
 		reactor.addReleasableModule(willBeReleased);
 		final Iterator<ReleasableModule> modules = reactor.finalizeReleaseVersions().iterator();
 		assertSame(willBeReleased, modules.next());

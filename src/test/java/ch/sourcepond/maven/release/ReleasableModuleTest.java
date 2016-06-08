@@ -1,9 +1,7 @@
 package ch.sourcepond.maven.release;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static scaffolding.ReleasableModuleBuilder.aModule;
@@ -33,7 +31,6 @@ public class ReleasableModuleTest {
 		when(version.getBusinessVersion()).thenReturn("1.2.3");
 		when(version.getEquivalentVersionOrNull()).thenReturn("1.2.3.11");
 		final ReleasableModule first = new ReleasableModule(project, version, "somewhere");
-		assertFalse(first.willBeReleased());
 
 		when(version.getReleaseVersion()).thenReturn("1.2.3.12");
 		when(version.getEquivalentVersionOrNull()).thenReturn(null);
@@ -45,6 +42,5 @@ public class ReleasableModuleTest {
 		assertEquals("some-group", first.getGroupId());
 		assertSame(project, first.getProject());
 		assertEquals("somewhere", first.getRelativePathToModule());
-		assertTrue(first.willBeReleased());
 	}
 }

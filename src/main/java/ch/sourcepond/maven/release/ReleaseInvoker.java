@@ -140,7 +140,7 @@ class ReleaseInvoker {
 			final boolean userExplicitlyWantsThisToBeReleased = modulesToRelease.contains(modulePath);
 			final boolean userImplicitlyWantsThisToBeReleased = modulesToRelease.isEmpty();
 			if (userExplicitlyWantsThisToBeReleased
-					|| (userImplicitlyWantsThisToBeReleased && releasableModule.willBeReleased())) {
+					|| (userImplicitlyWantsThisToBeReleased && releasableModule.getVersion().hasChanged())) {
 				changedModules.add(modulePath);
 			}
 		}

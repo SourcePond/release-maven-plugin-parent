@@ -14,4 +14,6 @@ public interface Version {
 	String getEquivalentVersionOrNull();
 
 	void makeReleaseable();
+
+	boolean hasChanged();
 }
