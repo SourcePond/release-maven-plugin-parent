@@ -273,7 +273,9 @@ public final class GitRepository implements SCMRepository {
 			boolean changed = it.hasNext();
 
 			if (config.isIncrementSnapshotVersionAfterRelease() && changed) {
-				changed = !SNAPSHOT_COMMIT_MESSAGE.equals(it.next().getShortMessage()) || it.hasNext();
+				final RevCommit commit = it.next();
+				walk.parseBody(commit);
+				changed = !SNAPSHOT_COMMIT_MESSAGE.equals(commit) || it.hasNext();
 			}
 
 			return changed;
