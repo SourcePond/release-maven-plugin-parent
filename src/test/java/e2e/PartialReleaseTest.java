@@ -27,6 +27,7 @@ public class PartialReleaseTest extends E2ETest {
 
     @Test
     public void buildsAndInstallsAndTagsAllModules() throws Exception {
+    	testProject.mvnRelease(buildNumber, "parent-module");
         List<String> commandOutput = testProject.mvnRelease(buildNumber, "core-utils");
         buildsEachProjectOnceAndOnlyOnce(commandOutput);
         installsAllModulesIntoTheRepoWithTheBuildNumber();
@@ -45,7 +46,7 @@ public class PartialReleaseTest extends E2ETest {
             allOf(
                 oneOf(containsString("Going to release core-utils " + expectedCoreVersion)),
                 oneOf(containsString("Building parent-as-sibling")), // once for initial build only
-                oneOf(containsString("Building parent-module")),
+                noneOf(containsString("Building parent-module")),
                 oneOf(containsString("Building core-utils")),
                 noneOf(containsString("Building console-app")),
                 oneOf(containsString("The Calculator Test has run"))

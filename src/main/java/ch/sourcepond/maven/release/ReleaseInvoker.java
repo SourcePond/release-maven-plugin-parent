@@ -121,7 +121,6 @@ class ReleaseInvoker {
 		final List<String> profiles = profilesToActivate();
 		request.setProfiles(profiles);
 
-		request.setAlsoMake(true);
 		final List<String> changedModules = new ArrayList<String>();
 		final List<String> modulesToRelease = getModulesToRelease();
 		for (final ReleasableModule releasableModule : reactor) {
@@ -133,6 +132,7 @@ class ReleaseInvoker {
 				changedModules.add(modulePath);
 			}
 		}
+
 		request.setProjects(changedModules);
 
 		final String profilesInfo = profiles.isEmpty() ? "no profiles activated" : "profiles " + profiles;

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -81,7 +82,7 @@ public class ReleaseInvokerTest {
 		verify(request).setShowErrors(true);
 		verify(request).setDebug(true);
 		verify(log).isDebugEnabled();
-		verify(request).setAlsoMake(true);
+		verify(request, never()).setAlsoMake(Mockito.anyBoolean());
 		verify(request).setGoals(Mockito.argThat(new ArgumentMatcher<List<String>>() {
 
 			@Override
