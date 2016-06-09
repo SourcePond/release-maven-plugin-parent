@@ -63,4 +63,9 @@ class UpdateDependencies extends Command {
 	protected List<Dependency> determineDependencies(final Model originalModel) {
 		return originalModel.getDependencies();
 	}
+
+	@Override
+	protected Integer priority() {
+		return 1;
+	}
 }

@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -30,6 +31,7 @@ import org.mockito.Mockito;
 
 import ch.sourcepond.maven.release.reactor.Reactor;
 import ch.sourcepond.maven.release.reactor.ReleasableModule;
+import ch.sourcepond.maven.release.substitution.VersionSubstitution;
 import ch.sourcepond.maven.release.version.Version;
 
 /**
@@ -148,5 +150,24 @@ public class UpdateProcessorTest {
 
 		order.verify(command).alterModel(context);
 		order.verify(changeSet).markRelease(ANY_POM, clonedModel);
+	}
+
+	@Test
+	public void verifyCommandOrdering() {
+		final VersionSubstitution substitution = mock(VersionSubstitution.class);
+		final List<Command> cmds = new LinkedList<>();
+		cmds.add(new ValidateNoSnapshotPlugins(log, substitution));
+		cmds.add(new UpdateModel(log));
+		cmds.add(new UpdateParent(log));
+		cmds.add(new UpdateDependencies(log, substitution));
+		cmds.add(new UpdateManagedDependencies(log, substitution));
+		final UpdateProcessor proc = new UpdateProcessor(log, contextFactory, writerFactory, cmds);
+
+		final List<Command> sorted = proc.getCommands();
+		assertSame(cmds.get(4), sorted.get(0));
+		assertSame(cmds.get(3), sorted.get(1));
+		assertSame(cmds.get(2), sorted.get(2));
+		assertSame(cmds.get(1), sorted.get(3));
+		assertSame(cmds.get(0), sorted.get(4));
 	}
 }

@@ -37,4 +37,9 @@ final class UpdateManagedDependencies extends UpdateDependencies {
 		}
 		return dependencies;
 	}
+	
+	@Override
+	protected Integer priority() {
+		return 0;
+	}
 }

@@ -41,6 +41,11 @@ final class ValidateNoSnapshotPlugins extends Command {
 			}
 		}
 	}
+	
+	@Override
+	protected Integer priority() {
+		return 4;
+	}
 
 	private static boolean isMultiModuleReleasePlugin(final Plugin plugin) {
 		return MULTI_MODULE_MAVEN_PLUGIN_GROUP_ID.equals(plugin.getGroupId())

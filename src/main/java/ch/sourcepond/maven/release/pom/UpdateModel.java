@@ -37,4 +37,9 @@ final class UpdateModel extends Command {
 			}
 		}
 	}
+
+	@Override
+	protected Integer priority() {
+		return 3;
+	}
 }

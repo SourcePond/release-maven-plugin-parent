@@ -44,4 +44,9 @@ final class UpdateParent extends Command {
 			}
 		}
 	}
+
+	@Override
+	protected Integer priority() {
+		return 2;
+	}
 }

@@ -1,7 +1,10 @@
 package ch.sourcepond.maven.release.pom;
 
 import static java.lang.String.format;
+import static java.util.Collections.sort;
+import static java.util.Collections.unmodifiableList;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +36,13 @@ final class UpdateProcessor implements Updater {
 		log = pLog;
 		contextFactory = pContextFactory;
 		changeSetFactory = pChangeSetFactory;
-		commands = pCommands;
+		final List<Command> sortedCmds = new ArrayList<>(pCommands);
+		sort(sortedCmds);
+		commands = unmodifiableList(sortedCmds);
+	}
+
+	List<Command> getCommands() {
+		return commands;
 	}
 
 	private void process(final Context context, final List<String> errors) {
