@@ -99,12 +99,6 @@ public class NextMojo extends AbstractMojo {
 	@Parameter(property = "debugEnabled")
 	protected boolean debugEnabled;
 
-	/**
-	 * Specifies whether the release build should run with the "-e" switch.
-	 */
-	@Parameter(property = "stacktraceEnabled")
-	protected boolean stacktraceEnabled;
-
 	@Parameter(defaultValue = "${settings}", readonly = true, required = true)
 	private Settings settings;
 
@@ -249,7 +243,6 @@ public class NextMojo extends AbstractMojo {
 		pRegistration.setPrivateKey(privateKey);
 		pRegistration.setServerId(serverId);
 		pRegistration.setSettings(settings);
-		pRegistration.setStacktraceEnabled(stacktraceEnabled);
 	}
 
 	@Override

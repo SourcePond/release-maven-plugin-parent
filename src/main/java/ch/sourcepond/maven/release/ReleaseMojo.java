@@ -155,7 +155,6 @@ public class ReleaseMojo extends NextMojo {
 				invoker.setReleaseProfiles(releaseProfiles);
 				invoker.setSkipTests(skipTests);
 				invoker.setDebugEnabled(debugEnabled);
-				invoker.setStacktraceEnabled(stacktraceEnabled);
 				invoker.runMavenBuild(reactor);
 			} catch (final Exception e) {
 				changedFiles.setFailure("Exception occurred while release invokation!", e);

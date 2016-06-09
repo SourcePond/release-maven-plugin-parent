@@ -49,11 +49,6 @@ final class DefaultConfigration implements ParameterRegistration, Configuration 
 	 */
 	private boolean debugEnabled;
 
-	/**
-	 * Specifies whether the release build should run with the "-e" switch.
-	 */
-	private boolean stacktraceEnabled;
-
 	private Settings settings;
 
 	/**
@@ -250,28 +245,6 @@ final class DefaultConfigration implements ParameterRegistration, Configuration 
 	@Override
 	public void setDebugEnabled(final boolean debugEnabled) {
 		this.debugEnabled = debugEnabled;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.sourcepond.maven.release.config.Configuration#isStacktraceEnabled()
-	 */
-	@Override
-	public boolean isStacktraceEnabled() {
-		return stacktraceEnabled;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.sourcepond.maven.release.config.ParameterRegistration#
-	 * setStacktraceEnabled(boolean)
-	 */
-	@Override
-	public void setStacktraceEnabled(final boolean stacktraceEnabled) {
-		this.stacktraceEnabled = stacktraceEnabled;
 	}
 
 	/*

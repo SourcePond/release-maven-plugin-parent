@@ -58,7 +58,6 @@ public class ReleaseInvokerTest {
 	private final ReleasableModule module = mock(ReleasableModule.class);
 	private final ReleaseInvoker releaseInvoker = new ReleaseInvoker(log, project, request, invoker);
 
-	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws Exception {
 		when(modulesInBuildOrder.next()).thenReturn(module).thenThrow(NoSuchElementException.class);
@@ -110,7 +109,7 @@ public class ReleaseInvokerTest {
 				return "projects";
 			}
 		}));
-		verify(log).info("About to run mvn [deploy] with no profiles activated");
+		verify(log).info("About to run mvn [deploy] with no profiles activated and modules []");
 	}
 
 	@Test

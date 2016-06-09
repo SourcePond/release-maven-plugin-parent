@@ -35,7 +35,6 @@ class ReleaseInvoker {
 	private final Invoker invoker;
 	private boolean skipTests;
 	private boolean debugEnabled;
-	private boolean stacktraceEnabled;
 	private File localMavenRepo;
 	private List<String> goals;
 	private List<String> modulesToRelease;
@@ -85,10 +84,6 @@ class ReleaseInvoker {
 		this.debugEnabled = debugEnabled;
 	}
 
-	final void setStacktraceEnabled(final boolean stacktraceEnabled) {
-		this.stacktraceEnabled = stacktraceEnabled;
-	}
-
 	final void setSkipTests(final boolean skipTests) {
 		this.skipTests = skipTests;
 	}
@@ -108,7 +103,7 @@ class ReleaseInvoker {
 	public final void runMavenBuild(final Reactor reactor) throws MojoExecutionException {
 		request.setInteractive(false);
 		request.setShowErrors(true);
-		request.setDebug(log.isDebugEnabled());
+		request.setDebug(debugEnabled || log.isDebugEnabled());
 
 		final List<String> goals = getGoals();
 		if (skipTests) {
@@ -120,12 +115,6 @@ class ReleaseInvoker {
 			} catch (final IOException e) {
 				throw new MojoExecutionException("Local repository path could not be determined!", e);
 			}
-		}
-		if (debugEnabled) {
-			goals.add("-X");
-		}
-		if (stacktraceEnabled) {
-			goals.add("-e");
 		}
 		request.setGoals(getGoals());
 
@@ -148,7 +137,7 @@ class ReleaseInvoker {
 
 		final String profilesInfo = profiles.isEmpty() ? "no profiles activated" : "profiles " + profiles;
 
-		log.info(format("About to run mvn %s with profiles %s and modules %s", goals, profilesInfo, changedModules));
+		log.info(format("About to run mvn %s with %s and modules %s", goals, profilesInfo, changedModules));
 
 		try {
 			final InvocationResult result = invoker.execute(request);

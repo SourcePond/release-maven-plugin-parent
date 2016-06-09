@@ -17,8 +17,6 @@ public interface Configuration {
 
 	boolean isDebugEnabled();
 
-	boolean isStacktraceEnabled();
-
 	Settings getSettings();
 
 	String getServerId();

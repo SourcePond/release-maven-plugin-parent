@@ -17,8 +17,6 @@ public interface ParameterRegistration {
 
 	void setDebugEnabled(boolean debugEnabled);
 
-	void setStacktraceEnabled(boolean stacktraceEnabled);
-
 	void setSettings(Settings settings);
 
 	void setServerId(String serverId);
