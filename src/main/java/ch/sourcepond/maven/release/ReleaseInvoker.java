@@ -148,7 +148,7 @@ class ReleaseInvoker {
 
 		final String profilesInfo = profiles.isEmpty() ? "no profiles activated" : "profiles " + profiles;
 
-		log.info(format("About to run mvn %s with %s", goals, profilesInfo));
+		log.info(format("About to run mvn %s with profiles %s and modules %s", goals, profilesInfo, changedModules));
 
 		try {
 			final InvocationResult result = invoker.execute(request);
