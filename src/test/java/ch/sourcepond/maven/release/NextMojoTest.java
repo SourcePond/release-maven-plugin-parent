@@ -1,14 +1,9 @@
 package ch.sourcepond.maven.release;
 
-import static ch.sourcepond.maven.release.NextMojo.getRemoteUrlOrNullIfNoneSet;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.List;
 
 import org.apache.maven.model.Scm;
 import org.apache.maven.plugin.logging.Log;
@@ -30,8 +25,6 @@ import ch.sourcepond.maven.release.scm.SCMRepository;
  *
  */
 public class NextMojoTest {
-	private static final String DEVELOPER_CONNECTION = "scm:git:ssh://some/developerPath";
-	private static final String CONNECTION = "scm:git:ssh://some/commonPath";
 	private static final String KNOWN_HOSTS = "anyKnownHosts";
 	private static final String SERVER_ID = "anyServerId";
 	private static final String SETTINGS_IDENTITY_FILE = "settingsIdentityFile";
@@ -120,43 +113,5 @@ public class NextMojoTest {
 		mojo.configureJsch();
 		final SshAgentSessionFactory factory = (SshAgentSessionFactory) JschConfigSessionFactory.getInstance();
 		assertEquals(KNOWN_HOSTS, factory.getKnownHostsOrNull());
-	}
-
-	@Test
-	public void getRemoteUrlScmIsNull() throws PluginException {
-		assertNull(getRemoteUrlOrNullIfNoneSet(null));
-	}
-
-	@Test
-	public void getRemoteUrlNoConnectionsOnScm() throws PluginException {
-		assertNull(getRemoteUrlOrNullIfNoneSet(scm));
-	}
-
-	@Test
-	public void getRemoteUrlUseDeveloperConnection() throws PluginException {
-		when(scm.getDeveloperConnection()).thenReturn(DEVELOPER_CONNECTION);
-		when(scm.getConnection()).thenReturn(CONNECTION);
-		assertEquals("ssh://some/developerPath", getRemoteUrlOrNullIfNoneSet(scm));
-	}
-
-	@Test
-	public void getRemoteUrlUseConnection() throws PluginException {
-		when(scm.getConnection()).thenReturn(CONNECTION);
-		assertEquals("ssh://some/commonPath", getRemoteUrlOrNullIfNoneSet(scm));
-	}
-
-	@Test
-	public void getRemoteUrlIllegalProtocol() {
-		when(scm.getDeveloperConnection()).thenReturn("scm:svn:ssh//some/illegal/protocol");
-		try {
-			getRemoteUrlOrNullIfNoneSet(scm);
-			fail("Exception expected");
-		} catch (final PluginException expected) {
-			assertEquals("Cannot run the release plugin with a non-Git version control system", expected.getMessage());
-			final List<String> messages = expected.getMessages();
-			assertEquals(1, messages.size());
-			assertEquals("Cannot run the release plugin with a non-Git version control system", expected.getMessage());
-			assertEquals("The value in your scm tag is scm:svn:ssh//some/illegal/protocol", messages.get(0));
-		}
 	}
 }

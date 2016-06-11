@@ -53,9 +53,9 @@ final class UpdateProcessor implements Updater {
 	}
 
 	@Override
-	public ChangeSet updatePoms(final Reactor reactor, final String remoteUrl,
-			final boolean incrementSnapshotVersionAfterRelease) throws POMUpdateException {
-		final DefaultChangeSet changeSet = changeSetFactory.newChangeSet(remoteUrl);
+	public ChangeSet updatePoms(final Reactor reactor, final boolean incrementSnapshotVersionAfterRelease)
+			throws POMUpdateException {
+		final DefaultChangeSet changeSet = changeSetFactory.newChangeSet();
 		final List<String> errors = new LinkedList<String>();
 
 		for (final ReleasableModule module : reactor) {

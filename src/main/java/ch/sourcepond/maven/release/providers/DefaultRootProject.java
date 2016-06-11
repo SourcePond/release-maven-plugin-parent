@@ -8,15 +8,22 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
+import org.apache.maven.model.Scm;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.jgit.lib.Repository;
 
+import ch.sourcepond.maven.release.PluginException;
 import ch.sourcepond.maven.release.reactor.ReactorException;
 
 @Named
-class DefaultRootProject implements RootProject {
+@Singleton
+class DefaultRootProject implements RootProject, Initializable {
+	static final String ERROR_SUMMARY = "Cannot run the release plugin with a non-Git version control system";
+	static final String GIT_PREFIX = "scm:git:";
 	private final MavenComponentSingletons singletons;
+	private String remoteUrlOrNull;
 
 	@Inject
 	DefaultRootProject(final MavenComponentSingletons pSingletons) {
@@ -25,6 +32,24 @@ class DefaultRootProject implements RootProject {
 
 	private MavenProject getProject() {
 		return singletons.getProject();
+	}
+
+	@Override
+	public void initialize() throws PluginException {
+		final Scm scm = getProject().getScm();
+		if (scm != null) {
+			remoteUrlOrNull = scm.getDeveloperConnection();
+			if (remoteUrlOrNull == null) {
+				remoteUrlOrNull = scm.getConnection();
+			}
+			if (remoteUrlOrNull != null) {
+				if (!remoteUrlOrNull.startsWith(GIT_PREFIX)) {
+					throw new PluginException(ERROR_SUMMARY).add("The value in your scm tag is %s", remoteUrlOrNull);
+				}
+				remoteUrlOrNull = remoteUrlOrNull.substring(GIT_PREFIX.length()).replace("file://localhost/",
+						"file:///");
+			}
+		}
 	}
 
 	@Override
@@ -53,5 +78,10 @@ class DefaultRootProject implements RootProject {
 			relativePathToModule = ".";
 		}
 		return relativePathToModule;
+	}
+
+	@Override
+	public String getRemoteUrlOrNull() {
+		return remoteUrlOrNull;
 	}
 }

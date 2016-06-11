@@ -11,4 +11,6 @@ public interface RootProject {
 	Collection<String> getActiveProfileIds();
 
 	String calculateModulePath(MavenProject project) throws ReactorException;
+
+	String getRemoteUrlOrNull();
 }

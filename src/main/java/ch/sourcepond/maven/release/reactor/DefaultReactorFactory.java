@@ -24,7 +24,6 @@ final class DefaultReactorFactory implements ReactorFactory {
 	private boolean useLastNumber;
 	private Long buildNumber;
 	private List<String> modulesToForceRelease;
-	private String remoteUrl;
 
 	@Inject
 	DefaultReactorFactory(final Log log, final VersionBuilderFactory versioningFactory, final RootProject pRootProject,
@@ -66,7 +65,7 @@ final class DefaultReactorFactory implements ReactorFactory {
 				versionBuilder.setUseLastNumber(useLastNumber);
 				versionBuilder.setBuildNumber(buildNumber);
 				versionBuilder.setChangedDependency(changedDependencyOrNull);
-				versionBuilder.setRemoteUrl(remoteUrl);
+				versionBuilder.setRemoteUrl(rootProject.getRemoteUrlOrNull());
 
 				if (modulesToForceRelease == null || !modulesToForceRelease.contains(project.getArtifactId())) {
 					versionBuilder.setRelativePath(relativePathToModule);
@@ -80,11 +79,5 @@ final class DefaultReactorFactory implements ReactorFactory {
 		}
 
 		return reactor.finalizeReleaseVersions();
-	}
-
-	@Override
-	public ReactorFactory setRemoteUrl(final String remoteUrl) {
-		this.remoteUrl = remoteUrl;
-		return this;
 	}
 }

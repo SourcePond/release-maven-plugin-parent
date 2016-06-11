@@ -6,11 +6,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apache.maven.model.Scm;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -22,12 +20,10 @@ import ch.sourcepond.maven.release.config.ParameterRegistration;
 import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
 import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.reactor.Reactor;
-import ch.sourcepond.maven.release.reactor.ReactorException;
 import ch.sourcepond.maven.release.reactor.ReactorFactory;
 import ch.sourcepond.maven.release.reactor.ReleasableModule;
 import ch.sourcepond.maven.release.scm.ProposedTags;
 import ch.sourcepond.maven.release.scm.ProposedTagsBuilder;
-import ch.sourcepond.maven.release.scm.SCMException;
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
 /**
@@ -45,8 +41,6 @@ requiresProject = true, // this can only run against a maven project
 aggregator = true // the plugin should only run once against the aggregator pom
 )
 public class NextMojo extends AbstractMojo {
-	static final String ERROR_SUMMARY = "Cannot run the release plugin with a non-Git version control system";
-	static final String GIT_PREFIX = "scm:git:";
 
 	/**
 	 * The Maven Project.
@@ -169,26 +163,8 @@ public class NextMojo extends AbstractMojo {
 		disableSshAgent = true;
 	}
 
-	static String getRemoteUrlOrNullIfNoneSet(final Scm scm) throws PluginException {
-		String remote = null;
-		if (scm != null) {
-			remote = scm.getDeveloperConnection();
-			if (remote == null) {
-				remote = scm.getConnection();
-			}
-			if (remote != null) {
-				if (!remote.startsWith(GIT_PREFIX)) {
-					throw new PluginException(ERROR_SUMMARY).add("The value in your scm tag is %s", remote);
-				}
-				remote = remote.substring(GIT_PREFIX.length()).replace("file://localhost/", "file:///");
-			}
-		}
-		return remote;
-	}
-
-	protected ProposedTags figureOutTagNamesAndThrowIfAlreadyExists(final Reactor reactor, final String remoteUrl)
-			throws ReactorException, SCMException {
-		final ProposedTagsBuilder builder = repository.newProposedTagsBuilder(remoteUrl);
+	protected ProposedTags figureOutTagNamesAndThrowIfAlreadyExists(final Reactor reactor) throws PluginException {
+		final ProposedTagsBuilder builder = repository.newProposedTagsBuilder(rootProject.getRemoteUrlOrNull());
 		for (final ReleasableModule module : reactor) {
 			if (!module.getVersion().hasChanged()) {
 				continue;
@@ -221,13 +197,7 @@ public class NextMojo extends AbstractMojo {
 		}
 	}
 
-	@Override
-	public final void setLog(final Log log) {
-		super.setLog(log);
-		singletons.setLog(log);
-	}
-
-	protected void execute(final Reactor reactor, final ProposedTags proposedTags, final String remoteUrl)
+	protected void execute(final Reactor reactor, final ProposedTags proposedTags)
 			throws MojoExecutionException, PluginException {
 		// noop by default
 	}
@@ -247,19 +217,16 @@ public class NextMojo extends AbstractMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		// Register singletons for injection
-		singletons.setRootProject(project);
-		singletons.setReactorProjects(projects);
-
-		// Register parameters for usage with Configuration
-		registerParemeters(registration);
-
 		try {
+			// Register singletons for injection
+			singletons.initialize(getLog(), project, projects);
+
+			// Register parameters for usage with Configuration
+			registerParemeters(registration);
 			repository.errorIfNotClean();
 			configureJsch();
-			final String remoteUrl = getRemoteUrlOrNullIfNoneSet(project.getScm());
-			final Reactor reactor = configureReactorFactory().setRemoteUrl(remoteUrl).newReactor();
-			execute(reactor, figureOutTagNamesAndThrowIfAlreadyExists(reactor, remoteUrl), remoteUrl);
+			final Reactor reactor = configureReactorFactory().newReactor();
+			execute(reactor, figureOutTagNamesAndThrowIfAlreadyExists(reactor));
 		} catch (final PluginException e) {
 			e.printBigErrorMessageAndThrow(getLog());
 		}

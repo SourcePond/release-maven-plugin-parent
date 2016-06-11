@@ -39,7 +39,6 @@ import ch.sourcepond.maven.release.version.Version;
  *
  */
 public class UpdateProcessorTest {
-	private static final String ANY_REMOTE_URL = "anyRemoteUrl";
 	private static final String ANY_ARTIFACT_ID = "anyArtifactId";
 	private static final String ANY_VERSION = "anyVersion";
 	private static final String ANY_ERROR = "anyError";
@@ -70,7 +69,7 @@ public class UpdateProcessorTest {
 		when(context.getModel()).thenReturn(clonedModel);
 
 		// Setup writer factory
-		when(writerFactory.newChangeSet(ANY_REMOTE_URL)).thenReturn(changeSet);
+		when(writerFactory.newChangeSet()).thenReturn(changeSet);
 
 		// Setup writer
 		final Map<File, Model> modelsToBeReleased = new LinkedHashMap<>();
@@ -100,7 +99,7 @@ public class UpdateProcessorTest {
 
 	@Test
 	public void updatePomsCompletedSuccessfully() throws Exception {
-		final DefaultChangeSet updatedPoms = (DefaultChangeSet) processor.updatePoms(reactor, ANY_REMOTE_URL, false);
+		final DefaultChangeSet updatedPoms = (DefaultChangeSet) processor.updatePoms(reactor, false);
 		final Iterator<File> it = updatedPoms.getModelsToBeReleased().keySet().iterator();
 		assertTrue(it.hasNext());
 		assertSame(ANY_POM, it.next());
@@ -116,7 +115,7 @@ public class UpdateProcessorTest {
 	public void updatePomsDependencyErrorsOccurred() throws Exception {
 		when(context.getErrors()).thenReturn(asList(ANY_ERROR));
 		try {
-			processor.updatePoms(reactor, ANY_REMOTE_URL, false);
+			processor.updatePoms(reactor, false);
 			fail("Exception expected");
 		} catch (final POMUpdateException e) {
 			assertEquals(DEPENDENCY_ERROR_SUMMARY, e.getMessage());
@@ -135,7 +134,7 @@ public class UpdateProcessorTest {
 	@Test
 	public void updatePomsModuleWillNotBeReleased() throws Exception {
 		when(version.hasChanged()).thenReturn(false);
-		final DefaultChangeSet updatedPoms = (DefaultChangeSet) processor.updatePoms(reactor, ANY_REMOTE_URL, false);
+		final DefaultChangeSet updatedPoms = (DefaultChangeSet) processor.updatePoms(reactor, false);
 		final Iterator<File> it = updatedPoms.getModelsToBeReleased().keySet().iterator();
 		assertTrue(it.hasNext());
 		assertSame(ANY_POM, it.next());

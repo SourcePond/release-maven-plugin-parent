@@ -10,7 +10,5 @@ public interface ReactorFactory {
 
 	ReactorFactory setModulesToForceRelease(final List<String> modulesToForceRelease);
 
-	ReactorFactory setRemoteUrl(String remoteUrl);
-
 	Reactor newReactor() throws ReactorException;
 }

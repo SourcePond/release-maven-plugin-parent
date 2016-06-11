@@ -132,10 +132,9 @@ public class ReleaseMojo extends NextMojo {
 	}
 
 	@Override
-	protected void execute(final Reactor reactor, final ProposedTags proposedTags, final String remoteUrl)
+	protected void execute(final Reactor reactor, final ProposedTags proposedTags)
 			throws MojoExecutionException, PluginException {
-		try (final ChangeSet changedFiles = updater.updatePoms(reactor, remoteUrl,
-				incrementSnapshotVersionAfterRelease)) {
+		try (final ChangeSet changedFiles = updater.updatePoms(reactor, incrementSnapshotVersionAfterRelease)) {
 
 			// Do this before running the maven build in case the build uploads
 			// some artifacts and then fails. If it is
