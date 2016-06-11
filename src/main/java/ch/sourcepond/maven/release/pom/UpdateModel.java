@@ -1,5 +1,6 @@
 package ch.sourcepond.maven.release.pom;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import javax.inject.Inject;
@@ -27,9 +28,13 @@ final class UpdateModel extends Command {
 		final MavenProject project = updateContext.getProject();
 		final Model model = updateContext.getModel();
 
+		final boolean needsOwnVersion = isBlank(model.getVersion()) && !updateContext.parentUpdated()
+				&& updateContext.dependencyUpdated();
+		updateContext.setNeedsOwnVersion(needsOwnVersion);
+
 		// Do only update version on model when it is explicitly set. Otherwise,
 		// the version of the parent is used.
-		if (isNotBlank(model.getVersion())) {
+		if (isNotBlank(model.getVersion()) || needsOwnVersion) {
 			try {
 				model.setVersion(updateContext.getVersionToDependOn(project.getGroupId(), project.getArtifactId()));
 			} catch (final UnresolvedSnapshotDependencyException e) {

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>any.group.id</groupId>
+		<artifactId>any.parent</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>any.group.id</groupId>
+	<artifactId>any.artifact.id</artifactId>
+	<packaging>jar</packaging>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>any.group.id</groupId>
+				<artifactId>managed-1</artifactId>
+				<version>3.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>any.group.id</groupId>
+				<artifactId>managed-2</artifactId>
+				<version>4.0-SNAPSHOT</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>any.group.id</groupId>
+			<artifactId>unmanaged-1</artifactId>
+			<version>5.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>any.group.id</groupId>
+			<artifactId>unmanaged-2</artifactId>
+			<version>6.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>any.group.id</groupId>
+			<artifactId>unmanaged-3</artifactId>
+			<version>7.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>

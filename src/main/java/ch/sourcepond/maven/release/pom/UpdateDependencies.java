@@ -46,6 +46,7 @@ class UpdateDependencies extends Command {
 						final String versionToDependOn = updateContext.getVersionToDependOn(dependency.getGroupId(),
 								dependency.getArtifactId());
 						dependency.setVersion(versionToDependOn);
+						updateContext.setDependencyUpdated();
 						log.debug(format(" Dependency on %s rewritten to version %s", dependency.getArtifactId(),
 								versionToDependOn));
 					} catch (final UnresolvedSnapshotDependencyException e) {

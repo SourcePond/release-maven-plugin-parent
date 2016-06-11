@@ -19,6 +19,9 @@ class Context {
 	private final Model model;
 	private final MavenProject project;
 	private final boolean incrementSnapshotVersionAfterRelease;
+	private boolean needsOwnVersion;
+	private boolean parentUpdated;
+	private boolean dependencyUpdated;
 
 	Context(final Reactor reactor, final MavenProject project, final Model model,
 			final boolean incrementSnapshotVersionAfterRelease) {
@@ -62,5 +65,33 @@ class Context {
 
 	public boolean incrementSnapshotVersionAfterRelease() {
 		return incrementSnapshotVersionAfterRelease;
+	}
+
+	public boolean needsOwnVersion() {
+		return needsOwnVersion;
+	}
+
+	public void setNeedsOwnVersion(final boolean pNeedsOwnVersion) {
+		needsOwnVersion = pNeedsOwnVersion;
+	}
+
+	public boolean parentUpdated() {
+		return parentUpdated;
+	}
+
+	public void setParentUpdated() {
+		if (!parentUpdated) {
+			parentUpdated = true;
+		}
+	}
+
+	public boolean dependencyUpdated() {
+		return dependencyUpdated;
+	}
+
+	public void setDependencyUpdated() {
+		if (!dependencyUpdated) {
+			dependencyUpdated = true;
+		}
 	}
 }

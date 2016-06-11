@@ -1,7 +1,9 @@
 package ch.sourcepond.maven.release.pom;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,6 +50,31 @@ public class ContextFactoryTest {
 	@Test
 	public void getModel() {
 		assertSame(model, context.getModel());
+	}
+
+	@Test
+	public void needsOwnVersion() {
+		assertFalse(context.needsOwnVersion());
+		context.setNeedsOwnVersion(true);
+		assertTrue(context.needsOwnVersion());
+	}
+
+	@Test
+	public void parentUpdated() {
+		assertFalse(context.parentUpdated());
+		context.setParentUpdated();
+		assertTrue(context.parentUpdated());
+		context.setParentUpdated();
+		assertTrue(context.parentUpdated());
+	}
+
+	@Test
+	public void dependencyUpdated() {
+		assertFalse(context.dependencyUpdated());
+		context.setDependencyUpdated();
+		assertTrue(context.dependencyUpdated());
+		context.setDependencyUpdated();
+		assertTrue(context.dependencyUpdated());
 	}
 
 	@Test

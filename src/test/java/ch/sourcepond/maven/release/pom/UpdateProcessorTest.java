@@ -109,7 +109,7 @@ public class UpdateProcessorTest {
 		final InOrder order = inOrder(clonedModel, command, log, changeSet);
 		order.verify(log).info("Going to release anyArtifactId anyVersion");
 		order.verify(command).alterModel(context);
-		order.verify(changeSet).markRelease(ANY_POM, clonedModel);
+		order.verify(changeSet).markRelease(ANY_POM, clonedModel, false);
 	}
 
 	@Test
@@ -149,7 +149,7 @@ public class UpdateProcessorTest {
 		order.verify(log, Mockito.never()).info("Going to release anyArtifactId anyVersion");
 
 		order.verify(command).alterModel(context);
-		order.verify(changeSet).markRelease(ANY_POM, clonedModel);
+		order.verify(changeSet).markRelease(ANY_POM, clonedModel, false);
 	}
 
 	@Test

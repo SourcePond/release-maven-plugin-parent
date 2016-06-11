@@ -4,12 +4,18 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.logging.Log;
+
+import com.ximpleware.ModifyException;
+import com.ximpleware.NavException;
+import com.ximpleware.TranscodeException;
 
 import ch.sourcepond.maven.release.scm.SCMException;
 import ch.sourcepond.maven.release.scm.SCMRepository;
@@ -26,6 +32,7 @@ class DefaultChangeSet implements ChangeSet {
 	private final SCMRepository repository;
 	private final Map<File, Model> modelsToBeReleased = new LinkedHashMap<>();
 	private final Map<File, Model> modelsToBeIncremented = new LinkedHashMap<>();
+	private final Set<Model> needOwnVersion = new HashSet<>();
 	private final MavenXpp3Writer writer;
 	private final String remoteUrlOrNull;
 	private ChangeSetCloseException failure;
@@ -42,21 +49,26 @@ class DefaultChangeSet implements ChangeSet {
 		return modelsToBeReleased;
 	}
 
-	private void registerModel(final Map<File, Model> models, final File file, final Model model)
-			throws POMUpdateException {
+	private void registerModel(final Map<File, Model> models, final File file, final Model model,
+			final boolean needsOwnVersion) throws POMUpdateException {
 		try {
 			models.put(file.getCanonicalFile(), model);
+
+			if (needsOwnVersion) {
+				needOwnVersion.add(model);
+			}
 		} catch (final IOException e) {
 			throw new POMUpdateException(e, "Canonical path could be determined for file %s", file);
 		}
 	}
 
-	void markRelease(final File file, final Model model) throws POMUpdateException {
-		registerModel(modelsToBeReleased, file, model);
+	void markRelease(final File file, final Model model, final boolean needsOwnVersion) throws POMUpdateException {
+		registerModel(modelsToBeReleased, file, model, needsOwnVersion);
 	}
 
-	void markSnapshotVersionIncrement(final File file, final Model model) throws POMUpdateException {
-		registerModel(modelsToBeIncremented, file, model);
+	void markSnapshotVersionIncrement(final File file, final Model model, final boolean needsOwnVersion)
+			throws POMUpdateException {
+		registerModel(modelsToBeIncremented, file, model, needsOwnVersion);
 	}
 
 	DefaultChangeSet writeChanges() throws POMUpdateException {
@@ -69,6 +81,13 @@ class DefaultChangeSet implements ChangeSet {
 			}
 		}
 		return this;
+	}
+
+	private String getOwnVersionOrNull(final Model model) {
+		if (needOwnVersion.contains(model)) {
+			return model.getVersion();
+		}
+		return null;
 	}
 
 	@Override
@@ -93,9 +112,10 @@ class DefaultChangeSet implements ChangeSet {
 
 		if (!modelsToBeIncremented.isEmpty()) {
 			for (final Map.Entry<File, Model> entry : modelsToBeIncremented.entrySet()) {
-				try (final Writer fileWriter = new VersionTransferWriter(entry.getKey())) {
+				try (final Writer fileWriter = new VersionTransferWriter(entry.getKey(),
+						getOwnVersionOrNull(entry.getValue()))) {
 					writer.write(fileWriter, entry.getValue());
-				} catch (final IOException e) {
+				} catch (final IOException | ModifyException | NavException | TranscodeException e) {
 					try {
 						repository.revertChanges(modelsToBeIncremented.keySet());
 					} catch (final SCMException revertException) {

@@ -4,6 +4,7 @@ import static ch.sourcepond.maven.release.pom.UpdateModel.ERROR_FORMAT;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -39,10 +40,20 @@ public class UpdateModelTest {
 	}
 
 	@Test
+	public void verifyNeedsOwnVersion() {
+		when(model.getVersion()).thenReturn(null);
+		when(context.parentUpdated()).thenReturn(false);
+		when(context.dependencyUpdated()).thenReturn(true);
+		update.alterModel(context);
+		verify(model, times(2)).getVersion();
+		verify(model).setVersion(VERSION);
+	}
+
+	@Test
 	public void verifyAlterModel() throws Exception {
 		when(model.getVersion()).thenReturn(VERSION);
 		update.alterModel(context);
-		verify(model).getVersion();
+		verify(model, times(2)).getVersion();
 		verify(model).setVersion(VERSION);
 	}
 
@@ -58,15 +69,17 @@ public class UpdateModelTest {
 	}
 
 	@Test
-	public void verifyAlterModel_NoVersionOnModelSet() throws Exception {
+	public void verifyAlterModel_NoVersionOnModelSet_ParentUpdated() throws Exception {
+		when(context.parentUpdated()).thenReturn(true);
 		when(model.getVersion()).thenReturn(null);
 		update.alterModel(context);
-		verify(model).getVersion();
+		verify(model, times(2)).getVersion();
 		verify(model, never()).setVersion(VERSION);
 	}
 
 	@Test
 	public void verifyAlterModelProjectNotFound_NoVersionOnModelSet() throws Exception {
+		when(context.parentUpdated()).thenReturn(true);
 		final UnresolvedSnapshotDependencyException expected = new UnresolvedSnapshotDependencyException(GROUP_ID,
 				ARTIFACT_ID);
 		doThrow(expected).when(context).getVersionToDependOn(GROUP_ID, ARTIFACT_ID);

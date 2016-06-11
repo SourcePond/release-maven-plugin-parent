@@ -38,6 +38,7 @@ final class UpdateParent extends Command {
 				final String versionToDependOn = updateContext.getVersionToDependOn(parent.getGroupId(),
 						parent.getArtifactId());
 				model.getParent().setVersion(versionToDependOn);
+				updateContext.setParentUpdated();
 				log.debug(format(" Parent %s rewritten to version %s", parent.getArtifactId(), versionToDependOn));
 			} catch (final UnresolvedSnapshotDependencyException e) {
 				updateContext.addError(ERROR_FORMAT, project.getArtifactId(), e.artifactId, parent.getVersion());
