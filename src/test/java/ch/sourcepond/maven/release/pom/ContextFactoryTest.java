@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Parent;
 import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,15 +61,6 @@ public class ContextFactoryTest {
 	}
 
 	@Test
-	public void parentUpdated() {
-		assertFalse(context.parentUpdated());
-		context.setParentUpdated();
-		assertTrue(context.parentUpdated());
-		context.setParentUpdated();
-		assertTrue(context.parentUpdated());
-	}
-
-	@Test
 	public void dependencyUpdated() {
 		assertFalse(context.dependencyUpdated());
 		context.setDependencyUpdated();
@@ -87,4 +79,42 @@ public class ContextFactoryTest {
 		assertEquals(TEST_STRING, context.getVersionToDependOn(ANY_GROUP_ID, ANY_ARTIFACT_ID));
 	}
 
+	@Test
+	public void hasNotChanged_ParentIsNull() {
+		assertTrue(context.hasNotChanged(null));
+	}
+
+	@Test
+	public void hasNotChanged_NoReleasableModule() {
+		assertTrue(context.hasNotChanged(mock(Parent.class)));
+	}
+
+	@Test
+	public void hasNotChanged_VersionNotChanged() {
+		final ReleasableModule module = mock(ReleasableModule.class);
+		when(module.getGroupId()).thenReturn(ANY_GROUP_ID);
+		when(module.getArtifactId()).thenReturn(ANY_ARTIFACT_ID);
+		final Version version = mock(Version.class);
+		when(module.getVersion()).thenReturn(version);
+		when(reactor.findByLabel(ANY_GROUP_ID + ":" + ANY_ARTIFACT_ID)).thenReturn(module);
+		final Parent parent = mock(Parent.class);
+		when(parent.getGroupId()).thenReturn(ANY_GROUP_ID);
+		when(parent.getArtifactId()).thenReturn(ANY_ARTIFACT_ID);
+		assertTrue(context.hasNotChanged(parent));
+	}
+
+	@Test
+	public void hasNotChanged_VersionChanged() {
+		final ReleasableModule module = mock(ReleasableModule.class);
+		when(module.getGroupId()).thenReturn(ANY_GROUP_ID);
+		when(module.getArtifactId()).thenReturn(ANY_ARTIFACT_ID);
+		final Version version = mock(Version.class);
+		when(version.hasChanged()).thenReturn(true);
+		when(module.getVersion()).thenReturn(version);
+		when(reactor.findByLabel(ANY_GROUP_ID + ":" + ANY_ARTIFACT_ID)).thenReturn(module);
+		final Parent parent = mock(Parent.class);
+		when(parent.getGroupId()).thenReturn(ANY_GROUP_ID);
+		when(parent.getArtifactId()).thenReturn(ANY_ARTIFACT_ID);
+		assertFalse(context.hasNotChanged(parent));
+	}
 }

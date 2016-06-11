@@ -6,9 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Parent;
 import org.apache.maven.project.MavenProject;
 
 import ch.sourcepond.maven.release.reactor.Reactor;
+import ch.sourcepond.maven.release.reactor.ReleasableModule;
 import ch.sourcepond.maven.release.reactor.UnresolvedSnapshotDependencyException;
 import ch.sourcepond.maven.release.version.Version;
 
@@ -20,7 +22,6 @@ class Context {
 	private final MavenProject project;
 	private final boolean incrementSnapshotVersionAfterRelease;
 	private boolean needsOwnVersion;
-	private boolean parentUpdated;
 	private boolean dependencyUpdated;
 
 	Context(final Reactor reactor, final MavenProject project, final Model model,
@@ -75,14 +76,15 @@ class Context {
 		needsOwnVersion = pNeedsOwnVersion;
 	}
 
-	public boolean parentUpdated() {
-		return parentUpdated;
-	}
-
-	public void setParentUpdated() {
-		if (!parentUpdated) {
-			parentUpdated = true;
+	public boolean hasNotChanged(final Parent pParentOrNull) {
+		boolean hasNotChanged = true;
+		if (pParentOrNull != null) {
+			final ReleasableModule module = reactor
+					.findByLabel(pParentOrNull.getGroupId() + ":" + pParentOrNull.getArtifactId());
+			hasNotChanged = module == null || !module.getVersion().hasChanged();
 		}
+
+		return hasNotChanged;
 	}
 
 	public boolean dependencyUpdated() {

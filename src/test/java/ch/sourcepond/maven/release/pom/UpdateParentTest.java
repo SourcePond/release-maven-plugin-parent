@@ -53,7 +53,6 @@ public class UpdateParentTest {
 	public void alterModelNoParentDeclared() {
 		when(parentProject.getVersion()).thenReturn(ANY_PARENT_VERSION);
 		cmd.alterModel(context);
-		verify(context, never()).setParentUpdated();
 		verifyZeroInteractions(parent, log);
 	}
 
@@ -61,7 +60,6 @@ public class UpdateParentTest {
 	public void alterModelParentIsReleased() {
 		when(project.getParent()).thenReturn(null);
 		cmd.alterModel(context);
-		verify(context, never()).setParentUpdated();
 		verifyZeroInteractions(log, parent);
 	}
 
@@ -70,7 +68,6 @@ public class UpdateParentTest {
 		cmd.alterModel(context);
 		final InOrder order = inOrder(parent, context, log);
 		order.verify(parent).setVersion(ANY_PARENT_VERSION);
-		order.verify(context).setParentUpdated();
 		order.verify(log).debug(" Parent anyParentArtifactId rewritten to version anyVersion");
 	}
 
@@ -81,7 +78,6 @@ public class UpdateParentTest {
 		doThrow(expected).when(context).getVersionToDependOn(ANY_PARENT_GROUP_ID, ANY_PARENT_ARTIFACT_ID);
 		cmd.alterModel(context);
 		verify(parent, never()).setVersion(ANY_PARENT_VERSION);
-		verify(context, never()).setParentUpdated();
 		verify(context).addError(ERROR_FORMAT, ANY_ARTIFACT_ID, ANY_PARENT_ARTIFACT_ID, ANY_PARENT_SNAPSHOT_VERSION);
 	}
 }

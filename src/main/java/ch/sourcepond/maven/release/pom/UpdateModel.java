@@ -28,7 +28,7 @@ final class UpdateModel extends Command {
 		final MavenProject project = updateContext.getProject();
 		final Model model = updateContext.getModel();
 
-		final boolean needsOwnVersion = isBlank(model.getVersion()) && !updateContext.parentUpdated()
+		final boolean needsOwnVersion = isBlank(model.getVersion()) && updateContext.hasNotChanged(model.getParent())
 				&& updateContext.dependencyUpdated();
 		updateContext.setNeedsOwnVersion(needsOwnVersion);
 

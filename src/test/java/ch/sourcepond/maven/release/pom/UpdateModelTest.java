@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Parent;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.junit.Before;
@@ -26,6 +27,7 @@ public class UpdateModelTest {
 	private static final String VERSION = "version";
 	private final MavenProject project = mock(MavenProject.class);
 	private final Model model = mock(Model.class);
+	private final Parent parent = mock(Parent.class);
 	private final Context context = mock(Context.class);
 	private final UpdateModel update = new UpdateModel(mock(Log.class));
 
@@ -37,12 +39,13 @@ public class UpdateModelTest {
 		when(context.getModel()).thenReturn(model);
 		when(context.getProject()).thenReturn(project);
 		when(context.getVersionToDependOn(GROUP_ID, ARTIFACT_ID)).thenReturn(VERSION);
+		when(model.getParent()).thenReturn(parent);
 	}
 
 	@Test
 	public void verifyNeedsOwnVersion() {
 		when(model.getVersion()).thenReturn(null);
-		when(context.parentUpdated()).thenReturn(false);
+		when(context.hasNotChanged(parent)).thenReturn(true);
 		when(context.dependencyUpdated()).thenReturn(true);
 		update.alterModel(context);
 		verify(model, times(2)).getVersion();
@@ -70,7 +73,7 @@ public class UpdateModelTest {
 
 	@Test
 	public void verifyAlterModel_NoVersionOnModelSet_ParentUpdated() throws Exception {
-		when(context.parentUpdated()).thenReturn(true);
+		when(context.hasNotChanged(parent)).thenReturn(true);
 		when(model.getVersion()).thenReturn(null);
 		update.alterModel(context);
 		verify(model, times(2)).getVersion();
@@ -79,7 +82,7 @@ public class UpdateModelTest {
 
 	@Test
 	public void verifyAlterModelProjectNotFound_NoVersionOnModelSet() throws Exception {
-		when(context.parentUpdated()).thenReturn(true);
+		when(context.hasNotChanged(parent)).thenReturn(true);
 		final UnresolvedSnapshotDependencyException expected = new UnresolvedSnapshotDependencyException(GROUP_ID,
 				ARTIFACT_ID);
 		doThrow(expected).when(context).getVersionToDependOn(GROUP_ID, ARTIFACT_ID);
