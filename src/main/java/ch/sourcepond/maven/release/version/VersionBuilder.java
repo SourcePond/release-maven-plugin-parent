@@ -14,7 +14,5 @@ public interface VersionBuilder {
 
 	VersionBuilder setChangedDependency(String changedDependencyOrNull);
 
-	VersionBuilder setRemoteUrl(String remoteUrl);
-
 	Version build() throws VersionException;
 }

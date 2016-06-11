@@ -65,7 +65,6 @@ final class DefaultReactorFactory implements ReactorFactory {
 				versionBuilder.setUseLastNumber(useLastNumber);
 				versionBuilder.setBuildNumber(buildNumber);
 				versionBuilder.setChangedDependency(changedDependencyOrNull);
-				versionBuilder.setRemoteUrl(rootProject.getRemoteUrlOrNull());
 
 				if (modulesToForceRelease == null || !modulesToForceRelease.contains(project.getArtifactId())) {
 					versionBuilder.setRelativePath(relativePathToModule);

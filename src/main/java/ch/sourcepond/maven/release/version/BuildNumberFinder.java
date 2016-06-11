@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 
 import org.apache.maven.project.MavenProject;
 
+import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.scm.ProposedTag;
 import ch.sourcepond.maven.release.scm.SCMException;
 import ch.sourcepond.maven.release.scm.SCMRepository;
@@ -17,16 +18,16 @@ import ch.sourcepond.maven.release.scm.SCMRepository;
 @Singleton
 class BuildNumberFinder {
 	static final String SNAPSHOT_EXTENSION = "-SNAPSHOT";
-
+	private final RootProject rootProject;
 	private final SCMRepository repository;
 
 	@Inject
-	BuildNumberFinder(final SCMRepository pRepository) {
+	BuildNumberFinder(final RootProject pRootProject, final SCMRepository pRepository) {
+		rootProject = pRootProject;
 		repository = pRepository;
 	}
 
-	public long findBuildNumber(final MavenProject project, final String remoteUrl, final String businessVersion)
-			throws VersionException {
+	public long findBuildNumber(final MavenProject project, final String businessVersion) throws VersionException {
 		final SortedSet<Long> prev = new TreeSet<>();
 
 		try {
@@ -34,7 +35,8 @@ class BuildNumberFinder {
 				prev.add(previousTag.getBuildNumber());
 			}
 
-			prev.addAll(repository.getRemoteBuildNumbers(remoteUrl, project.getArtifactId(), businessVersion));
+			prev.addAll(repository.getRemoteBuildNumbers(rootProject.getRemoteUrlOrNull(), project.getArtifactId(),
+					businessVersion));
 			return prev.isEmpty() ? 0l : prev.last() + 1;
 		} catch (final SCMException e) {
 			throw new VersionException(e, "Build number could not be determined!");

@@ -12,6 +12,7 @@ import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.scm.ProposedTag;
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
@@ -24,11 +25,13 @@ public class BuildNumberFinderTest {
 	private final ProposedTag tag = mock(ProposedTag.class);
 	private final List<ProposedTag> tags = asList(tag);
 	private final List<Long> remoteBuildNumbers = asList(9l, 2l, 7l);
-	private final BuildNumberFinder finder = new BuildNumberFinder(repository);
+	private final RootProject rootProject = mock(RootProject.class);
+	private final BuildNumberFinder finder = new BuildNumberFinder(rootProject, repository);
 
 	@Before
 	public void setup() {
 		when(project.getArtifactId()).thenReturn(ANY_ARTIFACT_ID);
+		when(rootProject.getRemoteUrlOrNull()).thenReturn(ANY_REMOTE_URL);
 		when(tag.getBuildNumber()).thenReturn(6l);
 	}
 
@@ -39,7 +42,7 @@ public class BuildNumberFinderTest {
 		when(repository.getRemoteBuildNumbers(ANY_REMOTE_URL, ANY_ARTIFACT_ID, ANY_BUSINESS_VERSION))
 				.thenReturn(Collections.<Long> emptyList());
 
-		assertEquals(0l, finder.findBuildNumber(project, ANY_REMOTE_URL, ANY_BUSINESS_VERSION));
+		assertEquals(0l, finder.findBuildNumber(project, ANY_BUSINESS_VERSION));
 	}
 
 	@Test
@@ -49,7 +52,7 @@ public class BuildNumberFinderTest {
 		when(repository.tagsForVersion(ANY_ARTIFACT_ID, ANY_BUSINESS_VERSION)).thenReturn(tags);
 
 		// Must be the last version incremented by 1
-		assertEquals(10l, finder.findBuildNumber(project, ANY_REMOTE_URL, ANY_BUSINESS_VERSION));
+		assertEquals(10l, finder.findBuildNumber(project, ANY_BUSINESS_VERSION));
 	}
 
 	@Test
@@ -57,7 +60,7 @@ public class BuildNumberFinderTest {
 		when(repository.tagsForVersion(ANY_ARTIFACT_ID, ANY_BUSINESS_VERSION)).thenReturn(tags);
 
 		// Must be the last version incremented by 1
-		assertEquals(7l, finder.findBuildNumber(project, ANY_REMOTE_URL, ANY_BUSINESS_VERSION));
+		assertEquals(7l, finder.findBuildNumber(project, ANY_BUSINESS_VERSION));
 	}
 
 	@Test
@@ -66,6 +69,6 @@ public class BuildNumberFinderTest {
 				.thenReturn(remoteBuildNumbers);
 
 		// Must be the last version incremented by 1
-		assertEquals(10l, finder.findBuildNumber(project, ANY_REMOTE_URL, ANY_BUSINESS_VERSION));
+		assertEquals(10l, finder.findBuildNumber(project, ANY_BUSINESS_VERSION));
 	}
 }

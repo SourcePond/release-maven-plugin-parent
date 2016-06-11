@@ -16,7 +16,6 @@ final class DefaultVersionBuilder implements VersionBuilder {
 	private Long buildNumber;
 	private String relativePathToModuleOrNull;
 	private String changedDependencyOrNull;
-	private String remoteUrl;
 
 	DefaultVersionBuilder(final BuildNumberFinder finder, final ChangeDetectorFactory detectorFactory) {
 		this.finder = finder;
@@ -54,12 +53,6 @@ final class DefaultVersionBuilder implements VersionBuilder {
 	}
 
 	@Override
-	public VersionBuilder setRemoteUrl(final String remoteUrl) {
-		this.remoteUrl = remoteUrl;
-		return this;
-	}
-
-	@Override
 	public Version build() throws VersionException {
 		String businessVersion = project.getVersion().replace(SNAPSHOT_EXTENSION, "");
 		long actualBuildNumber;
@@ -75,7 +68,7 @@ final class DefaultVersionBuilder implements VersionBuilder {
 		} else if (buildNumber != null) {
 			actualBuildNumber = buildNumber;
 		} else {
-			actualBuildNumber = finder.findBuildNumber(project, remoteUrl, businessVersion);
+			actualBuildNumber = finder.findBuildNumber(project, businessVersion);
 		}
 
 		final String releaseVersion = businessVersion + "." + actualBuildNumber;

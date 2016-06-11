@@ -16,7 +16,6 @@ public class DefaultVersionBuilderFactoryTest {
 	private static final String CHANGED_DEPENDENCY = "changedDependency";
 	private static final String RELATIVE_PATH_TO_MODULE = "relativePathToModule";
 	private static final String EQUIVALENT_VERSION = "equivalentVersion";
-	private static final String ANY_REMOTE_URL = "anyRemoteUrl";
 	private final BuildNumberFinder finder = mock(BuildNumberFinder.class);
 	private final ChangeDetectorFactory detectorFactory = mock(ChangeDetectorFactory.class);
 	private final ChangeDetector detector = mock(ChangeDetector.class);
@@ -37,7 +36,6 @@ public class DefaultVersionBuilderFactoryTest {
 		builder.setProject(project);
 		builder.setChangedDependency(CHANGED_DEPENDENCY);
 		builder.setRelativePath(RELATIVE_PATH_TO_MODULE);
-		builder.setRemoteUrl(ANY_REMOTE_URL);
 	}
 
 	@Test
@@ -80,7 +78,7 @@ public class DefaultVersionBuilderFactoryTest {
 
 	@Test
 	public void verifyEvaluateBuildNumber() throws VersionException {
-		when(finder.findBuildNumber(project, ANY_REMOTE_URL, BUSINESS_VERSION)).thenReturn(10l);
+		when(finder.findBuildNumber(project, BUSINESS_VERSION)).thenReturn(10l);
 		when(detector.setBuildNumber(10l)).thenReturn(detector);
 		final Version version = builder.build();
 		assertEquals(10l, version.getBuildNumber());
