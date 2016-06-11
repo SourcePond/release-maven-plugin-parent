@@ -15,7 +15,6 @@ final class DefaultVersionBuilder implements VersionBuilder {
 	private final Configuration configuration;
 	private final ChangeDetectorFactory detectorFactory;
 	private MavenProject project;
-	private boolean userLastNumber;
 	private String relativePathToModuleOrNull;
 	private String changedDependencyOrNull;
 
@@ -29,12 +28,6 @@ final class DefaultVersionBuilder implements VersionBuilder {
 	@Override
 	public VersionBuilder setProject(final MavenProject project) {
 		this.project = project;
-		return this;
-	}
-
-	@Override
-	public VersionBuilder setUseLastNumber(final boolean useLastNumber) {
-		this.userLastNumber = useLastNumber;
 		return this;
 	}
 
@@ -56,7 +49,7 @@ final class DefaultVersionBuilder implements VersionBuilder {
 		long actualBuildNumber;
 
 		final Long buildNumberOrNull = configuration.getBuildNumberOrNull();
-		if (userLastNumber) {
+		if (configuration.isIncrementSnapshotVersionAfterRelease()) {
 			final int idx = businessVersion.lastIndexOf('.');
 			actualBuildNumber = valueOf(businessVersion.substring(idx + 1));
 			businessVersion = businessVersion.substring(0, idx);
@@ -75,9 +68,10 @@ final class DefaultVersionBuilder implements VersionBuilder {
 		version.setReleaseVersion(releaseVersion);
 		version.setBuildNumber(actualBuildNumber);
 		version.setBusinessVersion(businessVersion);
-		version.setEquivalentVersion(detectorFactory.newDetector().setProject(project).setActualBuildNumber(actualBuildNumber)
-				.setChangedDependency(changedDependencyOrNull).setRelativePathToModule(relativePathToModuleOrNull)
-				.setBusinessVersion(businessVersion).equivalentVersionOrNull());
+		version.setEquivalentVersion(detectorFactory.newDetector().setProject(project)
+				.setActualBuildNumber(actualBuildNumber).setChangedDependency(changedDependencyOrNull)
+				.setRelativePathToModule(relativePathToModuleOrNull).setBusinessVersion(businessVersion)
+				.equivalentVersionOrNull());
 		return version;
 	}
 

@@ -53,7 +53,7 @@ public class DefaultVersionBuilderFactoryTest {
 	public void buildWhenUseLastDigitAsBuildNumberAndBuildNumberAreSet_LastDigitIsHigher() throws VersionException {
 		when(project.getVersion()).thenReturn("1.0.11-SNAPSHOT");
 		when(detector.setActualBuildNumber(11)).thenReturn(detector);
-		builder.setUseLastNumber(true);
+		when(configuratinon.isIncrementSnapshotVersionAfterRelease()).thenReturn(true);
 		when(configuratinon.getBuildNumberOrNull()).thenReturn(9l);
 		final Version version = builder.build();
 		assertEquals(11l, version.getBuildNumber());
@@ -63,7 +63,7 @@ public class DefaultVersionBuilderFactoryTest {
 	public void buildWhenUseLastDigitAsBuildNumberAndBuildNumberAreSet_BuildNumberIsHigher() throws VersionException {
 		when(project.getVersion()).thenReturn("1.0.9-SNAPSHOT");
 		when(detector.setActualBuildNumber(11l)).thenReturn(detector);
-		builder.setUseLastNumber(true);
+		when(configuratinon.isIncrementSnapshotVersionAfterRelease()).thenReturn(true);
 		when(configuratinon.getBuildNumberOrNull()).thenReturn(11l);
 		final Version version = builder.build();
 		assertEquals(11l, version.getBuildNumber());
@@ -74,7 +74,7 @@ public class DefaultVersionBuilderFactoryTest {
 		when(configuratinon.getBuildNumberOrNull()).thenReturn(null);
 		when(project.getVersion()).thenReturn("1.0.11-SNAPSHOT");
 		when(detector.setActualBuildNumber(11l)).thenReturn(detector);
-		builder.setUseLastNumber(true);
+		when(configuratinon.isIncrementSnapshotVersionAfterRelease()).thenReturn(true);
 		final Version version = builder.build();
 		assertEquals(11l, version.getBuildNumber());
 	}

@@ -6,8 +6,6 @@ public interface VersionBuilder {
 
 	VersionBuilder setProject(MavenProject project);
 
-	VersionBuilder setUseLastNumber(boolean useLastNumber);
-
 	VersionBuilder setRelativePath(String relativePathToModuleOrNull);
 
 	VersionBuilder setChangedDependency(String changedDependencyOrNull);

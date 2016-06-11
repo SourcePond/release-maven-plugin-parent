@@ -115,11 +115,6 @@ public class ReleaseMojo extends NextMojo {
 	}
 
 	@Override
-	protected ReactorFactory configureReactorFactory() {
-		return super.configureReactorFactory().setUseLastNumber(incrementSnapshotVersionAfterRelease);
-	}
-
-	@Override
 	protected void registerParemeters(final ParameterRegistration pRegistration) {
 		super.registerParemeters(pRegistration);
 		pRegistration.setGlobalSettings(globalSettings);
