@@ -8,8 +8,6 @@ public interface VersionBuilder {
 
 	VersionBuilder setUseLastNumber(boolean useLastNumber);
 
-	VersionBuilder setBuildNumber(Long buildNumberOrNull);
-
 	VersionBuilder setRelativePath(String relativePathToModuleOrNull);
 
 	VersionBuilder setChangedDependency(String changedDependencyOrNull);

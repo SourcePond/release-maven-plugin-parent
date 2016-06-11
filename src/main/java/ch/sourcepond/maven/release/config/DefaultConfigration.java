@@ -15,8 +15,8 @@ final class DefaultConfigration implements ParameterRegistration, Configuration 
 	/**
 	 * <p>
 	 * The build number to use in the release version. Given a snapshot version
-	 * of "1.0-SNAPSHOT" and a buildNumber value of "2", the actual released
-	 * version will be "1.0.2".
+	 * of "1.0-SNAPSHOT" and a buildNumberOrNull value of "2", the actual
+	 * released version will be "1.0.2".
 	 * </p>
 	 * <p>
 	 * By default, the plugin will automatically find a suitable build number.
@@ -27,7 +27,7 @@ final class DefaultConfigration implements ParameterRegistration, Configuration 
 	 * or in this plugin's configuration.
 	 * </p>
 	 */
-	private Long buildNumber;
+	private Long buildNumberOrNull;
 
 	/**
 	 * The modules to release, or no value to to release the project from the
@@ -143,8 +143,8 @@ final class DefaultConfigration implements ParameterRegistration, Configuration 
 	 * @see ch.sourcepond.maven.release.config.Configuration#getBuildNumber()
 	 */
 	@Override
-	public Long getBuildNumber() {
-		return buildNumber;
+	public Long getBuildNumberOrNull() {
+		return buildNumberOrNull;
 	}
 
 	/*
@@ -155,8 +155,8 @@ final class DefaultConfigration implements ParameterRegistration, Configuration 
 	 * java.lang.Long)
 	 */
 	@Override
-	public void setBuildNumber(final Long buildNumber) {
-		this.buildNumber = buildNumber;
+	public void setBuildNumber(final Long pBuildNumberOrNull) {
+		buildNumberOrNull = pBuildNumberOrNull;
 	}
 
 	/*

@@ -25,7 +25,7 @@ class ChangeDetector {
 		this.repository = repository;
 	}
 
-	public ChangeDetector setBuildNumber(final long buildNumber) {
+	public ChangeDetector setActualBuildNumber(final long buildNumber) {
 		this.buildNumber = buildNumber;
 		return this;
 	}

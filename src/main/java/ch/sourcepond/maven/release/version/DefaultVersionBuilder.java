@@ -4,22 +4,26 @@ import static java.lang.Long.valueOf;
 
 import org.apache.maven.project.MavenProject;
 
+import ch.sourcepond.maven.release.config.Configuration;
+
 /**
  *
  */
 final class DefaultVersionBuilder implements VersionBuilder {
 	static final String SNAPSHOT_EXTENSION = "-SNAPSHOT";
 	private final BuildNumberFinder finder;
+	private final Configuration configuration;
 	private final ChangeDetectorFactory detectorFactory;
 	private MavenProject project;
 	private boolean userLastNumber;
-	private Long buildNumber;
 	private String relativePathToModuleOrNull;
 	private String changedDependencyOrNull;
 
-	DefaultVersionBuilder(final BuildNumberFinder finder, final ChangeDetectorFactory detectorFactory) {
-		this.finder = finder;
-		this.detectorFactory = detectorFactory;
+	DefaultVersionBuilder(final BuildNumberFinder pFinder, final Configuration pConfiguration,
+			final ChangeDetectorFactory pDetectorFactory) {
+		finder = pFinder;
+		configuration = pConfiguration;
+		detectorFactory = pDetectorFactory;
 	}
 
 	@Override
@@ -31,12 +35,6 @@ final class DefaultVersionBuilder implements VersionBuilder {
 	@Override
 	public VersionBuilder setUseLastNumber(final boolean useLastNumber) {
 		this.userLastNumber = useLastNumber;
-		return this;
-	}
-
-	@Override
-	public VersionBuilder setBuildNumber(final Long buildNumberOrNull) {
-		this.buildNumber = buildNumberOrNull;
 		return this;
 	}
 
@@ -57,16 +55,17 @@ final class DefaultVersionBuilder implements VersionBuilder {
 		String businessVersion = project.getVersion().replace(SNAPSHOT_EXTENSION, "");
 		long actualBuildNumber;
 
+		final Long buildNumberOrNull = configuration.getBuildNumberOrNull();
 		if (userLastNumber) {
 			final int idx = businessVersion.lastIndexOf('.');
 			actualBuildNumber = valueOf(businessVersion.substring(idx + 1));
 			businessVersion = businessVersion.substring(0, idx);
 
-			if (buildNumber != null && buildNumber > actualBuildNumber) {
-				actualBuildNumber = buildNumber;
+			if (buildNumberOrNull != null && buildNumberOrNull > actualBuildNumber) {
+				actualBuildNumber = buildNumberOrNull;
 			}
-		} else if (buildNumber != null) {
-			actualBuildNumber = buildNumber;
+		} else if (buildNumberOrNull != null) {
+			actualBuildNumber = buildNumberOrNull;
 		} else {
 			actualBuildNumber = finder.findBuildNumber(project, businessVersion);
 		}
@@ -76,7 +75,7 @@ final class DefaultVersionBuilder implements VersionBuilder {
 		version.setReleaseVersion(releaseVersion);
 		version.setBuildNumber(actualBuildNumber);
 		version.setBusinessVersion(businessVersion);
-		version.setEquivalentVersion(detectorFactory.newDetector().setProject(project).setBuildNumber(actualBuildNumber)
+		version.setEquivalentVersion(detectorFactory.newDetector().setProject(project).setActualBuildNumber(actualBuildNumber)
 				.setChangedDependency(changedDependencyOrNull).setRelativePathToModule(relativePathToModuleOrNull)
 				.setBusinessVersion(businessVersion).equivalentVersionOrNull());
 		return version;

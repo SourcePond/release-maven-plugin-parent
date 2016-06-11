@@ -7,7 +7,7 @@ import org.apache.maven.settings.Settings;
 
 public interface Configuration {
 
-	Long getBuildNumber();
+	Long getBuildNumberOrNull();
 
 	List<String> getModulesToRelease();
 

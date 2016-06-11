@@ -6,8 +6,6 @@ public interface ReactorFactory {
 
 	ReactorFactory setUseLastNumber(boolean useLastDigitAsVersionNumber);
 
-	ReactorFactory setBuildNumber(final Long buildNumber);
-
 	ReactorFactory setModulesToForceRelease(final List<String> modulesToForceRelease);
 
 	Reactor newReactor() throws ReactorException;

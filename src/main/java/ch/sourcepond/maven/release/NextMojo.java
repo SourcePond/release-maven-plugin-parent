@@ -177,7 +177,7 @@ public class NextMojo extends AbstractMojo {
 	}
 
 	protected ReactorFactory configureReactorFactory() {
-		return reactorFactory.setBuildNumber(buildNumber).setModulesToForceRelease(modulesToForceRelease);
+		return reactorFactory.setModulesToForceRelease(modulesToForceRelease);
 	}
 
 	protected final void configureJsch() {

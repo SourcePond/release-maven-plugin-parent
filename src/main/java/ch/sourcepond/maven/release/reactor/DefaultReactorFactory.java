@@ -22,7 +22,6 @@ final class DefaultReactorFactory implements ReactorFactory {
 	private final RootProject rootProject;
 	private final ReactorProjects projects;
 	private boolean useLastNumber;
-	private Long buildNumber;
 	private List<String> modulesToForceRelease;
 
 	@Inject
@@ -32,12 +31,6 @@ final class DefaultReactorFactory implements ReactorFactory {
 		this.versionBuilderFactory = versioningFactory;
 		rootProject = pRootProject;
 		projects = pProjects;
-	}
-
-	@Override
-	public ReactorFactory setBuildNumber(final Long buildNumber) {
-		this.buildNumber = buildNumber;
-		return this;
 	}
 
 	@Override
@@ -63,7 +56,6 @@ final class DefaultReactorFactory implements ReactorFactory {
 				final VersionBuilder versionBuilder = versionBuilderFactory.newBuilder();
 				versionBuilder.setProject(project);
 				versionBuilder.setUseLastNumber(useLastNumber);
-				versionBuilder.setBuildNumber(buildNumber);
 				versionBuilder.setChangedDependency(changedDependencyOrNull);
 
 				if (modulesToForceRelease == null || !modulesToForceRelease.contains(project.getArtifactId())) {

@@ -4,6 +4,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import ch.sourcepond.maven.release.config.Configuration;
+
 /**
  * Default implementation of the {@link VersionBuilderFactory} interface.
  *
@@ -13,11 +15,14 @@ import javax.inject.Singleton;
 final class DefaultVersionFactory implements VersionBuilderFactory {
 	static final String SNAPSHOT_EXTENSION = "-SNAPSHOT";
 	private BuildNumberFinder finder;
+	private final Configuration configuration;
 	private ChangeDetectorFactory detectorFactory;
 
 	@Inject
-	DefaultVersionFactory(final BuildNumberFinder pFinder, final ChangeDetectorFactory pDetectorFactory) {
+	DefaultVersionFactory(final BuildNumberFinder pFinder, final Configuration pConfiguration,
+			final ChangeDetectorFactory pDetectorFactory) {
 		finder = pFinder;
+		configuration = pConfiguration;
 		detectorFactory = pDetectorFactory;
 	}
 
@@ -31,6 +36,6 @@ final class DefaultVersionFactory implements VersionBuilderFactory {
 
 	@Override
 	public VersionBuilder newBuilder() {
-		return new DefaultVersionBuilder(finder, detectorFactory);
+		return new DefaultVersionBuilder(finder, configuration, detectorFactory);
 	}
 }
