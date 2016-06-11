@@ -176,10 +176,6 @@ public class NextMojo extends AbstractMojo {
 		return builder.build();
 	}
 
-	protected ReactorFactory configureReactorFactory() {
-		return reactorFactory.setModulesToForceRelease(modulesToForceRelease);
-	}
-
 	protected final void configureJsch() {
 		if (!disableSshAgent) {
 			if (serverId != null) {
@@ -225,7 +221,7 @@ public class NextMojo extends AbstractMojo {
 			registerParemeters(registration);
 			repository.errorIfNotClean();
 			configureJsch();
-			final Reactor reactor = configureReactorFactory().newReactor();
+			final Reactor reactor = reactorFactory.newReactor();
 			execute(reactor, figureOutTagNamesAndThrowIfAlreadyExists(reactor));
 		} catch (final PluginException e) {
 			e.printBigErrorMessageAndThrow(getLog());
