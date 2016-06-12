@@ -8,8 +8,7 @@
 	<version>1.0-SNAPSHOT</version> <!-- When changing also update scaffolding.TestProject.PLUGIN_VERSION_FOR_TESTS 
 		and add to src/site/markdown/changelog.md -->
 	<name>The Multi Module Maven Release Plugin</name>
-	<description>A maven release plugin built for multi-maven-module git repositories allowing continuous deployment
-    </description>
+	<description>Maven plugin to release multi-module Maven projects where only changed modules should be released</description>
 	<url>https://github.com/SourcePond/multi-module-release-maven-plugin</url>
 	<packaging>maven-plugin</packaging>
 	<prerequisites>
@@ -56,7 +55,7 @@
 		<maven-javadoc-plugin>2.10.4</maven-javadoc-plugin>
 		<maven-gpg-plugin>1.6</maven-gpg-plugin>
 		<site-maven-plugin>0.12</site-maven-plugin>
-		
+
 		<!-- Reporting plugin versions -->
 		<maven-plugin-plugin>3.4</maven-plugin-plugin>
 		<maven-surefire-report-plugin>2.19.1</maven-surefire-report-plugin>
