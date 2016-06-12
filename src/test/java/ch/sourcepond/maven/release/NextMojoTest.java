@@ -5,7 +5,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.apache.maven.model.Scm;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Server;
@@ -14,7 +13,6 @@ import org.eclipse.jgit.transport.JschConfigSessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.sourcepond.maven.release.config.ParameterRegistration;
 import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
 import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.reactor.ReactorFactory;
@@ -38,9 +36,7 @@ public class NextMojoTest {
 	private final SCMRepository repository = mock(SCMRepository.class);
 	private final MavenComponentSingletons singletons = mock(MavenComponentSingletons.class);
 	private final RootProject rootProject = mock(RootProject.class);
-	private final Scm scm = mock(Scm.class);
-	private final ParameterRegistration registration = mock(ParameterRegistration.class);
-	private final NextMojo mojo = new NextMojo(repository, reactorFactory, singletons, rootProject, registration);
+	private final NextMojo mojo = new NextMojo(repository, reactorFactory, singletons, rootProject);
 
 	@Before
 	public void setup() {

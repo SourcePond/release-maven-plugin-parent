@@ -3,6 +3,7 @@ package ch.sourcepond.maven.release.providers;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
@@ -29,7 +30,11 @@ public abstract class BaseProvider<T> implements Provider<T> {
 					public Object invoke(final Object proxy, final Method method, final Object[] args)
 							throws Throwable {
 						notNull(getDelegate(), "Delegate object is not available!");
-						return method.invoke(getDelegate(), args);
+						try {
+							return method.invoke(getDelegate(), args);
+						} catch (final InvocationTargetException e) {
+							throw e.getTargetException();
+						}
 					}
 				});
 	}

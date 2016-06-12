@@ -7,10 +7,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
 import ch.sourcepond.maven.release.PluginException;
+import ch.sourcepond.maven.release.config.Configuration;
+import ch.sourcepond.maven.release.config.ConfigurationAccessor;
 import ch.sourcepond.maven.release.reactor.ReactorProjects;
 
 @Named
@@ -20,6 +23,7 @@ final class DefaultMavenComponentSingletons implements MavenComponentSingletons 
 	private Log log;
 	private MavenProject project;
 	private ReactorProjects reactorProjects;
+	private Configuration configuration;
 
 	@Inject
 	DefaultMavenComponentSingletons(final List<Initializable> pInitializables) {
@@ -41,6 +45,11 @@ final class DefaultMavenComponentSingletons implements MavenComponentSingletons 
 		return reactorProjects;
 	}
 
+	@Override
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
 	private void setLog(final Log pLog) {
 		log = pLog;
 	}
@@ -59,16 +68,17 @@ final class DefaultMavenComponentSingletons implements MavenComponentSingletons 
 		};
 	}
 
+	private void setConfiguration(final Configuration pConfiguration) {
+		configuration = pConfiguration;
+	}
+
 	@Override
-	public void initialize(final Log pLog, final MavenProject pProject, final List<MavenProject> pReactorProjects)
+	public void initialize(final Mojo pMojo, final MavenProject pProject, final List<MavenProject> pReactorProjects)
 			throws PluginException {
-		setLog(pLog);
+		setLog(pMojo.getLog());
 		setRootProject(pProject);
 		setReactorProjects(pReactorProjects);
-
-		if (initializables.isEmpty()) {
-			throw new PluginException("No initializables found!");
-		}
+		setConfiguration(new ConfigurationAccessor(pMojo));
 
 		for (final Initializable initializable : initializables) {
 			initializable.initialize();

@@ -16,7 +16,7 @@ import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.eclipse.jgit.transport.JschConfigSessionFactory;
 
-import ch.sourcepond.maven.release.config.ParameterRegistration;
+import ch.sourcepond.maven.release.config.Configuration;
 import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
 import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.reactor.Reactor;
@@ -66,7 +66,7 @@ public class NextMojo extends AbstractMojo {
 	 * or in this plugin's configuration.
 	 * </p>
 	 */
-	@Parameter(property = "buildNumber")
+	@Parameter(property = Configuration.BUILD_NUMBER)
 	protected Long buildNumber;
 
 	/**
@@ -75,22 +75,22 @@ public class NextMojo extends AbstractMojo {
 	 * modules it needs will be built and released also. When run from the
 	 * command line, this can be a comma-separated list of module names.
 	 */
-	@Parameter(alias = "modulesToRelease", property = "modulesToRelease")
+	@Parameter(alias = "modulesToRelease", property = Configuration.MODULES_TO_RELEASE)
 	protected List<String> modulesToRelease;
 
 	/**
 	 * A module to force release on, even if no changes has been detected.
 	 */
-	@Parameter(alias = "forceRelease", property = "forceRelease")
+	@Parameter(alias = "forceRelease", property = Configuration.MODULES_TO_FORCE_RELEASE)
 	protected List<String> modulesToForceRelease;
 
-	@Parameter(property = "disableSshAgent")
+	@Parameter(property = Configuration.DISABLE_SSH_AGENT)
 	private boolean disableSshAgent;
 
 	/**
 	 * Specifies whether the release build should run with the "-X" switch.
 	 */
-	@Parameter(property = "debugEnabled")
+	@Parameter(property = Configuration.DEBUG_ENABLED)
 	protected boolean debugEnabled;
 
 	@Parameter(defaultValue = "${settings}", readonly = true, required = true)
@@ -100,43 +100,40 @@ public class NextMojo extends AbstractMojo {
 	 * If set, the identityFile and passphrase will be read from the Maven
 	 * settings file.
 	 */
-	@Parameter(property = "serverId")
+	@Parameter(property = Configuration.SERVER_ID)
 	private String serverId;
 
 	/**
 	 * If set, this file will be used to specify the known_hosts. This will
 	 * override any default value.
 	 */
-	@Parameter(property = "knownHosts")
+	@Parameter(property = Configuration.KNOWN_HOSTS)
 	private String knownHosts;
 
 	/**
 	 * Specifies the private key to be used.
 	 */
-	@Parameter(property = "privateKey")
+	@Parameter(property = Configuration.PRIVATE_KEY)
 	private String privateKey;
 
 	/**
 	 * Specifies the passphrase to be used with the identityFile specified.
 	 */
-	@Parameter(property = "passphrase")
+	@Parameter(property = Configuration.PASSPHRASE)
 	private String passphrase;
 
 	private final ReactorFactory reactorFactory;
 	protected final SCMRepository repository;
 	private final MavenComponentSingletons singletons;
-	private final ParameterRegistration registration;
 	protected RootProject rootProject;
 
 	@Inject
 	public NextMojo(final SCMRepository pRepository, final ReactorFactory pReactorFactory,
-			final MavenComponentSingletons pSingletons, final RootProject pRootProject,
-			final ParameterRegistration pRegistration) {
+			final MavenComponentSingletons pSingletons, final RootProject pRootProject) {
 		repository = pRepository;
 		reactorFactory = pReactorFactory;
 		singletons = pSingletons;
 		rootProject = pRootProject;
-		registration = pRegistration;
 	}
 
 	final void setSettings(final Settings settings) {
@@ -198,27 +195,12 @@ public class NextMojo extends AbstractMojo {
 		// noop by default
 	}
 
-	protected void registerParemeters(final ParameterRegistration pRegistration) {
-		pRegistration.setBuildNumber(buildNumber);
-		pRegistration.setDebugEnabled(debugEnabled);
-		pRegistration.setDisableSshAgent(disableSshAgent);
-		pRegistration.setKnownHosts(knownHosts);
-		pRegistration.setModulesToForceRelease(modulesToForceRelease);
-		pRegistration.setModulesToRelease(modulesToRelease);
-		pRegistration.setPassphrase(passphrase);
-		pRegistration.setPrivateKey(privateKey);
-		pRegistration.setServerId(serverId);
-		pRegistration.setSettings(settings);
-	}
-
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
 			// Register singletons for injection
-			singletons.initialize(getLog(), project, projects);
+			singletons.initialize(this, project, projects);
 
-			// Register parameters for usage with Configuration
-			registerParemeters(registration);
 			repository.errorIfNotClean();
 			configureJsch();
 			final Reactor reactor = reactorFactory.newReactor();
