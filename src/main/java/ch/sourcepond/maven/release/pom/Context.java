@@ -64,7 +64,11 @@ class Context {
 
 		String versionToDependOn = null;
 		if (incrementSnapshotVersionAfterRelease) {
-			versionToDependOn = version.getNextDevelopmentVersion();
+			if (version.hasChanged()) {
+				versionToDependOn = version.getNextDevelopmentVersion();
+			} else {
+				versionToDependOn = version.getDevelopmentVersion();
+			}
 		} else if (version.getEquivalentVersionOrNull() == null) {
 			versionToDependOn = version.getReleaseVersion();
 		} else {
@@ -72,10 +76,6 @@ class Context {
 		}
 
 		return versionToDependOn;
-	}
-
-	public boolean incrementSnapshotVersionAfterRelease() {
-		return incrementSnapshotVersionAfterRelease;
 	}
 
 	public boolean needsOwnVersion() {

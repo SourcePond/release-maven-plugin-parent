@@ -70,11 +70,45 @@ public class ContextFactoryTest {
 	}
 
 	@Test
-	public void getVersionToDependOn() throws Exception {
+	public void getVersionToDependOn_IncrementSnapshot_HasChanged() throws Exception {
+		context = new ContextFactory().newContext(reactor, project, model, true);
+		final ReleasableModule module = mock(ReleasableModule.class);
+		final Version version = mock(Version.class);
+		when(version.hasChanged()).thenReturn(true);
+		when(module.getVersion()).thenReturn(version);
+		when(version.getNextDevelopmentVersion()).thenReturn(TEST_STRING);
+		when(reactor.find(ANY_GROUP_ID, ANY_ARTIFACT_ID)).thenReturn(module);
+		assertEquals(TEST_STRING, context.getVersionToDependOn(ANY_GROUP_ID, ANY_ARTIFACT_ID));
+	}
+
+	@Test
+	public void getVersionToDependOn_IncrementSnapshot_HasNotChanged() throws Exception {
+		context = new ContextFactory().newContext(reactor, project, model, true);
+		final ReleasableModule module = mock(ReleasableModule.class);
+		final Version version = mock(Version.class);
+		when(version.hasChanged()).thenReturn(false);
+		when(module.getVersion()).thenReturn(version);
+		when(version.getDevelopmentVersion()).thenReturn(TEST_STRING);
+		when(reactor.find(ANY_GROUP_ID, ANY_ARTIFACT_ID)).thenReturn(module);
+		assertEquals(TEST_STRING, context.getVersionToDependOn(ANY_GROUP_ID, ANY_ARTIFACT_ID));
+	}
+
+	@Test
+	public void getVersionToDependOn_ReleaseVersion() throws Exception {
 		final ReleasableModule module = mock(ReleasableModule.class);
 		final Version version = mock(Version.class);
 		when(module.getVersion()).thenReturn(version);
 		when(version.getReleaseVersion()).thenReturn(TEST_STRING);
+		when(reactor.find(ANY_GROUP_ID, ANY_ARTIFACT_ID)).thenReturn(module);
+		assertEquals(TEST_STRING, context.getVersionToDependOn(ANY_GROUP_ID, ANY_ARTIFACT_ID));
+	}
+
+	@Test
+	public void getVersionToDependOn_EquivalentVersion() throws Exception {
+		final ReleasableModule module = mock(ReleasableModule.class);
+		final Version version = mock(Version.class);
+		when(module.getVersion()).thenReturn(version);
+		when(version.getEquivalentVersionOrNull()).thenReturn(TEST_STRING);
 		when(reactor.find(ANY_GROUP_ID, ANY_ARTIFACT_ID)).thenReturn(module);
 		assertEquals(TEST_STRING, context.getVersionToDependOn(ANY_GROUP_ID, ANY_ARTIFACT_ID));
 	}

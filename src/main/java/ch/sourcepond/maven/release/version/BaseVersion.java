@@ -13,18 +13,23 @@ package ch.sourcepond.maven.release.version;
 import static java.lang.String.format;
 
 public abstract class BaseVersion implements Version {
-	static final String SNAPSHOT_EXTENSION = "-SNAPSHOT";
+	static final String SNAPSHOT_FORMAT = "%s.%d-SNAPSHOT";
 
 	@Override
-	public String getNextDevelopmentVersion() {
-		return getBusinessVersion() + "." + (getBuildNumber() + 1) + SNAPSHOT_EXTENSION;
+	public final String getNextDevelopmentVersion() {
+		return format(SNAPSHOT_FORMAT, getBusinessVersion(), getBuildNumber() + 1);
+	}
+
+	@Override
+	public final String getDevelopmentVersion() {
+		return format(SNAPSHOT_FORMAT, getBusinessVersion(), getBuildNumber());
 	}
 
 	@Override
 	public String toString() {
 		return format(
-				"[build-number: %d, business-version: %s, release-version: %s, next-development-version: %s, equivalent-version: %s]",
-				getBuildNumber(), getBusinessVersion(), getReleaseVersion(), getNextDevelopmentVersion(),
-				getEquivalentVersionOrNull());
+				"[build-number: %d, business-version: %s, release-version: %s, development-version: %s, next-development-version: %s, equivalent-version: %s]",
+				getBuildNumber(), getBusinessVersion(), getReleaseVersion(), getDevelopmentVersion(),
+				getNextDevelopmentVersion(), getEquivalentVersionOrNull());
 	}
 }

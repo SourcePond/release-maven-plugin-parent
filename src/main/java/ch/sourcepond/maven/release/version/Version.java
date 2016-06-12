@@ -13,6 +13,8 @@ package ch.sourcepond.maven.release.version;
 public interface Version {
 	String SNAPSHOT_EXTENSION = "-SNAPSHOT";
 
+	String getDevelopmentVersion();
+
 	String getNextDevelopmentVersion();
 
 	String getReleaseVersion();
@@ -26,4 +28,5 @@ public interface Version {
 	void makeReleaseable();
 
 	boolean hasChanged();
+
 }
