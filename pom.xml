@@ -20,27 +20,69 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<github.global.server>github</github.global.server>
-		<jsch.agentproxy.version>0.0.9</jsch.agentproxy.version>
-		<maven.version>3.3.9</maven.version>
-		<aetherVersion>1.1.0</aetherVersion>
-		<maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
+
+		<!-- Compile dependencies -->
+		<javax.inject>1</javax.inject>
+		<guice>4.0</guice>
+		<vtd-xml>2.13</vtd-xml>
+		<jsch>0.1.53</jsch>
+		<jsch.agentproxy>0.0.9</jsch.agentproxy>
+		<maven-plugin-annotations>3.4</maven-plugin-annotations>
+		<maven-invoker>2.2</maven-invoker>
+		<org.eclipse.jgit>4.4.0.201605250940-rc1</org.eclipse.jgit>
+		<commons-lang3>3.4</commons-lang3>
+		<json-simple>1.1.1</json-simple>
+
+		<!-- Runtime dependencies -->
+		<slf4j-simple>1.7.21</slf4j-simple>
+
+		<!-- Test dependencies -->
+		<aether>1.1.0</aether>
+		<commons-io>2.5</commons-io>
+		<commons-exec>1.3</commons-exec>
+		<hamcrest>1.3</hamcrest>
+		<junit>4.12</junit>
+		<mockito-core>2.0.54-beta</mockito-core>
+
+		<!-- Plugin versions -->
+		<sisu-maven-plugin>0.3.3</sisu-maven-plugin>
+		<maven-plugin-plugin>3.4</maven-plugin-plugin>
+		<maven-compiler-plugin>3.5.1</maven-compiler-plugin>
+		<maven-dependency-plugin>2.10</maven-dependency-plugin>
+		<maven-site-plugin>3.5.1</maven-site-plugin>
+		<doxia-module-markdown>1.7</doxia-module-markdown>
+		<nexus-staging-maven-plugin>1.6.7</nexus-staging-maven-plugin>
+		<maven-source-plugin>3.0.0</maven-source-plugin>
+		<maven-javadoc-plugin>2.10.4</maven-javadoc-plugin>
+		<maven-gpg-plugin>1.6</maven-gpg-plugin>
+		<site-maven-plugin>0.12</site-maven-plugin>
+		
+		<!-- Reporting plugin versions -->
+		<maven-plugin-plugin>3.4</maven-plugin-plugin>
+		<maven-surefire-report-plugin>2.19.1</maven-surefire-report-plugin>
+		<maven-project-info-reports-plugin>2.9</maven-project-info-reports-plugin>
+
+		<!-- Configuration properties -->
+		<repository.path>github.com/SourcePond/${project.artifactId}</repository.path>
+		<deployment.baseurl>https://oss.sonatype.org</deployment.baseurl>
+		<source.level>1.7</source.level>
 	</properties>
 
 	<ciManagement>
 		<system>Jenkins</system>
-		<url>https://sourcepond.ci.cloudbees.com/job/multi-module-release-maven-plugin</url>
+		<url>https://sourcepond.ci.cloudbees.com/job/${project.artifactId}</url>
 	</ciManagement>
 
 	<scm>
-		<url>https://github.com/SourcePond/multi-module-release-maven-plugin.git</url>
-		<connection>scm:git:git@github.com/SourcePond/multi-module-release-maven-plugin.git</connection>
+		<url>https://${repository.path}.git</url>
+		<connection>scm:git:git@${repository.path}.git</connection>
 	</scm>
 
-	<inceptionYear>2015</inceptionYear>
+	<inceptionYear>2016</inceptionYear>
 
 	<issueManagement>
 		<system>GitHub</system>
-		<url>https://github.com/SourcePond/multi-module-release-maven-plugin/issues</url>
+		<url>https://${repository.path}/issues</url>
 	</issueManagement>
 
 	<licenses>
@@ -70,58 +112,52 @@
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
-			<version>1</version>
+			<version>${javax.inject}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
 			<classifier>no_aop</classifier>
-			<version>4.0</version>
+			<version>${guice}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ximpleware</groupId>
 			<artifactId>vtd-xml</artifactId>
-			<version>2.13</version>
+			<version>${vtd-xml}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jsch</artifactId>
-			<version>0.1.53</version>
+			<version>${jsch}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jsch.agentproxy.sshagent</artifactId>
-			<version>${jsch.agentproxy.version}</version>
+			<version>${jsch.agentproxy}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jsch.agentproxy.core</artifactId>
-			<version>${jsch.agentproxy.version}</version>
+			<version>${jsch.agentproxy}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jsch.agentproxy.jsch</artifactId>
-			<version>${jsch.agentproxy.version}</version>
+			<version>${jsch.agentproxy}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jsch.agentproxy.usocket-nc</artifactId>
-			<version>${jsch.agentproxy.version}</version>
+			<version>${jsch.agentproxy}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.plugin-tools</groupId>
 			<artifactId>maven-plugin-annotations</artifactId>
-			<version>${maven-plugin-annotations.version}</version>
+			<version>${maven-plugin-annotations}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
-			<version>${project.prerequisites.maven}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-artifact</artifactId>
 			<version>${project.prerequisites.maven}</version>
 		</dependency>
 		<dependency>
@@ -142,118 +178,123 @@
 		<dependency>
 			<groupId>org.apache.maven.shared</groupId>
 			<artifactId>maven-invoker</artifactId>
-			<version>2.2</version>
+			<version>${maven-invoker}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jgit</groupId>
 			<artifactId>org.eclipse.jgit</artifactId>
-			<version>4.3.0.201604071810-r</version>
+			<version>${org.eclipse.jgit}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.4</version>
-		</dependency>
-		<dependency>
-			<!-- Only because jgit uses slf4j - without a binding, it logs an error -->
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.2</version>
-			<scope>runtime</scope>
+			<version>${commons-lang3}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
-			<version>1.1.1</version>
+			<version>${json-simple}</version>
 		</dependency>
 
 		<dependency>
+			<!-- Only because jgit uses slf4j - without a binding, it logs an error -->
+			<scope>runtime</scope>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>${slf4j-simple}</version>
+		</dependency>
+
+		<dependency>
+			<scope>test</scope>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.2</version>
-			<scope>test</scope>
+			<version>${commons-io}</version>
 		</dependency>
 		<dependency>
+			<scope>test</scope>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-exec</artifactId>
-			<version>1.3</version>
-			<scope>test</scope>
+			<version>${commons-exec}</version>
 		</dependency>
 		<dependency>
+			<scope>test</scope>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-core</artifactId>
-			<version>1.3</version>
-			<scope>test</scope>
+			<version>${hamcrest}</version>
 		</dependency>
 		<dependency>
+			<scope>test</scope>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-library</artifactId>
-			<version>1.3</version>
-			<scope>test</scope>
+			<version>${hamcrest}</version>
 		</dependency>
 		<dependency>
+			<scope>test</scope>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
+			<version>${junit}</version>
 		</dependency>
 		<dependency>
+			<scope>test</scope>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-artifact</artifactId>
+			<version>${project.prerequisites.maven}</version>
+		</dependency>
+		<dependency>
+			<scope>test</scope>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-model-builder</artifactId>
 			<version>${project.prerequisites.maven}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<scope>test</scope>
 			<groupId>org.eclipse.aether</groupId>
 			<artifactId>aether-api</artifactId>
-			<version>${aetherVersion}</version>
-			<scope>test</scope>
+			<version>${aether}</version>
 		</dependency>
 		<dependency>
+			<scope>test</scope>
 			<groupId>org.eclipse.aether</groupId>
 			<artifactId>aether-spi</artifactId>
-			<version>${aetherVersion}</version>
-			<scope>test</scope>
+			<version>${aether}</version>
 		</dependency>
 		<dependency>
+			<scope>test</scope>
 			<groupId>org.eclipse.aether</groupId>
 			<artifactId>aether-util</artifactId>
-			<version>${aetherVersion}</version>
-			<scope>test</scope>
+			<version>${aether}</version>
 		</dependency>
 		<dependency>
+			<scope>test</scope>
 			<groupId>org.eclipse.aether</groupId>
 			<artifactId>aether-impl</artifactId>
-			<version>${aetherVersion}</version>
-			<scope>test</scope>
+			<version>${aether}</version>
 		</dependency>
 		<dependency>
+			<scope>test</scope>
 			<groupId>org.eclipse.aether</groupId>
 			<artifactId>aether-connector-basic</artifactId>
-			<version>${aetherVersion}</version>
-			<scope>test</scope>
+			<version>${aether}</version>
 		</dependency>
 		<dependency>
+			<scope>test</scope>
 			<groupId>org.eclipse.aether</groupId>
 			<artifactId>aether-transport-file</artifactId>
-			<version>${aetherVersion}</version>
-			<scope>test</scope>
+			<version>${aether}</version>
 		</dependency>
 		<dependency>
+			<scope>test</scope>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-aether-provider</artifactId>
 			<version>${project.prerequisites.maven}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<scope>test</scope>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>2.0.52-beta</version>
-			<scope>test</scope>
+			<version>${mockito-core}</version>
 		</dependency>
 	</dependencies>
-
-
 
 	<build>
 		<pluginManagement>
@@ -314,7 +355,7 @@
 			<plugin>
 				<groupId>org.eclipse.sisu</groupId>
 				<artifactId>sisu-maven-plugin</artifactId>
-				<version>0.3.3</version>
+				<version>${sisu-maven-plugin}</version>
 				<executions>
 					<execution>
 						<id>generate-index</id>
@@ -342,7 +383,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
-				<version>3.4</version>
+				<version>${maven-plugin-plugin}</version>
 				<configuration>
 					<goalPrefix>releaser</goalPrefix>
 				</configuration>
@@ -364,16 +405,16 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
+				<version>${maven-compiler-plugin}</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>${source.level}</source>
+					<target>${source.level}</target>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.10</version>
+				<version>${maven-dependency-plugin}</version>
 				<executions>
 					<execution>
 						<id>analyze</id>
@@ -391,12 +432,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.4</version>
+				<version>${maven-site-plugin}</version>
 				<dependencies>
 					<dependency>
 						<groupId>org.apache.maven.doxia</groupId>
 						<artifactId>doxia-module-markdown</artifactId>
-						<version>1.6</version>
+						<version>${doxia-module-markdown}</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -411,7 +452,7 @@
 					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.7</version>
+						<version>${nexus-staging-maven-plugin}</version>
 						<extensions>true</extensions>
 						<configuration>
 							<serverId>ossrh-stage</serverId>
@@ -422,7 +463,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>3.0.0</version>
+						<version>${maven-source-plugin}</version>
 						<executions>
 							<execution>
 								<id>attach-sources</id>
@@ -435,7 +476,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.10.3</version>
+						<version>${maven-javadoc-plugin}</version>
 						<executions>
 							<execution>
 								<id>attach-javadocs</id>
@@ -448,7 +489,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
+						<version>${maven-gpg-plugin}</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -459,11 +500,10 @@
 							</execution>
 						</executions>
 					</plugin>
-
 					<plugin>
 						<groupId>com.github.github</groupId>
 						<artifactId>site-maven-plugin</artifactId>
-						<version>0.12</version>
+						<version>${site-maven-plugin}</version>
 						<configuration>
 							<message>Creating site for ${project.version}</message>
 						</configuration>
@@ -481,23 +521,12 @@
 		</profile>
 	</profiles>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh-stage</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>ossrh-snapshot</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-	</distributionManagement>
-
 	<reporting>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
-				<version>3.4</version>
+				<version>${maven-plugin-plugin}</version>
 				<configuration>
 					<goalPrefix>releaser</goalPrefix>
 				</configuration>
@@ -505,12 +534,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.19.1</version>
+				<version>${maven-surefire-report-plugin}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.9</version>
+				<version>${maven-project-info-reports-plugin}</version>
 				<reportSets>
 					<reportSet>
 						<reports>
@@ -526,4 +555,14 @@
 		</plugins>
 	</reporting>
 
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh-stage</id>
+			<url>${deployment.baseurl}/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh-snapshot</id>
+			<url>${deployment.baseurl}/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 </project>
