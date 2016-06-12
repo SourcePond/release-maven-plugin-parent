@@ -30,7 +30,7 @@ import ch.sourcepond.maven.release.scm.SCMRepository;
  * Logs the versions of the modules that the releaser will release on the next
  * release. Does not run the build nor tag the repo.
  * 
- * @since 1.4.0
+ * @since 1.0.0
  */
 @Mojo(name = "next", requiresDirectInvocation = true, // this should not be
 														// bound to a phase as

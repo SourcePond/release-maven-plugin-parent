@@ -67,7 +67,7 @@ public class ReleaseMojo extends NextMojo {
 	 * configuration, or activate profiles from the command line.
 	 * </p>
 	 * 
-	 * @since 1.0.1
+	 * @since 1.0.0
 	 */
 	@Parameter(alias = "releaseProfiles")
 	private List<String> releaseProfiles;
