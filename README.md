@@ -10,9 +10,9 @@ This project was originally forked from https://github.com/danielflower/multi-mo
 
 * Major refactoring to use JSR-330 internally (needs at least Maven 3.1.0)
 * Preparations to support more SCMs like Subversion (work in progress, currently only Git supported)
-* Proper support for managed dependencies (*dependencyManagemend* element)
-* Proper support for managed plugins (*pluginManagement* element)
-* Proper support for dependency/plugin version substitution (versions specified as properties)
+* Support for managed dependencies (*dependencyManagemend* element)
+* Support for managed plugins (*pluginManagement* element)
+* Support for dependency/plugin version substitution (versions specified as properties)
 * Mechanism to increment snapshot versions of released modules like the [maven-release-plugin](http://maven.apache.org/maven-release/maven-release-plugin) (see usage page for further information)
 
 Development

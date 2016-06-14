@@ -162,7 +162,7 @@ Note: Why [0.999,1.999) and not [1.0,2.0) you ask? Short answer: because Maven c
 ranges are resolved. Following explanation will not cover details about how to implement a proper deployment process with version ranges, but, you can find interesting solutions 
 in the discussion section of (https://issues.apache.org/jira/browse/MNG-3092) (attention: long read!).
 
-Now, you would like to release project **B** which currently has version 1.0-SNAPSHOT. Project **A** remains untouched. After release, you have two artifacts in your 
+Now, you would like to release project **B** which currently has version 1.0-SNAPSHOT. Project **A** is already released and remains untouched. After release, you have two artifacts in your 
 Maven repository: **B:1.0-SNAPSHOT** and **B:1.0.0**. After this, project **A** references **B:1.0.0** because a release is
 always newer than a SNAPSHOT, which means that **1.0.0** is newer than **1.0-SNAPSHOT**.
 
@@ -187,8 +187,43 @@ parameter:
 If enabled, the plugin will perform additional actions after the release had been done. For the scenario above, following would happen:
 
 * Update the version of project **B** to **1.0.1-SNAPSHOT**
-* Update in project **A** the dependency to project **B** with version **1.0.1-SNAPSHOT**
-* Commit and push the changes to the SCM repository
+* Commit and push the changes to the SCM repository with a specified comment
 
 In this mode, the release plugin will base the next build-number on the micro-version of the SNAPSHOT version incremented by 1. You can override this by specifying a build-number which
-is greater than the micro-version, see "Usage" section of this document.
+is greater than the micro-version, see "Usage" section of this document. 
+
+$H$H$H Partial release of modules when automatic snapshot increment is enabled
+
+The ${project.artifactId} will take care of what needs to be released and which dependencies need to be updated. Suppose you have a multi-module project **parent** with a module **A** and
+a module **B** where both modules have their own parent. Both modules have version "1.0.0-SNAPSHOT" and module **B** depends on module **A**. 
+To achieve this, you would add following dependency to module **B**:
+
+	<dependency>
+		<groupId>org.foo</groupId>
+		<artifactId>A</groupId>
+		<version>1.0.0-SNAPSHOT</version>
+	</dependency>
+	
+Now, you release the whole project including **parent**, **A** and **B**. After release, the ${project.artifactId} will take following actions:
+
+* Update the version of project **parent** to **1.0.1-SNAPSHOT**
+* Update the version of module **A** to **1.0.1-SNAPSHOT**
+* Update the version of module **B** to **1.0.1-SNAPSHOT**
+* In module **B**, update the dependency to module **A** with version **1.0.1-SNAPSHOT**
+* Commit and push the changes to the SCM repository with a specified comment
+
+Some time later, you would like to release your work on project **B**. Since the last release, all introduced changes only affected module **B**. You could now think, that
+**parent** and **A** will also be released because the plugin pushed their incremented SNAPSHOT-versions changes during last release to the SCM repository. 
+This will *not* happen, because the plugin detects that effectively only module **B** has been changed. This means that the plugin ignores its own changes when it
+calculates which modules need to be released. In our example, the plugin would walk through following steps during release:
+
+* Detect that only module **B** has effectively been changed
+* In module **B**, update the dependency to module **A** with the latest release version **1.0.0**
+* Update the version of module **B** to **1.0.1**
+* Perform tagging and releasing of module **B**
+* Update the version of module **B** to **1.0.2-SNAPSHOT**
+* In module **B**, update the dependency to module **A** with the latest SNAPSHOT version **1.0.1-SNAPSHOT**
+* Commit and push the changes to the SCM repository with a specified comment
+
+As you can see, only module **B** will be processed, project **parent** and module **A** will not be touched at all. This kind of change control also works with
+dependencies to parent poms.
