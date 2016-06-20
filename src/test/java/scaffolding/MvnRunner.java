@@ -29,7 +29,6 @@ import org.apache.maven.shared.invoker.PrintStreamHandler;
 public class MvnRunner {
 	public static final Path WORK_DIRECTORY = getDefault().getPath(USER_DIR);
 	public static final Path LOCAL_MAVEN_REPO = WORK_DIRECTORY.resolve("maven-repo");
-	private boolean haveInstalledPlugin = false;
 	private final File mvnHome;
 
 	static {
@@ -69,19 +68,6 @@ public class MvnRunner {
 
 	public MvnRunner(final File mvnHome) {
 		this.mvnHome = mvnHome;
-	}
-
-	public void installReleasePluginToLocalRepo() throws MavenInvocationException, IOException {
-		if (haveInstalledPlugin) {
-			return;
-		}
-		final long start = System.currentTimeMillis();
-		System.out.println("Installing the plugin into the local repo");
-		assertThat("Environment variable M2_HOME must be set", System.getenv("M2_HOME") != null);
-		runMaven(new File("."), "-DskipTests=true", "install");
-		System.out.println(
-				"Finished installing the plugin into the local repo in " + (System.currentTimeMillis() - start) + "ms");
-		haveInstalledPlugin = true;
 	}
 
 	public MvnRunner mvn(final String version) throws IOException {

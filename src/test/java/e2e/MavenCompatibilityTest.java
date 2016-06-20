@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.maven.shared.invoker.MavenInvocationException;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import scaffolding.MvnRunner;
@@ -20,11 +19,6 @@ import scaffolding.TestProject;
 public class MavenCompatibilityTest extends E2ETest {
 
 	final TestProject testProject = TestProject.singleModuleProject();
-
-	@BeforeClass
-	public static void installPluginToLocalRepo() throws MavenInvocationException, IOException {
-		mvn.installReleasePluginToLocalRepo();
-	}
 
 	@Test
 	public void maven_3_1_0() throws Exception {
