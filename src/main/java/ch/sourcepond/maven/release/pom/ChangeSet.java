@@ -27,7 +27,9 @@ public interface ChangeSet extends AutoCloseable {
 	 * operation fails, the revert exception will be caused to be thrown because
 	 * that is the root problem
 	 * 
-	 * @param e
+	 * @param message
+	 *            Error message to be set
+	 * @param failure
 	 *            Exception which shall be caused to be thrown when
 	 *            {@link #close()} is called.
 	 */

@@ -47,7 +47,7 @@ public interface VersionSubstitution {
 	 * 
 	 * @param project
 	 *            Maven project; must not be {@code null}
-	 * @param originalDependency
+	 * @param originalPlugin
 	 *            Original plugin, must not be {@code null}
 	 * @return Actual version, never {@code null}
 	 * @throws IllegalStateException

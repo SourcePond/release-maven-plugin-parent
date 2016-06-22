@@ -10,8 +10,6 @@ See the License for the specific language governing permissions and
 limitations under the License.*/
 package ch.sourcepond.maven.release.pom;
 
-import java.io.IOException;
-
 import ch.sourcepond.maven.release.reactor.Reactor;
 
 public interface Updater {
@@ -21,9 +19,12 @@ public interface Updater {
 	 * 
 	 * @param reactor
 	 *            Reactor instance, must not be {@code null}
+	 * @param incrementSnapshotVersionAfterRelease
+	 *            If {@code true}, the all module SNAPSHOT references will be
+	 *            upgraded to the next SNAPSHOT-version
 	 * @return List of updated POM files.
-	 * @throws IOException
 	 * @throws POMUpdateException
+	 *             Thrown, if something went wrong during POM update
 	 */
 	ChangeSet updatePoms(Reactor reactor, boolean incrementSnapshotVersionAfterRelease) throws POMUpdateException;
 
