@@ -371,6 +371,9 @@
 				<artifactId>multi-module-release-maven-plugin</artifactId>
 				<version>${project.version}</version>
 				<configuration>
+					<serverId>github</serverId>
+					<knownHosts>/private/sourcepond/.ssh/known_hosts</knownHosts>
+					<userSettings>/private/sourcepond/settings.xml</userSettings>
 					<releaseGoals>
 						<releaseGoal>clean</releaseGoal>
 						<releaseGoal>site</releaseGoal>
