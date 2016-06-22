@@ -375,6 +375,7 @@
 						<releaseGoal>deploy</releaseGoal>
 					</releaseGoals>
 					<releaseProfiles>
+						<releaseProfile>ossrh</releaseProfile>
 						<releaseProfile>release</releaseProfile>
 					</releaseProfiles>
 				</configuration>
