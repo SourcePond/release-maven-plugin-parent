@@ -6,7 +6,7 @@ Full usage details, FAQs, background and more are available on the
 
 Difference to the original project
 ==================================
-This project was originally forked from https://github.com/danielflower/multi-module-maven-release-plugin and provides following enhancements/bugfixes
+This project was originally forked from https://github.com/danielflower/multi-module-release-maven-plugin and provides following enhancements/bugfixes
 
 * Major refactoring to use JSR-330 internally (needs at least Maven 3.1.0)
 * Preparations to support more SCMs like Subversion (work in progress, currently only Git supported)
