@@ -64,7 +64,7 @@
 		<maven-project-info-reports-plugin>2.9</maven-project-info-reports-plugin>
 
 		<!-- Configuration properties -->
-		<repository.path>github.com/SourcePond/${project.artifactId}</repository.path>
+		<repository.path>github.com:SourcePond/${project.artifactId}</repository.path>
 		<deployment.baseurl>https://oss.sonatype.org</deployment.baseurl>
 		<source.level>1.7</source.level>
 	</properties>
