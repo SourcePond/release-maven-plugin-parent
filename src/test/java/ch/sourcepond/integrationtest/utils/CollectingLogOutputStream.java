@@ -1,4 +1,4 @@
-package scaffolding;
+package ch.sourcepond.integrationtest.utils;
 
 import org.apache.commons.exec.LogOutputStream;
 

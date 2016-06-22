@@ -1,4 +1,4 @@
-package e2e;
+package ch.sourcepond.integrationtest;
 
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectSorter;

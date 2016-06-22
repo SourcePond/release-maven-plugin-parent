@@ -1,15 +1,16 @@
-package e2e;
+package ch.sourcepond.integrationtest;
 
 import org.junit.Assert;
 import org.junit.Test;
-import scaffolding.MavenExecutionException;
-import scaffolding.TestProject;
+
+import ch.sourcepond.integrationtest.utils.MavenExecutionException;
+import ch.sourcepond.integrationtest.utils.TestProject;
 
 import java.io.IOException;
 
+import static ch.sourcepond.integrationtest.utils.GitMatchers.hasCleanWorkingDirectory;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static scaffolding.GitMatchers.hasCleanWorkingDirectory;
 
 public class TestRunningTest extends E2ETest {
     final TestProject projectWithTestsThatFail = TestProject.moduleWithTestFailure();

@@ -10,9 +10,9 @@ import org.apache.maven.plugin.logging.Log;
 import org.eclipse.jgit.lib.Ref;
 import org.junit.Test;
 
+import ch.sourcepond.integrationtest.utils.TestProject;
 import ch.sourcepond.maven.release.config.Configuration;
 import ch.sourcepond.maven.release.version.Version;
-import scaffolding.TestProject;
 
 public class AnnotatedTagTest {
 	private final Log log = mock(Log.class);

@@ -1,6 +1,6 @@
-package scaffolding;
+package ch.sourcepond.integrationtest.utils;
 
-import static scaffolding.Photocopier.copyTestProjectToTemporaryLocation;
+import static ch.sourcepond.integrationtest.utils.Photocopier.copyTestProjectToTemporaryLocation;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -15,7 +15,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.InitCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
-import e2e.E2ETest;
+import ch.sourcepond.integrationtest.E2ETest;
 
 public class TestProject {
 	public static final String PLUGIN_VERSION_FOR_TESTS = "1.0-SNAPSHOT";

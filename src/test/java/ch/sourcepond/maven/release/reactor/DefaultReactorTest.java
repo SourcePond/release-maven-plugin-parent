@@ -1,5 +1,6 @@
 package ch.sourcepond.maven.release.reactor;
 
+import static ch.sourcepond.integrationtest.utils.ReleasableModuleBuilder.aModule;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -9,7 +10,6 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static scaffolding.ReleasableModuleBuilder.aModule;
 
 import java.util.Iterator;
 

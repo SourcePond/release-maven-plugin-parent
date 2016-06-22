@@ -13,9 +13,9 @@ import java.util.List;
 import org.apache.maven.plugin.logging.Log;
 import org.junit.Test;
 
+import ch.sourcepond.integrationtest.utils.TestProject;
 import ch.sourcepond.maven.release.config.Configuration;
 import ch.sourcepond.maven.release.version.Version;
-import scaffolding.TestProject;
 
 public class AnnotatedTagFinderTest {
 	private final GitFactory gitFactory = mock(GitFactory.class);

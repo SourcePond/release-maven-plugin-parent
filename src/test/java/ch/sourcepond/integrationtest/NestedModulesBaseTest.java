@@ -1,5 +1,9 @@
-package e2e;
+package ch.sourcepond.integrationtest;
 
+import static ch.sourcepond.integrationtest.utils.ExactCountMatcher.oneOf;
+import static ch.sourcepond.integrationtest.utils.ExactCountMatcher.twoOf;
+import static ch.sourcepond.integrationtest.utils.GitMatchers.hasCleanWorkingDirectory;
+import static ch.sourcepond.integrationtest.utils.GitMatchers.hasTag;
 import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -8,10 +12,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static scaffolding.ExactCountMatcher.oneOf;
-import static scaffolding.ExactCountMatcher.twoOf;
-import static scaffolding.GitMatchers.hasCleanWorkingDirectory;
-import static scaffolding.GitMatchers.hasTag;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,7 +36,7 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.junit.Before;
 import org.junit.Test;
 
-import scaffolding.TestProject;
+import ch.sourcepond.integrationtest.utils.TestProject;
 
 public abstract class NestedModulesBaseTest extends E2ETest {
 

@@ -22,8 +22,8 @@ import org.eclipse.jgit.lib.Ref;
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.sourcepond.integrationtest.utils.TestProject;
 import ch.sourcepond.maven.release.config.Configuration;
-import scaffolding.TestProject;
 
 public class GitRepositoryTest {
 	private static final String ANY_REMOTE_URL = "anyRemoteUrl";

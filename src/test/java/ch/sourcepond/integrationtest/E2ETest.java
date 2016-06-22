@@ -1,4 +1,4 @@
-package e2e;
+package ch.sourcepond.integrationtest;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.junit.BeforeClass;
 
-import scaffolding.MvnRunner;
+import ch.sourcepond.integrationtest.utils.MvnRunner;
 
 public class E2ETest {
 	public static MvnRunner mvn;

@@ -1,14 +1,14 @@
-package e2e;
+package ch.sourcepond.integrationtest;
 
+import static ch.sourcepond.integrationtest.utils.ExactCountMatcher.oneOf;
+import static ch.sourcepond.integrationtest.utils.ExactCountMatcher.threeOf;
+import static ch.sourcepond.integrationtest.utils.ExactCountMatcher.twoOf;
+import static ch.sourcepond.integrationtest.utils.GitMatchers.hasCleanWorkingDirectory;
+import static ch.sourcepond.integrationtest.utils.GitMatchers.hasTag;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static scaffolding.ExactCountMatcher.oneOf;
-import static scaffolding.ExactCountMatcher.threeOf;
-import static scaffolding.ExactCountMatcher.twoOf;
-import static scaffolding.GitMatchers.hasCleanWorkingDirectory;
-import static scaffolding.GitMatchers.hasTag;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,9 +19,9 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.junit.Assert;
 import org.junit.Test;
 
-import scaffolding.MavenExecutionException;
-import scaffolding.MvnRunner;
-import scaffolding.TestProject;
+import ch.sourcepond.integrationtest.utils.MavenExecutionException;
+import ch.sourcepond.integrationtest.utils.MvnRunner;
+import ch.sourcepond.integrationtest.utils.TestProject;
 
 public class IndependentVersionsTest extends E2ETest {
 

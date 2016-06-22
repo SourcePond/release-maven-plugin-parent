@@ -1,4 +1,4 @@
-package scaffolding;
+package ch.sourcepond.integrationtest.utils;
 
 import org.hamcrest.Description;
 import org.hamcrest.Factory;

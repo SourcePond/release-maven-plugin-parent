@@ -1,4 +1,4 @@
-package scaffolding;
+package ch.sourcepond.integrationtest.utils;
 
 import static java.lang.String.format;
 import static java.nio.file.FileSystems.getDefault;

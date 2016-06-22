@@ -1,6 +1,6 @@
-package e2e;
+package ch.sourcepond.integrationtest;
 
-import scaffolding.TestProject;
+import ch.sourcepond.integrationtest.utils.TestProject;
 
 public class NestedModulesManagedDependenciesTest extends NestedModulesBaseTest {
 

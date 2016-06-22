@@ -1,4 +1,4 @@
-package scaffolding;
+package ch.sourcepond.integrationtest.utils;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;

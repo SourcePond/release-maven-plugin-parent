@@ -1,11 +1,11 @@
-package e2e;
+package ch.sourcepond.integrationtest;
 
+import static ch.sourcepond.integrationtest.utils.ExactCountMatcher.oneOf;
+import static ch.sourcepond.integrationtest.utils.ExactCountMatcher.threeOf;
+import static ch.sourcepond.integrationtest.utils.ExactCountMatcher.twoOf;
+import static ch.sourcepond.integrationtest.utils.GitMatchers.hasCleanWorkingDirectory;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static scaffolding.ExactCountMatcher.oneOf;
-import static scaffolding.ExactCountMatcher.threeOf;
-import static scaffolding.ExactCountMatcher.twoOf;
-import static scaffolding.GitMatchers.hasCleanWorkingDirectory;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,8 +14,8 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import scaffolding.MavenExecutionException;
-import scaffolding.TestProject;
+import ch.sourcepond.integrationtest.utils.MavenExecutionException;
+import ch.sourcepond.integrationtest.utils.TestProject;
 
 public class ValidationTest extends E2ETest {
 

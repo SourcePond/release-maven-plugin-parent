@@ -1,14 +1,14 @@
-package e2e;
+package ch.sourcepond.integrationtest;
 
+import static ch.sourcepond.integrationtest.utils.ExactCountMatcher.oneOf;
+import static ch.sourcepond.integrationtest.utils.GitMatchers.hasCleanWorkingDirectory;
+import static ch.sourcepond.integrationtest.utils.GitMatchers.hasTag;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static scaffolding.ExactCountMatcher.oneOf;
-import static scaffolding.GitMatchers.hasCleanWorkingDirectory;
-import static scaffolding.GitMatchers.hasTag;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,13 +19,13 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
 import org.junit.Test;
 
+import ch.sourcepond.integrationtest.utils.TestProject;
 import ch.sourcepond.maven.release.config.Configuration;
 import ch.sourcepond.maven.release.scm.GitFactory;
 import ch.sourcepond.maven.release.scm.GitRepository;
 import ch.sourcepond.maven.release.scm.ProposedTags;
 import ch.sourcepond.maven.release.scm.ProposedTagsBuilder;
 import ch.sourcepond.maven.release.version.Version;
-import scaffolding.TestProject;
 
 public class SingleModuleTest extends E2ETest {
 

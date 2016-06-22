@@ -1,16 +1,17 @@
-package e2e;
+package ch.sourcepond.integrationtest;
 
 import org.junit.Test;
-import scaffolding.TestProject;
+
+import ch.sourcepond.integrationtest.utils.TestProject;
 
 import java.util.List;
 
+import static ch.sourcepond.integrationtest.utils.ExactCountMatcher.noneOf;
+import static ch.sourcepond.integrationtest.utils.ExactCountMatcher.oneOf;
+import static ch.sourcepond.integrationtest.utils.GitMatchers.hasTag;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static scaffolding.ExactCountMatcher.noneOf;
-import static scaffolding.ExactCountMatcher.oneOf;
-import static scaffolding.GitMatchers.hasTag;
 
 public class NextMojoTest extends E2ETest {
 

@@ -1,4 +1,4 @@
-package e2e;
+package ch.sourcepond.integrationtest;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -9,8 +9,8 @@ import java.io.IOException;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.junit.Test;
 
-import scaffolding.MvnRunner;
-import scaffolding.TestProject;
+import ch.sourcepond.integrationtest.utils.MvnRunner;
+import ch.sourcepond.integrationtest.utils.TestProject;
 
 /**
  * This test actually downloads multiple versions of maven and runs the plugin

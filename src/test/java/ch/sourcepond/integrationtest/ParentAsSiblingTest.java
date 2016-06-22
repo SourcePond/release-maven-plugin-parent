@@ -1,21 +1,22 @@
-package e2e;
+package ch.sourcepond.integrationtest;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
 import org.junit.Test;
-import scaffolding.TestProject;
+
+import ch.sourcepond.integrationtest.utils.TestProject;
 
 import java.io.IOException;
 import java.util.List;
 
+import static ch.sourcepond.integrationtest.utils.ExactCountMatcher.oneOf;
+import static ch.sourcepond.integrationtest.utils.ExactCountMatcher.twoOf;
+import static ch.sourcepond.integrationtest.utils.GitMatchers.hasCleanWorkingDirectory;
+import static ch.sourcepond.integrationtest.utils.GitMatchers.hasTag;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static scaffolding.ExactCountMatcher.oneOf;
-import static scaffolding.ExactCountMatcher.twoOf;
-import static scaffolding.GitMatchers.hasCleanWorkingDirectory;
-import static scaffolding.GitMatchers.hasTag;
 
 public class ParentAsSiblingTest extends E2ETest {
 

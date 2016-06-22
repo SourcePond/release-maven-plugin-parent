@@ -1,10 +1,10 @@
 package ch.sourcepond.maven.release;
 
+import static ch.sourcepond.integrationtest.utils.ReleasableModuleBuilder.aModule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static scaffolding.ReleasableModuleBuilder.aModule;
 
 import org.apache.maven.project.MavenProject;
 import org.junit.Test;

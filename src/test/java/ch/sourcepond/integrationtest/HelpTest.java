@@ -1,4 +1,4 @@
-package e2e;
+package ch.sourcepond.integrationtest;
 
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -15,8 +15,8 @@ import org.hamcrest.Matcher;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import scaffolding.MvnRunner;
-import scaffolding.TestProject;
+import ch.sourcepond.integrationtest.utils.MvnRunner;
+import ch.sourcepond.integrationtest.utils.TestProject;
 
 public class HelpTest extends E2ETest {
 
