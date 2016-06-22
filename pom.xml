@@ -555,13 +555,15 @@
 	</reporting>
 
 	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh-stage</id>
-			<url>${deployment.baseurl}/content/repositories/snapshots</url>
-		</snapshotRepository>
 		<repository>
-			<id>ossrh-snapshot</id>
+			<id>ossrh-stage</id>
+			<name>SourcePond Stage Repository</name>
 			<url>${deployment.baseurl}/service/local/staging/deploy/maven2/</url>
 		</repository>
+		<snapshotRepository>
+			<id>ossrh-snapshot</id>
+			<name>SourcePond Snapshot Repository</name>
+			<url>${deployment.baseurl}/content/repositories/snapshots</url>
+		</snapshotRepository>
 	</distributionManagement>
 </project>
