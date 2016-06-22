@@ -121,7 +121,13 @@ public final class GitRepository implements SCMRepository {
 	@Override
 	public boolean hasLocalTag(final String tagName) throws SCMException {
 		try {
-			return GitHelper.hasLocalTag(getGit(), tagName);
+			for (final Ref ref : getGit().tagList().call()) {
+				final String currentTag = ref.getName().replace(REFS_TAGS, "");
+				if (tagName.equals(currentTag)) {
+					return true;
+				}
+			}
+			return false;
 		} catch (final GitAPIException e) {
 			throw new SCMException(e, "Local tag could not be determined!");
 		}

@@ -6,6 +6,8 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -17,6 +19,7 @@ import java.util.Collection;
 
 import org.apache.maven.plugin.logging.Log;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListTagCommand;
 import org.eclipse.jgit.api.LsRemoteCommand;
 import org.eclipse.jgit.lib.Ref;
 import org.junit.Before;
@@ -26,17 +29,29 @@ import ch.sourcepond.integrationtest.utils.TestProject;
 import ch.sourcepond.maven.release.config.Configuration;
 
 public class GitRepositoryTest {
+	private static final String REFS_TAGS = "refs/tags/";
 	private static final String ANY_REMOTE_URL = "anyRemoteUrl";
+	private static final String TAG_TO_CHECK = "tagToCheck";
 	private final Log log = mock(Log.class);
 	private final GitFactory gitFactory = mock(GitFactory.class);
 	private final Configuration config = mock(Configuration.class);
-	private final GitRepository repository = new GitRepository(log, gitFactory, config);
+	private final ListTagCommand cmd = mock(ListTagCommand.class);
 	private final Git git = mock(Git.class);
 	private final Ref ref = mock(Ref.class);
+	private final GitRepository repository = new GitRepository(log, gitFactory, config);
 
 	@Before
-	public void setup() throws SCMException {
+	public void setup() throws Exception {
+		when(git.tagList()).thenReturn(cmd);
+		when(cmd.call()).thenReturn(asList(ref));
+		when(ref.getName()).thenReturn(format("%s%s", REFS_TAGS, TAG_TO_CHECK));
 		when(gitFactory.newGit()).thenReturn(git);
+	}
+
+	@Test
+	public void hasLocalTag() throws Exception {
+		assertTrue(repository.hasLocalTag(TAG_TO_CHECK));
+		assertFalse(repository.hasLocalTag("someOtherTag"));
 	}
 
 	@Test
