@@ -65,7 +65,8 @@ class ReleaseInvoker {
 			"line.separator",
 			"user.name",
 			"user.home",
-			"user.dir"
+			"user.dir",
+			"file.encoding"
 	};
 	static final String DEPLOY = "deploy";
 	static final String SKIP_TESTS = "skipTests";
