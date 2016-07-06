@@ -41,7 +41,7 @@
 		<commons-exec>1.3</commons-exec>
 		<hamcrest>1.3</hamcrest>
 		<junit>4.12</junit>
-		<mockito-core>2.0.54-beta</mockito-core>
+		<mockito-core>2.0.80-beta</mockito-core>
 
 		<!-- Plugin versions -->
 		<sisu-maven-plugin>0.3.3</sisu-maven-plugin>

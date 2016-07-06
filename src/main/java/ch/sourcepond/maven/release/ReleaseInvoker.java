@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -37,15 +38,13 @@ import ch.sourcepond.maven.release.reactor.ReleasableModule;
  */
 class ReleaseInvoker {
 	static final String DEPLOY = "deploy";
-	static final String SKIP_TESTS = "-DskipTests=true";
-	static final String LOCAL_REPO = "-Dmaven.repo.local=%s";
+	static final String SKIP_TESTS = "skipTests";
 	private final Log log;
 	private final RootProject project;
 	private final InvocationRequest request;
 	private final Invoker invoker;
 	private boolean skipTests;
 	private boolean debugEnabled;
-	private File localMavenRepo;
 	private List<String> goals;
 	private List<String> modulesToRelease;
 	private List<String> releaseProfiles;
@@ -106,8 +105,14 @@ class ReleaseInvoker {
 		request.setUserSettingsFile(userSettings);
 	}
 
-	final void setLocalMavenRepo(final File localMavenRepo) {
-		this.localMavenRepo = localMavenRepo;
+	final void setLocalMavenRepo(final File localMavenRepo) throws MojoExecutionException {
+		if (localMavenRepo != null) {
+			try {
+				request.setLocalRepositoryDirectory(localMavenRepo.getCanonicalFile());
+			} catch (final IOException e) {
+				throw new MojoExecutionException("Local repository path could not be determined!", e);
+			}
+		}
 	}
 
 	public final void runMavenBuild(final Reactor reactor) throws MojoExecutionException {
@@ -115,17 +120,12 @@ class ReleaseInvoker {
 		request.setShowErrors(true);
 		request.setDebug(debugEnabled || log.isDebugEnabled());
 
-		final List<String> goals = getGoals();
+		final Properties env = (Properties)System.getProperties().clone();
 		if (skipTests) {
-			goals.add(SKIP_TESTS);
+			env.put(SKIP_TESTS, String.valueOf(true));
 		}
-		if (localMavenRepo != null) {
-			try {
-				goals.add(format(LOCAL_REPO, localMavenRepo.getCanonicalFile()));
-			} catch (final IOException e) {
-				throw new MojoExecutionException("Local repository path could not be determined!", e);
-			}
-		}
+		
+		request.setProperties(env);
 		request.setGoals(getGoals());
 
 		final List<String> profiles = profilesToActivate();

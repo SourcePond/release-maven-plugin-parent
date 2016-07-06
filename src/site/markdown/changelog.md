@@ -1,6 +1,23 @@
 Changelog
 ---------
 
+### 1.0.1
+
+* Implemented proper transfer of system properties to Maven release build
+* Use setLocalRepositoryDirectory on invoker request instead of specifying a parameter
+* Updated Mockito to 2.0.80-beta
+
+## 1.0.0
+
+* Major refactoring to use JSR-330 internally (needs at least Maven 3.1.0)
+* Preparations to support more SCMs like Subversion (work in progress, currently only Git supported)
+* Support for managed dependencies (dependencyManagemend element)
+* Support for managed plugins (pluginManagement element)
+* Support for dependency/plugin version substitution (versions specified as properties)
+* Mechanism to increment snapshot versions of released modules like the maven-release-plugin (see usage page for further information)
+
+# Before fork
+
 ### 1.4.2
 
 * Fixed some bugs around change detection in modules where sometimes changes were not being detected.

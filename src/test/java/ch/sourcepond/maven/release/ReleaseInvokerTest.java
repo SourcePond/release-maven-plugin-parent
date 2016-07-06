@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -42,6 +43,7 @@ public class ReleaseInvokerTest {
 	private final static String SOME_PROFILE_ID = "someProfile";
 	private final static File GLOBAL_SETTINGS = new File("file:///globalSettings");
 	private final static File USER_SETTINGS = new File("file:///globalSettings");
+	private final static File LOCAL_REPO = new File(".");
 	private final static String MODULE_PATH = "modulePath";
 	private final static String SITE = "site";
 	private final Log log = mock(Log.class);
@@ -86,28 +88,15 @@ public class ReleaseInvokerTest {
 		verify(request).setGoals(Mockito.argThat(new ArgumentMatcher<List<String>>() {
 
 			@Override
-			public boolean matches(final Object item) {
-				@SuppressWarnings("unchecked")
-				final List<String> goals = (List<String>) item;
+			public boolean matches(final List<String> goals) {
 				return goals.size() == 1 && goals.contains(DEPLOY);
-			}
-
-			@Override
-			public String toString() {
-				return "deploy";
 			}
 		}));
 		verify(request).setProjects(Mockito.argThat(new ArgumentMatcher<List<String>>() {
 
 			@Override
-			@SuppressWarnings("unchecked")
-			public boolean matches(final Object item) {
-				return ((List<String>) item).isEmpty();
-			}
-
-			@Override
-			public String toString() {
-				return "projects";
+			public boolean matches(List<String> projects) {
+				return projects.isEmpty();
 			}
 		}));
 		verify(log).info("About to run mvn [deploy] with no profiles activated and modules []");
@@ -140,15 +129,8 @@ public class ReleaseInvokerTest {
 		verify(request).setGoals(Mockito.argThat(new ArgumentMatcher<List<String>>() {
 
 			@Override
-			@SuppressWarnings("unchecked")
-			public boolean matches(final Object item) {
-				final List<String> goals = (List<String>) item;
+			public boolean matches(final List<String> goals) {
 				return goals.size() == 1 && goals.contains(SITE);
-			}
-
-			@Override
-			public String toString() {
-				return "goals";
 			}
 		}));
 	}
@@ -162,16 +144,9 @@ public class ReleaseInvokerTest {
 		verify(request).setProfiles(Mockito.argThat(new ArgumentMatcher<List<String>>() {
 
 			@Override
-			@SuppressWarnings("unchecked")
-			public boolean matches(final Object item) {
-				final List<String> profiles = (List<String>) item;
+			public boolean matches(final List<String> profiles) {
 				return profiles.size() == 2 && profiles.contains(ACTIVE_PROFILE_ID)
 						&& profiles.contains(SOME_PROFILE_ID);
-			}
-
-			@Override
-			public String toString() {
-				return "profiles";
 			}
 		}));
 	}
@@ -184,15 +159,8 @@ public class ReleaseInvokerTest {
 		verify(request).setProjects(Mockito.argThat(new ArgumentMatcher<List<String>>() {
 
 			@Override
-			@SuppressWarnings("unchecked")
-			public boolean matches(final Object item) {
-				final List<String> modules = (List<String>) item;
+			public boolean matches(final List<String> modules) {
 				return modules.size() == 1 && modules.contains(MODULE_PATH);
-			}
-
-			@Override
-			public String toString() {
-				return "projects";
 			}
 		}));
 	}
@@ -205,15 +173,8 @@ public class ReleaseInvokerTest {
 		verify(request).setProjects(Mockito.argThat(new ArgumentMatcher<List<String>>() {
 
 			@Override
-			@SuppressWarnings("unchecked")
-			public boolean matches(final Object item) {
-				final List<String> modules = (List<String>) item;
+			public boolean matches(final List<String> modules) {
 				return modules.size() == 1 && modules.contains(MODULE_PATH);
-			}
-
-			@Override
-			public String toString() {
-				return "projects";
 			}
 		}));
 	}
@@ -225,9 +186,8 @@ public class ReleaseInvokerTest {
 		verify(request).setProjects(Mockito.argThat(new ArgumentMatcher<List<String>>() {
 
 			@Override
-			@SuppressWarnings("unchecked")
-			public boolean matches(final Object item) {
-				return ((List<String>) item).isEmpty();
+			public boolean matches(final List<String> projects) {
+				return projects.isEmpty();
 			}
 
 			@Override
@@ -241,20 +201,26 @@ public class ReleaseInvokerTest {
 	public void skipTests() throws Exception {
 		releaseInvoker.setSkipTests(true);
 		releaseInvoker.runMavenBuild(reactor);
+		verify(request).setProperties(Mockito.argThat(new ArgumentMatcher<Properties>() {
+
+			@Override
+			public boolean matches(final Properties env) {
+				return env.size() == System.getProperties().size() + 1 && env.containsKey(SKIP_TESTS);
+			}
+		}));
 		verify(request).setGoals(Mockito.argThat(new ArgumentMatcher<List<String>>() {
 
 			@Override
-			@SuppressWarnings("unchecked")
-			public boolean matches(final Object item) {
-				final List<String> goals = (List<String>) item;
-				return goals.size() == 2 && goals.contains(DEPLOY) && goals.contains(SKIP_TESTS);
-			}
-
-			@Override
-			public String toString() {
-				return "goals";
+			public boolean matches(final List<String> goals) {
+				return goals.size() == 1 && goals.contains(DEPLOY);
 			}
 		}));
+	}
+	
+	@Test
+	public void setLocalMavenRepo() throws Exception {
+		releaseInvoker.setLocalMavenRepo(LOCAL_REPO);
+		verify(request).setLocalRepositoryDirectory(LOCAL_REPO.getCanonicalFile());
 	}
 
 	@Test(expected = MojoExecutionException.class)
