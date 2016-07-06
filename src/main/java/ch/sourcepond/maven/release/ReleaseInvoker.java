@@ -37,6 +37,36 @@ import ch.sourcepond.maven.release.reactor.ReleasableModule;
  *
  */
 class ReleaseInvoker {
+	static final String[] DEFAULT_VM_PROPERTY_NAMES = new String[] {
+			"java.version",
+			"java.vendor",
+			"java.vendor.url",
+			"java.home",
+			"java.vm.specification.version",
+			"java.vm.specification.vendor",
+			"java.vm.specification.name",
+			"java.vm.version",
+			"java.vm.vendor",
+			"java.vm.name",
+			"java.specification.version",
+			"java.specification.vendor",
+			"java.specification.name",
+			"java.class.version",
+			"java.class.path",
+			"java.library.path",
+			"java.io.tmpdir",
+			"java.compiler",
+			"java.ext.dirs",
+			"os.name",
+			"os.arch",
+			"os.version	Operating",
+			"file.separator",
+			"path.separator",
+			"line.separator",
+			"user.name",
+			"user.home",
+			"user.dir"
+	};
 	static final String DEPLOY = "deploy";
 	static final String SKIP_TESTS = "skipTests";
 	private final Log log;
@@ -114,13 +144,21 @@ class ReleaseInvoker {
 			}
 		}
 	}
+	
+	private Properties cloneSystemProperties() {
+		final Properties env = (Properties)System.getProperties().clone();
+		for (final String defaultVmPropertyName : DEFAULT_VM_PROPERTY_NAMES) {
+			env.remove(defaultVmPropertyName);
+		}
+		return env;
+	}
 
 	public final void runMavenBuild(final Reactor reactor) throws MojoExecutionException {
 		request.setInteractive(false);
 		request.setShowErrors(true);
 		request.setDebug(debugEnabled || log.isDebugEnabled());
 
-		final Properties env = (Properties)System.getProperties().clone();
+		final Properties env = cloneSystemProperties();
 		if (skipTests) {
 			env.put(SKIP_TESTS, String.valueOf(true));
 		}

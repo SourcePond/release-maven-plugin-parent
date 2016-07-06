@@ -196,6 +196,23 @@ public class ReleaseInvokerTest {
 			}
 		}));
 	}
+	
+	@Test
+	public void verifyCloneSystemProperties() throws Exception {
+		releaseInvoker.runMavenBuild(reactor);
+		verify(request).setProperties(Mockito.argThat(new ArgumentMatcher<Properties>() {
+
+			@Override
+			public boolean matches(final Properties env) {
+				for (final String key : ReleaseInvoker.DEFAULT_VM_PROPERTY_NAMES) {
+					if (env.contains(key)) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}));
+	}
 
 	@Test
 	public void skipTests() throws Exception {
@@ -205,7 +222,7 @@ public class ReleaseInvokerTest {
 
 			@Override
 			public boolean matches(final Properties env) {
-				return env.size() == System.getProperties().size() + 1 && env.containsKey(SKIP_TESTS);
+				return env.containsKey(SKIP_TESTS);
 			}
 		}));
 		verify(request).setGoals(Mockito.argThat(new ArgumentMatcher<List<String>>() {
@@ -216,7 +233,7 @@ public class ReleaseInvokerTest {
 			}
 		}));
 	}
-	
+
 	@Test
 	public void setLocalMavenRepo() throws Exception {
 		releaseInvoker.setLocalMavenRepo(LOCAL_REPO);
