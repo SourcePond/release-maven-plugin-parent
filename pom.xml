@@ -101,10 +101,6 @@
 
 	<developers>
 		<developer>
-			<name>Daniel Flower</name>
-			<organizationUrl>https://github.com/danielflower</organizationUrl>
-		</developer>
-		<developer>
 			<name>Roland Hauser</name>
 			<organizationUrl>https://github.com/SourcePond</organizationUrl>
 		</developer>
@@ -388,7 +384,6 @@
 						<releaseGoal>deploy</releaseGoal>
 					</releaseGoals>
 					<releaseProfiles>
-						<releaseProfile>ossrh</releaseProfile>
 						<releaseProfile>release</releaseProfile>
 					</releaseProfiles>
 				</configuration>
