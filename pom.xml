@@ -12,7 +12,7 @@
 	<packaging>maven-plugin</packaging>
 	<prerequisites>
 		<!-- if this changes, please update the MavenCompatibilityTest -->
-		<maven>3.3.9</maven>
+		<maven>3.3.3</maven>
 	</prerequisites>
 
 	<properties>

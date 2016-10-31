@@ -3,7 +3,7 @@ Changelog
 
 ## 2.0.0
  * Upgraded dependencies
- * Maven 3.3.9 and Java 8 are required now
+ * Maven 3.3.3 and Java 8 are required now
  * Evaluate version of plugin to use in tests automatically
 
 ### 1.0.1

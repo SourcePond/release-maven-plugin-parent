@@ -22,6 +22,11 @@ public class MavenCompatibilityTest extends E2ETest {
 
 
 	@Test
+	public void maven_3_3_3() throws Exception {
+		buildProjectWithMavenVersion("3.3.3");
+	}
+	
+	@Test
 	public void maven_3_3_9() throws Exception {
 		buildProjectWithMavenVersion("3.3.9");
 	}
