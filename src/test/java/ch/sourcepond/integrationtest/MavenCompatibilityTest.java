@@ -20,15 +20,6 @@ public class MavenCompatibilityTest extends E2ETest {
 
 	final TestProject testProject = TestProject.singleModuleProject();
 
-	@Test
-	public void maven_3_1_0() throws Exception {
-		buildProjectWithMavenVersion("3.1.0");
-	}
-
-	@Test
-	public void maven_3_2_1() throws Exception {
-		buildProjectWithMavenVersion("3.2.1");
-	}
 
 	@Test
 	public void maven_3_3_9() throws Exception {

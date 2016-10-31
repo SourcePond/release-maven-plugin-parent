@@ -5,15 +5,14 @@
 
 	<groupId>ch.sourcepond.maven.plugins</groupId>
 	<artifactId>multi-module-release-maven-plugin</artifactId>
-	<version>1.0-SNAPSHOT</version> <!-- When changing also update ch.sourcepond.integrationtest.utils.TestProject.PLUGIN_VERSION_FOR_TESTS 
-		and add to src/site/markdown/changelog.md -->
+	<version>2.0-SNAPSHOT</version> <!-- When changing also add to src/site/markdown/changelog.md -->
 	<name>The Multi Module Maven Release Plugin</name>
 	<description>Maven plugin to release multi-module Maven projects where only changed modules should be released</description>
 	<url>https://github.com/SourcePond/multi-module-release-maven-plugin</url>
 	<packaging>maven-plugin</packaging>
 	<prerequisites>
 		<!-- if this changes, please update the MavenCompatibilityTest -->
-		<maven>3.1.0</maven>
+		<maven>3.3.9</maven>
 	</prerequisites>
 
 	<properties>
@@ -22,14 +21,14 @@
 
 		<!-- Compile dependencies -->
 		<javax.inject>1</javax.inject>
-		<guice>4.0</guice>
+		<guice>4.1.0</guice>
 		<vtd-xml>2.13</vtd-xml>
-		<jsch>0.1.53</jsch>
+		<jsch>0.1.54</jsch>
 		<jsch.agentproxy>0.0.9</jsch.agentproxy>
 		<maven-plugin-annotations>3.4</maven-plugin-annotations>
 		<maven-invoker>2.2</maven-invoker>
-		<org.eclipse.jgit>4.4.0.201605250940-rc1</org.eclipse.jgit>
-		<commons-lang3>3.4</commons-lang3>
+		<org.eclipse.jgit>4.5.0.201609210915-r</org.eclipse.jgit>
+		<commons-lang3>3.5</commons-lang3>
 		<json-simple>1.1.1</json-simple>
 
 		<!-- Runtime dependencies -->
@@ -41,12 +40,13 @@
 		<commons-exec>1.3</commons-exec>
 		<hamcrest>1.3</hamcrest>
 		<junit>4.12</junit>
-		<mockito-core>2.0.80-beta</mockito-core>
+		<mockito-core>2.2.9</mockito-core>
+		<byte-buddy>1.5.2</byte-buddy>
 
 		<!-- Plugin versions -->
 		<sisu-maven-plugin>0.3.3</sisu-maven-plugin>
-		<maven-plugin-plugin>3.4</maven-plugin-plugin>
-		<maven-compiler-plugin>3.5.1</maven-compiler-plugin>
+		<maven-plugin-plugin>3.5</maven-plugin-plugin>
+		<maven-compiler-plugin>3.6.0</maven-compiler-plugin>
 		<maven-dependency-plugin>2.10</maven-dependency-plugin>
 		<maven-surefire-plugin>2.19.1</maven-surefire-plugin>
 		<maven-failsafe-plugin>2.19.1</maven-failsafe-plugin>
@@ -59,14 +59,15 @@
 		<site-maven-plugin>0.12</site-maven-plugin>
 
 		<!-- Reporting plugin versions -->
-		<maven-plugin-plugin>3.4</maven-plugin-plugin>
+		<maven-plugin-plugin>3.5</maven-plugin-plugin>
 		<maven-surefire-report-plugin>2.19.1</maven-surefire-report-plugin>
 		<maven-project-info-reports-plugin>2.9</maven-project-info-reports-plugin>
 
 		<!-- Configuration properties -->
 		<repository.path>github.com:SourcePond/${project.artifactId}</repository.path>
 		<deployment.baseurl>https://oss.sonatype.org</deployment.baseurl>
-		<source.level>1.7</source.level>
+		<source.level>1.8</source.level>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
 	<ciManagement>
@@ -116,6 +117,7 @@
 			<version>${javax.inject}</version>
 		</dependency>
 		<dependency>
+			<scope>provided</scope>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
 			<classifier>no_aop</classifier>
@@ -294,6 +296,12 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<version>${mockito-core}</version>
+		</dependency>
+		<dependency>
+			<scope>test</scope>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy</artifactId>
+			<version>${byte-buddy}</version>
 		</dependency>
 	</dependencies>
 
