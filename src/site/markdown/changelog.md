@@ -2,6 +2,7 @@ Changelog
 ---------
 
 ## 2.0.0
+ * Fixed #1: delete generated tags if something went wrong
  * Upgraded dependencies
  * Maven 3.3.3 and Java 8 are required now
  * Evaluate version of plugin to use in tests automatically
