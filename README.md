@@ -15,7 +15,7 @@ This project was originally forked from https://github.com/danielflower/multi-mo
 * Support for managed dependencies (*dependencyManagemend* element)
 * Support for managed plugins (*pluginManagement* element)
 * Support for dependency/plugin version substitution (versions specified as properties)
-* Mechanism to increment snapshot versions of released modules like the [maven-release-plugin](http://maven.apache.org/maven-release/maven-release-plugin) (see usage page for further information)
+* Mechanism to increment snapshot versions of released modules like the [maven-release-plugin](http://maven.apache.org/maven-release/maven-release-plugin). This especially useful when working with version ranges, see usage page for more information.
 
 Development
 ===========
