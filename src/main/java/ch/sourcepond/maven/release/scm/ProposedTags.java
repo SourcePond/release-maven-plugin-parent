@@ -17,4 +17,6 @@ public interface ProposedTags extends Iterable<ProposedTag> {
 	ProposedTag getTag(String tag, Version version) throws SCMException;
 
 	void tagAndPushRepo() throws SCMException;
+
+	void revertTagsAndPush();
 }

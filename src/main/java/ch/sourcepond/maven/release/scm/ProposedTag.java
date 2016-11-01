@@ -24,4 +24,6 @@ public interface ProposedTag extends Version {
 	void tagAndPush(String remoteUrlOrNull) throws SCMException;
 
 	ObjectId getObjectId();
+
+	void delete(String remoteUrlOrNull) throws SCMException;
 }

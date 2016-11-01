@@ -13,12 +13,18 @@ package ch.sourcepond.maven.release.scm;
 import static org.apache.commons.lang3.Validate.notBlank;
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.util.List;
+
 import org.apache.maven.plugin.logging.Log;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.transport.PushResult;
+import org.eclipse.jgit.transport.RemoteRefUpdate;
 import org.json.simple.JSONObject;
 
 import ch.sourcepond.maven.release.version.BaseVersion;
@@ -53,9 +59,18 @@ class DefaultProposedTag extends BaseVersion implements ProposedTag {
 		try {
 			ref = git.tag().setName(name()).setAnnotated(true).setMessage(json).call();
 		} catch (final GitAPIException e) {
-			throw new SCMException(e, "Ref could be saved at HEAD!");
+			throw new SCMException(e, "Ref '%s' could be saved at HEAD!", name());
 		}
 		return ref;
+	}
+	
+	private void pushAndLogResult(final PushCommand pushCommand)
+			throws GitAPIException, InvalidRemoteException, TransportException {
+		for (final PushResult result : pushCommand.call()) {
+			for (final RemoteRefUpdate upd : result.getRemoteUpdates()) {
+				log.info(upd.toString());
+			}
+		}
 	}
 
 	@Override
@@ -66,9 +81,9 @@ class DefaultProposedTag extends BaseVersion implements ProposedTag {
 			if (remoteUrlOrNull != null) {
 				pushCommand.setRemote(remoteUrlOrNull);
 			}
-			pushCommand.call();
+			pushAndLogResult(pushCommand);
 		} catch (final GitAPIException e) {
-			throw new SCMException(e, "Repository could be tagged with %s", name());
+			throw new SCMException(e, "Tag '%s' could not be pushed!", name());
 		}
 	}
 
@@ -127,5 +142,22 @@ class DefaultProposedTag extends BaseVersion implements ProposedTag {
 	public boolean hasChanged() {
 		// Always false for a tag
 		return false;
+	}
+
+	@Override
+	public void delete(final String remoteUrlOrNull) throws SCMException {
+		try {
+			final List<String> deleted = git.tagDelete().setTags(name()).call();
+			if (!deleted.isEmpty()) {
+				final PushCommand pushCommand = git.push().add(":" + name());
+				if (remoteUrlOrNull != null) {
+					pushCommand.setRemote(remoteUrlOrNull);
+				}
+				pushAndLogResult(pushCommand);
+			}
+			log.info(String.format("Deleted tag '%s' from repository", name()));
+		} catch (GitAPIException e) {
+			throw new SCMException(e, "Remote tag '%s' could not be deleted!", name());
+		}
 	}
 }

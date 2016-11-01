@@ -116,16 +116,15 @@ public class ReleaseMojo extends NextMojo {
 	protected void execute(final Reactor reactor, final ProposedTags proposedTags)
 			throws MojoExecutionException, PluginException {
 		try (final ChangeSet changedFiles = updater.updatePoms(reactor, incrementSnapshotVersionAfterRelease)) {
-
-			// Do this before running the maven build in case the build uploads
-			// some artifacts and then fails. If it is
-			// not tagged in a half-failed build, then subsequent releases will
-			// re-use a version that is already in Nexus
-			// and so fail. The downside is that failed builds result in tags
-			// being pushed.
-			proposedTags.tagAndPushRepo();
-
 			try {
+				// Do this before running the maven build in case the build uploads
+				// some artifacts and then fails. If it is
+				// not tagged in a half-failed build, then subsequent releases will
+				// re-use a version that is already in Nexus
+				// and so fail. The downside is that failed builds result in tags
+				// being pushed.
+				proposedTags.tagAndPushRepo();
+				
 				final ReleaseInvoker invoker = new ReleaseInvoker(getLog(), rootProject);
 				invoker.setGlobalSettings(globalSettings);
 				invoker.setUserSettings(userSettings);
@@ -137,7 +136,11 @@ public class ReleaseMojo extends NextMojo {
 				invoker.setDebugEnabled(debugEnabled);
 				invoker.runMavenBuild(reactor);
 			} catch (final Exception e) {
-				changedFiles.setFailure("Exception occurred while release invokation!", e);
+				try {					
+					proposedTags.revertTagsAndPush();
+				} finally {					
+					changedFiles.setFailure("Exception occurred while release invokation!", e);
+				}
 			}
 		}
 	}

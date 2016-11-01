@@ -16,14 +16,18 @@ import static java.util.Collections.unmodifiableCollection;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.maven.plugin.logging.Log;
+
 import ch.sourcepond.maven.release.version.Version;
 
 final class DefaultProposedTags implements ProposedTags {
 	static final String KEY_FORMAT = "%s/%s";
+	private final Log log;
 	private final Map<String, ProposedTag> proposedTags;
 	private final String remoteUrlOrNull;
 
-	DefaultProposedTags(final String remoteUrlOrNull, final Map<String, ProposedTag> proposedTags) {
+	DefaultProposedTags(final Log pLog, final String remoteUrlOrNull, final Map<String, ProposedTag> proposedTags) {
+		this.log = pLog;
 		this.remoteUrlOrNull = remoteUrlOrNull;
 		this.proposedTags = proposedTags;
 	}
@@ -40,7 +44,7 @@ final class DefaultProposedTags implements ProposedTags {
 		final String key = toKey(tag, version);
 		final ProposedTag proposedTag = proposedTags.get(key);
 		if (proposedTag == null) {
-			throw new SCMException("No proposed tag registered %s", key);
+			throw new SCMException("No proposed tag registered for %s", key);
 		}
 		return proposedTag;
 	}
@@ -52,5 +56,16 @@ final class DefaultProposedTags implements ProposedTags {
 	@Override
 	public Iterator<ProposedTag> iterator() {
 		return unmodifiableCollection(proposedTags.values()).iterator();
+	}
+
+	@Override
+	public void revertTagsAndPush() {
+		for (final ProposedTag tag : proposedTags.values()) {
+			try {
+				tag.delete(remoteUrlOrNull);
+			} catch (SCMException e) {
+				log.warn(e);
+			}
+		}
 	}
 }
