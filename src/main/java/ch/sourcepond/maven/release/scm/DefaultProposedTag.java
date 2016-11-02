@@ -149,7 +149,7 @@ class DefaultProposedTag extends BaseVersion implements ProposedTag {
 		try {
 			final List<String> deleted = git.tagDelete().setTags(name()).call();
 			if (!deleted.isEmpty()) {
-				final PushCommand pushCommand = git.push().add(":" + name());
+				final PushCommand pushCommand = git.push().add(":refs/tags/" + name());
 				if (remoteUrlOrNull != null) {
 					pushCommand.setRemote(remoteUrlOrNull);
 				}

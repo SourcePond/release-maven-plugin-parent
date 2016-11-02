@@ -208,7 +208,7 @@ public class DefaultProposedTagTest {
 		when(deleteTagCommand.call()).thenReturn(asList(ANY_NAME));
 		when(git.tagDelete()).thenReturn(deleteTagCommand);
 		when(git.push()).thenReturn(pushCommand);
-		when(pushCommand.add(":" + ANY_NAME)).thenReturn(pushCommand);
+		when(pushCommand.add(":refs/tags/" + ANY_NAME)).thenReturn(pushCommand);
 		when(pushCommand.call()).thenReturn(pushResults);
 		when(pushResult.getRemoteUpdates()).thenReturn(remoteRefUpdates);
 	}
