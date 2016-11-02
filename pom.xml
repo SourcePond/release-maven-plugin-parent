@@ -302,60 +302,6 @@
 	</dependencies>
 
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.eclipse.sisu</groupId>
-										<artifactId>sisu-maven-plugin</artifactId>
-										<versionRange>[0.3,)</versionRange>
-										<goals>
-											<goal>main-index</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-plugin-plugin</artifactId>
-										<versionRange>[1.0.0,)</versionRange>
-										<goals>
-											<goal>descriptor</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-plugin-plugin</artifactId>
-										<versionRange>[1.0.0,)</versionRange>
-										<goals>
-											<goal>helpmojo</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.sisu</groupId>
@@ -481,6 +427,71 @@
 	</build>
 
 	<profiles>
+		<profile>
+			<id>eclipse-only</id>
+			<activation>
+				<property>
+					<name>m2e.version</name>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.eclipse.m2e</groupId>
+							<artifactId>lifecycle-mapping</artifactId>
+							<version>1.0.0</version>
+							<configuration>
+								<lifecycleMappingMetadata>
+									<pluginExecutions>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.eclipse.sisu</groupId>
+												<artifactId>sisu-maven-plugin</artifactId>
+												<versionRange>[0.3,)</versionRange>
+												<goals>
+													<goal>main-index</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.apache.maven.plugins</groupId>
+												<artifactId>maven-plugin-plugin</artifactId>
+												<versionRange>[1.0.0,)</versionRange>
+												<goals>
+													<goal>descriptor</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.apache.maven.plugins</groupId>
+												<artifactId>maven-plugin-plugin</artifactId>
+												<versionRange>[1.0.0,)</versionRange>
+												<goals>
+													<goal>helpmojo</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+									</pluginExecutions>
+								</lifecycleMappingMetadata>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+		
 		<profile>
 			<id>release</id>
 			<build>
