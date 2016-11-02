@@ -1,6 +1,7 @@
 package ch.sourcepond.maven.release;
 
 import static ch.sourcepond.maven.release.ReleaseInvoker.DEPLOY;
+import static ch.sourcepond.maven.release.ReleaseInvoker.DEPLOY_AT_END;
 import static ch.sourcepond.maven.release.ReleaseInvoker.SKIP_TESTS;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertSame;
@@ -214,6 +215,19 @@ public class ReleaseInvokerTest {
 		}));
 	}
 
+
+	@Test
+	public void releaseAtEnd() throws Exception {
+		releaseInvoker.runMavenBuild(reactor);
+		verify(request).setProperties(Mockito.argThat(new ArgumentMatcher<Properties>() {
+
+			@Override
+			public boolean matches(final Properties env) {
+				return env.containsKey(DEPLOY_AT_END);
+			}
+		}));
+	}
+	
 	@Test
 	public void skipTests() throws Exception {
 		releaseInvoker.setSkipTests(true);

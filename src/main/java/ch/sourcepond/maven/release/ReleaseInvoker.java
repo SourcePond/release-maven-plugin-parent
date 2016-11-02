@@ -46,6 +46,7 @@ class ReleaseInvoker {
 			"user.dir", "file.encoding" };
 	static final String DEPLOY = "deploy";
 	static final String SKIP_TESTS = "skipTests";
+	static final String DEPLOY_AT_END = "deployAtEnd";
 	private final Log log;
 	private final RootProject project;
 	private final InvocationRequest request;
@@ -132,7 +133,7 @@ class ReleaseInvoker {
 		// all modules have been built. Requires at least maven-deploy-plugin
 		// 2.8 otherwise this parameter will be ignored and the artifacts will be
 		// uploaded during each sub-module build.
-		env.setProperty("deployAtEnd", "true");
+		env.setProperty(DEPLOY_AT_END, "true");
 		return env;
 	}
 
