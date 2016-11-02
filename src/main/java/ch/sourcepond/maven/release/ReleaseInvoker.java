@@ -37,37 +37,13 @@ import ch.sourcepond.maven.release.reactor.ReleasableModule;
  *
  */
 class ReleaseInvoker {
-	static final String[] DEFAULT_VM_PROPERTY_NAMES = new String[] {
-			"java.version",
-			"java.vendor",
-			"java.vendor.url",
-			"java.home",
-			"java.vm.specification.version",
-			"java.vm.specification.vendor",
-			"java.vm.specification.name",
-			"java.vm.version",
-			"java.vm.vendor",
-			"java.vm.name",
-			"java.specification.version",
-			"java.specification.vendor",
-			"java.specification.name",
-			"java.class.version",
-			"java.class.path",
-			"java.library.path",
-			"java.io.tmpdir",
-			"java.compiler",
-			"java.ext.dirs",
-			"os.name",
-			"os.arch",
-			"os.version	Operating",
-			"file.separator",
-			"path.separator",
-			"line.separator",
-			"user.name",
-			"user.home",
-			"user.dir",
-			"file.encoding"
-	};
+	static final String[] DEFAULT_VM_PROPERTY_NAMES = new String[] { "java.version", "java.vendor", "java.vendor.url",
+			"java.home", "java.vm.specification.version", "java.vm.specification.vendor", "java.vm.specification.name",
+			"java.vm.version", "java.vm.vendor", "java.vm.name", "java.specification.version",
+			"java.specification.vendor", "java.specification.name", "java.class.version", "java.class.path",
+			"java.library.path", "java.io.tmpdir", "java.compiler", "java.ext.dirs", "os.name", "os.arch",
+			"os.version	Operating", "file.separator", "path.separator", "line.separator", "user.name", "user.home",
+			"user.dir", "file.encoding" };
 	static final String DEPLOY = "deploy";
 	static final String SKIP_TESTS = "skipTests";
 	private final Log log;
@@ -101,7 +77,7 @@ class ReleaseInvoker {
 	}
 
 	private List<String> getModulesToRelease() {
-		return modulesToRelease == null ? Collections.<String> emptyList() : modulesToRelease;
+		return modulesToRelease == null ? Collections.<String>emptyList() : modulesToRelease;
 	}
 
 	private List<String> getReleaseProfilesOrNull() {
@@ -145,12 +121,18 @@ class ReleaseInvoker {
 			}
 		}
 	}
-	
+
 	private Properties cloneSystemProperties() {
-		final Properties env = (Properties)System.getProperties().clone();
+		final Properties env = (Properties) System.getProperties().clone();
 		for (final String defaultVmPropertyName : DEFAULT_VM_PROPERTY_NAMES) {
 			env.remove(defaultVmPropertyName);
 		}
+
+		// This enforces maven-deploy-plugin to upload generated artifact AFTER
+		// all modules have been built. Requires at least maven-deploy-plugin
+		// 2.8 otherwise this parameter will be ignored and the artifacts will be
+		// uploaded during each sub-module build.
+		env.setProperty("deployAtEnd", "true");
 		return env;
 	}
 
@@ -163,7 +145,7 @@ class ReleaseInvoker {
 		if (skipTests) {
 			env.put(SKIP_TESTS, String.valueOf(true));
 		}
-		
+
 		request.setProperties(env);
 		request.setGoals(getGoals());
 
