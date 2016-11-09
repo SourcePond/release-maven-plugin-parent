@@ -103,31 +103,6 @@
 
 	<profiles>
 		<profile>
-			<id>self-reference</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>ch.sourcepond.maven.plugins.multimodule</groupId>
-						<artifactId>release-maven-plugin-self</artifactId>
-						<!-- This is necessary to avoid a circular dependency -->
-						<version>${project.version}</version>
-						<configuration>
-							<serverId>github</serverId>
-							<releaseGoals>
-								<releaseGoal>clean</releaseGoal>
-								<releaseGoal>deploy</releaseGoal>
-								<releaseGoal>site-deploy</releaseGoal>
-							</releaseGoals>
-							<releaseProfiles>
-								<releaseProfile>release</releaseProfile>
-							</releaseProfiles>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
 			<id>release</id>
 			<build>
 				<plugins>
@@ -198,6 +173,23 @@
 			</plugins>
 		</pluginManagement>
 		<plugins>
+			<plugin>
+				<groupId>ch.sourcepond.maven.plugins.multimodule</groupId>
+				<artifactId>release-maven-plugin-self</artifactId>
+				<!-- This is necessary to avoid a circular dependency -->
+				<version>[${project.version},)</version>
+				<configuration>
+					<serverId>github</serverId>
+					<releaseGoals>
+						<releaseGoal>clean</releaseGoal>
+						<releaseGoal>deploy</releaseGoal>
+						<releaseGoal>site-deploy</releaseGoal>
+					</releaseGoals>
+					<releaseProfiles>
+						<releaseProfile>release</releaseProfile>
+					</releaseProfiles>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
