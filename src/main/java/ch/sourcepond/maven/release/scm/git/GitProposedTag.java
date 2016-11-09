@@ -38,9 +38,11 @@ class GitProposedTag extends BaseVersion implements ProposedTag {
 	private final String name;
 	private final JSONObject message;
 	private final Git git;
+	private final String remoteUrlOrNull;
 	private Ref ref;
 
-	GitProposedTag(final Git git, final Log log, final Ref ref, final String name, final JSONObject message) {
+	GitProposedTag(final Git git, final Log log, final Ref ref, final String name, final JSONObject message,
+			final String pRemoteUrlOrNull) {
 		notBlank(name, "tag name");
 		notNull(message, "tag message");
 		this.log = log;
@@ -48,6 +50,7 @@ class GitProposedTag extends BaseVersion implements ProposedTag {
 		this.ref = ref;
 		this.name = name;
 		this.message = message;
+		this.remoteUrlOrNull = pRemoteUrlOrNull;
 	}
 
 	@Override
@@ -65,7 +68,7 @@ class GitProposedTag extends BaseVersion implements ProposedTag {
 		}
 		return ref;
 	}
-	
+
 	private void pushAndLogResult(final PushCommand pushCommand)
 			throws GitAPIException, InvalidRemoteException, TransportException {
 		for (final PushResult result : pushCommand.call()) {
@@ -76,7 +79,7 @@ class GitProposedTag extends BaseVersion implements ProposedTag {
 	}
 
 	@Override
-	public void tagAndPush(final String remoteUrlOrNull) throws SCMException {
+	public void tagAndPush() throws SCMException {
 		log.info(String.format("About to tag the repository with %s", name()));
 		try {
 			final PushCommand pushCommand = git.push().add(saveAtHEAD());
@@ -147,7 +150,7 @@ class GitProposedTag extends BaseVersion implements ProposedTag {
 	}
 
 	@Override
-	public void delete(final String remoteUrlOrNull) throws SCMException {
+	public void delete() throws SCMException {
 		try {
 			final List<String> deleted = git.tagDelete().setTags(name()).call();
 			if (!deleted.isEmpty()) {
@@ -158,7 +161,7 @@ class GitProposedTag extends BaseVersion implements ProposedTag {
 				pushAndLogResult(pushCommand);
 			}
 			log.info(String.format("Deleted tag '%s' from repository", name()));
-		} catch (GitAPIException e) {
+		} catch (final GitAPIException e) {
 			throw new SCMException(e, "Remote tag '%s' could not be deleted!", name());
 		}
 	}

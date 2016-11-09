@@ -27,18 +27,16 @@ final class GitProposedTags implements ProposedTags {
 	static final String KEY_FORMAT = "%s/%s";
 	private final Log log;
 	private final Map<String, ProposedTag> proposedTags;
-	private final String remoteUrlOrNull;
 
-	GitProposedTags(final Log pLog, final String remoteUrlOrNull, final Map<String, ProposedTag> proposedTags) {
+	GitProposedTags(final Log pLog, final Map<String, ProposedTag> proposedTags) {
 		this.log = pLog;
-		this.remoteUrlOrNull = remoteUrlOrNull;
 		this.proposedTags = proposedTags;
 	}
 
 	@Override
-	public void tagAndPushRepo() throws SCMException {
+	public void tag() throws SCMException {
 		for (final ProposedTag tag : proposedTags.values()) {
-			tag.tagAndPush(remoteUrlOrNull);
+			tag.tagAndPush();
 		}
 	}
 
@@ -62,11 +60,11 @@ final class GitProposedTags implements ProposedTags {
 	}
 
 	@Override
-	public void revertTagsAndPush() {
+	public void undoTag() {
 		for (final ProposedTag tag : proposedTags.values()) {
 			try {
-				tag.delete(remoteUrlOrNull);
-			} catch (SCMException e) {
+				tag.delete();
+			} catch (final SCMException e) {
 				log.warn(e);
 			}
 		}

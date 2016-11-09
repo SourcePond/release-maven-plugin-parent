@@ -55,17 +55,17 @@ final class GitProposedTagsBuilder implements ProposedTagsBuilder {
 		final JSONObject message = new JSONObject();
 		message.put(VERSION, version.getBusinessVersion());
 		message.put(BUILD_NUMBER, String.valueOf(version.getBuildNumber()));
-		proposedTags.put(toKey(tag, version), new GitProposedTag(git, log, null, tag, message));
+		proposedTags.put(toKey(tag, version), new GitProposedTag(git, log, null, tag, message, remoteUrlOrNull));
 		return this;
 	}
 
 	private void validateTagNoAlreadyInRemoteRepo() throws SCMException {
-		final List<String> tagNamesToSearchFor = new ArrayList<String>();
+		final List<String> tagNamesToSearchFor = new ArrayList<>();
 		for (final ProposedTag annotatedTag : proposedTags.values()) {
 			tagNamesToSearchFor.add(annotatedTag.name());
 		}
 
-		final List<String> matchingRemoteTags = new ArrayList<String>();
+		final List<String> matchingRemoteTags = new ArrayList<>();
 		final Collection<Ref> remoteTags = repo.allRemoteTags();
 		for (final Ref remoteTag : remoteTags) {
 			for (final String proposedTag : tagNamesToSearchFor) {
@@ -74,7 +74,7 @@ final class GitProposedTagsBuilder implements ProposedTagsBuilder {
 				}
 			}
 		}
-		
+
 		if (!matchingRemoteTags.isEmpty()) {
 			final SCMException exception = new SCMException(
 					"Cannot release because there is already a tag with the same build number on the remote Git repo.");
@@ -88,7 +88,7 @@ final class GitProposedTagsBuilder implements ProposedTagsBuilder {
 	@Override
 	public ProposedTags build() throws SCMException {
 		validateTagNoAlreadyInRemoteRepo();
-		return new GitProposedTags(log, remoteUrlOrNull, proposedTags);
+		return new GitProposedTags(log, proposedTags);
 	}
 
 }

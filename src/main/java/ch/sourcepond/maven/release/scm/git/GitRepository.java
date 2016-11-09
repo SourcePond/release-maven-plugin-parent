@@ -26,10 +26,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.apache.maven.plugin.logging.Log;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.LsRemoteCommand;
@@ -49,7 +45,6 @@ import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import ch.sourcepond.maven.release.config.Configuration;
 import ch.sourcepond.maven.release.scm.ProposedTag;
 import ch.sourcepond.maven.release.scm.ProposedTagsBuilder;
 import ch.sourcepond.maven.release.scm.SCMException;
@@ -131,7 +126,7 @@ public class GitRepository implements SCMRepository {
 	public Collection<Long> getRemoteBuildNumbers(final String artifactId, final String versionWithoutBuildNumber)
 			throws SCMException {
 		final Collection<Ref> remoteTagRefs = allRemoteTags();
-		final Collection<Long> remoteBuildNumbers = new ArrayList<Long>();
+		final Collection<Long> remoteBuildNumbers = new ArrayList<>();
 		final String tagWithoutBuildNumber = artifactId + "-" + versionWithoutBuildNumber;
 		for (final Ref remoteTagRef : remoteTagRefs) {
 			final String remoteTagName = remoteTagRef.getName();
@@ -294,7 +289,8 @@ public class GitRepository implements SCMRepository {
 			message.put(VERSION, "0");
 			message.put(BUILD_NUMBER, "0");
 		}
-		return new GitProposedTag(getGit(), log, gitTag, stripRefPrefix(gitTag.getName()), message);
+		return new GitProposedTag(getGit(), log, gitTag, stripRefPrefix(gitTag.getName()), message,
+				config.getRemoteUrlOrNull());
 	}
 
 	static String stripRefPrefix(final String refName) {
@@ -356,7 +352,7 @@ public class GitRepository implements SCMRepository {
 			final RevWalk walk) {
 		final boolean isRootModule = ".".equals(modulePath);
 		final boolean isMultiModuleProject = !isRootModule || !childModules.isEmpty();
-		final List<TreeFilter> treeFilters = new LinkedList<TreeFilter>();
+		final List<TreeFilter> treeFilters = new LinkedList<>();
 		treeFilters.add(TreeFilter.ANY_DIFF);
 		if (isMultiModuleProject) {
 			if (!isRootModule) {

@@ -138,7 +138,7 @@ public class ReleaseMojo extends NextMojo {
 				// and so fail. The downside is that failed builds result in
 				// tags
 				// being pushed.
-				proposedTags.tagAndPushRepo();
+				proposedTags.tag();
 
 				final ReleaseInvoker invoker = new ReleaseInvoker(getLog(), rootProject);
 				invoker.setGlobalSettings(globalSettings);
@@ -152,7 +152,7 @@ public class ReleaseMojo extends NextMojo {
 				invoker.runMavenBuild(reactor);
 			} catch (final Exception e) {
 				try {
-					proposedTags.revertTagsAndPush();
+					proposedTags.undoTag();
 				} finally {
 					changedFiles.setFailure("Exception occurred while release invokation!", e);
 				}

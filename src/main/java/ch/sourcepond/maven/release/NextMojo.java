@@ -208,7 +208,7 @@ public class NextMojo extends AbstractMojo {
 	}
 
 	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException {
+	public final void execute() throws MojoExecutionException, MojoFailureException {
 		try {
 			// Register singletons for injection
 			singletons.initialize(this, project, projects);
