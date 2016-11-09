@@ -57,7 +57,7 @@
 		<maven-plugin-plugin>3.5</maven-plugin-plugin>
 		<maven-surefire-report-plugin>2.19.1</maven-surefire-report-plugin>
 		<maven-project-info-reports-plugin>2.9</maven-project-info-reports-plugin>
-		
+
 		<artifactJar>${project.build.directory}/${project.artifactId}-${project.version}.jar</artifactJar>
 		<selfArtifactJar>${project.build.directory}/${project.artifactId}-${self.version}.jar</selfArtifactJar>
 	</properties>
@@ -283,12 +283,46 @@
 
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>${maven-antrun-plugin}</version>
+				<executions>
+					<execution>
+						<id>prepare-self-package</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<unzip src="${artifactJar}" dest="${project.build.directory}/tmp" />
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>repack-self</id>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<replace
+									file="${project.build.directory}/tmp/META-INF/maven/${project.groupId}/${project.artifactId}/pom.properties"
+									token="${project.version}" value="${self.version}" />
+								<zip basedir="${project.build.directory}/tmp" destfile="${selfArtifactJar}" />
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>xml-maven-plugin</artifactId>
 				<version>${xml-maven-plugin}</version>
 				<executions>
 					<execution>
-						<phase>install</phase>
+						<phase>verify</phase>
 						<goals>
 							<goal>transform</goal>
 						</goals>
@@ -298,36 +332,25 @@
 					<transformationSets>
 						<transformationSet>
 							<dir>${project.build.outputDirectory}/META-INF/maven</dir>
-							<outputDir>${project.build.directory}</outputDir>
+							<outputDir>${project.build.directory}/tmp/META-INF/maven</outputDir>
 							<stylesheet>src/main/resources/self.xslt</stylesheet>
+							<includes>plugin.xml</includes>
+						</transformationSet>
+						<transformationSet>
+							<dir>${project.build.outputDirectory}/META-INF/maven/${project.groupId}/${project.artifactId}</dir>
+							<outputDir>${project.build.directory}/tmp/META-INF/maven/${project.groupId}/${project.artifactId}</outputDir>
+							<stylesheet>src/main/resources/self.xslt</stylesheet>
+							<includes>plugin-help.xml</includes>
+						</transformationSet>
+						<transformationSet>
+							<dir>${project.basedir}</dir>
+							<outputDir>${project.build.directory}/tmp/META-INF/maven/${project.groupId}/${project.artifactId}</outputDir>
+							<stylesheet>src/main/resources/self.xslt</stylesheet>
+							<includes>pom.xml</includes>
 						</transformationSet>
 					</transformationSets>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>${maven-antrun-plugin}</version>
-				<executions>
-					<execution>
-						<id>repack</id>
-						<phase>install</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<target>
-								<!-- note that here we reference previously declared dependency -->
-								<unzip src="${artifactJar}" dest="${project.build.directory}/tmp" />
-								<copy file="${project.build.directory}/plugin.xml" todir="${project.build.directory}/tmp/META-INF/maven" overwrite="true"/>
-								<zip basedir="${project.build.directory}/tmp" destfile="${selfArtifactJar}" />
-								<!-- now the modified jar is available -->
-							</target>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>

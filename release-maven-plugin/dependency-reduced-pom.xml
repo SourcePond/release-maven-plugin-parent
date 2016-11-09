@@ -27,12 +27,43 @@
     </resources>
     <plugins>
       <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>${maven-antrun-plugin}</version>
+        <executions>
+          <execution>
+            <id>prepare-self-package</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <unzip />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>repack-self</id>
+            <phase>install</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <replace />
+                <zip />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>xml-maven-plugin</artifactId>
         <version>${xml-maven-plugin}</version>
         <executions>
           <execution>
-            <phase>install</phase>
+            <phase>verify</phase>
             <goals>
               <goal>transform</goal>
             </goals>
@@ -42,31 +73,24 @@
           <transformationSets>
             <transformationSet>
               <dir>${project.build.outputDirectory}/META-INF/maven</dir>
-              <outputDir>${project.build.directory}</outputDir>
+              <outputDir>${project.build.directory}/tmp/META-INF/maven</outputDir>
               <stylesheet>src/main/resources/self.xslt</stylesheet>
+              <includes>plugin.xml</includes>
+            </transformationSet>
+            <transformationSet>
+              <dir>${project.build.outputDirectory}/META-INF/maven/${project.groupId}/${project.artifactId}</dir>
+              <outputDir>${project.build.directory}/tmp/META-INF/maven/${project.groupId}/${project.artifactId}</outputDir>
+              <stylesheet>src/main/resources/self.xslt</stylesheet>
+              <includes>plugin-help.xml</includes>
+            </transformationSet>
+            <transformationSet>
+              <dir>${project.basedir}</dir>
+              <outputDir>${project.build.directory}/tmp/META-INF/maven/${project.groupId}/${project.artifactId}</outputDir>
+              <stylesheet>src/main/resources/self.xslt</stylesheet>
+              <includes>pom.xml</includes>
             </transformationSet>
           </transformationSets>
         </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>${maven-antrun-plugin}</version>
-        <executions>
-          <execution>
-            <id>repack</id>
-            <phase>install</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target>
-                <unzip />
-                <copy />
-                <zip />
-              </target>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-install-plugin</artifactId>
