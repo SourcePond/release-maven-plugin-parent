@@ -58,11 +58,6 @@
 		<maven-project-info-reports-plugin>2.9</maven-project-info-reports-plugin>
 	</properties>
 
-	<ciManagement>
-		<system>Jenkins</system>
-		<url>https://sourcepond.ci.cloudbees.com/job/${project.artifactId}</url>
-	</ciManagement>
-
 	<scm>
 		<url>https://${repository.path}.git</url>
 		<connection>scm:git:git@${repository.path}.git</connection>
@@ -454,17 +449,4 @@
 			</plugin>
 		</plugins>
 	</reporting>
-
-	<distributionManagement>
-		<repository>
-			<id>ossrh-stage</id>
-			<name>SourcePond Stage Repository</name>
-			<url>${deployment.baseurl}/service/local/staging/deploy/maven2/</url>
-		</repository>
-		<snapshotRepository>
-			<id>ossrh-snapshot</id>
-			<name>SourcePond Snapshot Repository</name>
-			<url>${deployment.baseurl}/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
 </project>

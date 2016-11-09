@@ -67,7 +67,7 @@
 
 	<ciManagement>
 		<system>Jenkins</system>
-		<url>https://sourcepond.ci.cloudbees.com/job/${project.artifactId}</url>
+		<url>https://sourcepond.ch/jenkins/job/${project.artifactId}</url>
 	</ciManagement>
 
 	<scm>
@@ -260,4 +260,17 @@
 			</plugin>
 		</plugins>
 	</reporting>
+	
+	<distributionManagement>
+		<repository>
+			<id>ossrh-stage</id>
+			<name>SourcePond Stage Repository</name>
+			<url>${deployment.baseurl}/service/local/staging/deploy/maven2/</url>
+		</repository>
+		<snapshotRepository>
+			<id>ossrh-snapshot</id>
+			<name>SourcePond Snapshot Repository</name>
+			<url>${deployment.baseurl}/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
