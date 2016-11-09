@@ -8,7 +8,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.*/
-package ch.sourcepond.maven.release.scm;
+package ch.sourcepond.maven.release.scm.git;
 
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableCollection;
@@ -18,15 +18,18 @@ import java.util.Map;
 
 import org.apache.maven.plugin.logging.Log;
 
+import ch.sourcepond.maven.release.scm.ProposedTag;
+import ch.sourcepond.maven.release.scm.ProposedTags;
+import ch.sourcepond.maven.release.scm.SCMException;
 import ch.sourcepond.maven.release.version.Version;
 
-final class DefaultProposedTags implements ProposedTags {
+final class GitProposedTags implements ProposedTags {
 	static final String KEY_FORMAT = "%s/%s";
 	private final Log log;
 	private final Map<String, ProposedTag> proposedTags;
 	private final String remoteUrlOrNull;
 
-	DefaultProposedTags(final Log pLog, final String remoteUrlOrNull, final Map<String, ProposedTag> proposedTags) {
+	GitProposedTags(final Log pLog, final String remoteUrlOrNull, final Map<String, ProposedTag> proposedTags) {
 		this.log = pLog;
 		this.remoteUrlOrNull = remoteUrlOrNull;
 		this.proposedTags = proposedTags;

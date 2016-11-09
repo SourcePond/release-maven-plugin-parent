@@ -143,4 +143,14 @@ public final class ConfigurationAccessor implements Configuration {
 	public File getLocalMavenRepo() {
 		return get(LOCAL_MAVEN_REPO, File.class);
 	}
+
+	@Override
+	public boolean isRemoteRepositoryEnabled() {
+		return getBoolean(REMOTE_REPOSITORY_ENABLED);
+	}
+
+	@Override
+	public boolean isRemotePushEnabled() {
+		return getBoolean(REMOTE_PUSH_ENABLED);
+	}
 }

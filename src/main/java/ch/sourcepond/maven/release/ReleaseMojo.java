@@ -9,6 +9,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import ch.sourcepond.maven.release.config.Configuration;
 import ch.sourcepond.maven.release.pom.ChangeSet;
 import ch.sourcepond.maven.release.pom.Updater;
 import ch.sourcepond.maven.release.providers.MavenComponentSingletons;
@@ -26,9 +27,11 @@ import ch.sourcepond.maven.release.scm.SCMRepository;
 															// as this plugin
 															// starts a phase
 															// itself
-inheritByDefault = true, // so you can configure this in a shared parent pom
-requiresProject = true, // this can only run against a maven project
-aggregator = true // the plugin should only run once against the aggregator pom
+		inheritByDefault = true, // so you can configure this in a shared parent
+									// pom
+		requiresProject = true, // this can only run against a maven project
+		aggregator = true // the plugin should only run once against the
+							// aggregator pom
 )
 public class ReleaseMojo extends NextMojo {
 
@@ -103,6 +106,15 @@ public class ReleaseMojo extends NextMojo {
 	@Parameter(property = "localMavenRepo")
 	private File localMavenRepo;
 
+	/**
+	 * Specifies whether the plugin should push changes to the remote
+	 * repository. This property has only an effect, when a distributed SCM like
+	 * GIT is used. If {@code remoteRepositoryEnabled} is disabled and a
+	 * distributed SCM like GIT is used, this property has no effect.
+	 */
+	@Parameter(property = Configuration.REMOTE_PUSH_ENABLED, defaultValue = "true")
+	private boolean remotePushEnabled;
+
 	private final Updater updater;
 
 	@Inject
@@ -117,14 +129,17 @@ public class ReleaseMojo extends NextMojo {
 			throws MojoExecutionException, PluginException {
 		try (final ChangeSet changedFiles = updater.updatePoms(reactor, incrementSnapshotVersionAfterRelease)) {
 			try {
-				// Do this before running the maven build in case the build uploads
+				// Do this before running the maven build in case the build
+				// uploads
 				// some artifacts and then fails. If it is
-				// not tagged in a half-failed build, then subsequent releases will
+				// not tagged in a half-failed build, then subsequent releases
+				// will
 				// re-use a version that is already in Nexus
-				// and so fail. The downside is that failed builds result in tags
+				// and so fail. The downside is that failed builds result in
+				// tags
 				// being pushed.
 				proposedTags.tagAndPushRepo();
-				
+
 				final ReleaseInvoker invoker = new ReleaseInvoker(getLog(), rootProject);
 				invoker.setGlobalSettings(globalSettings);
 				invoker.setUserSettings(userSettings);
@@ -136,9 +151,9 @@ public class ReleaseMojo extends NextMojo {
 				invoker.setDebugEnabled(debugEnabled);
 				invoker.runMavenBuild(reactor);
 			} catch (final Exception e) {
-				try {					
+				try {
 					proposedTags.revertTagsAndPush();
-				} finally {					
+				} finally {
 					changedFiles.setFailure("Exception occurred while release invokation!", e);
 				}
 			}

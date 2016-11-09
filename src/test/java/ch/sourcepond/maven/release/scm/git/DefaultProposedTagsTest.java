@@ -1,4 +1,4 @@
-package ch.sourcepond.maven.release.scm;
+package ch.sourcepond.maven.release.scm.git;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -19,6 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import ch.sourcepond.maven.release.scm.ProposedTag;
+import ch.sourcepond.maven.release.scm.SCMException;
+import ch.sourcepond.maven.release.scm.git.GitProposedTags;
 import ch.sourcepond.maven.release.version.Version;
 
 public class DefaultProposedTagsTest {
@@ -28,7 +31,7 @@ public class DefaultProposedTagsTest {
 	private final Log log = mock(Log.class);
 	private final ProposedTag tag = mock(ProposedTag.class);
 	private final Map<String, ProposedTag> proposedTags = new HashMap<>();
-	private final DefaultProposedTags tags = new DefaultProposedTags(log, ANY_REMOTE_URL, proposedTags);
+	private final GitProposedTags tags = new GitProposedTags(log, ANY_REMOTE_URL, proposedTags);
 
 	@Before
 	public void setup() {

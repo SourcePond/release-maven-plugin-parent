@@ -36,9 +36,11 @@ import ch.sourcepond.maven.release.scm.SCMRepository;
 														// bound to a phase as
 														// this plugin starts a
 														// phase itself
-inheritByDefault = true, // so you can configure this in a shared parent pom
-requiresProject = true, // this can only run against a maven project
-aggregator = true // the plugin should only run once against the aggregator pom
+		inheritByDefault = true, // so you can configure this in a shared parent
+									// pom
+		requiresProject = true, // this can only run against a maven project
+		aggregator = true // the plugin should only run once against the
+							// aggregator pom
 )
 public class NextMojo extends AbstractMojo {
 
@@ -122,6 +124,16 @@ public class NextMojo extends AbstractMojo {
 	@Parameter(property = Configuration.PASSPHRASE)
 	private String passphrase;
 
+	/**
+	 * Specifies whether the plugin should also work with the remote repository.
+	 * If {@code true}, the remote repository will be taken into account during
+	 * the release process. This property has only an effect, when a distributed
+	 * SCM like GIT is used. On client/server SCMs like Subversion, this
+	 * property is ignored. Default value is {@code true}.
+	 */
+	@Parameter(property = Configuration.REMOTE_REPOSITORY_ENABLED, defaultValue = "true")
+	private boolean remoteRepositoryEnabled;
+
 	private final ReactorFactory reactorFactory;
 	protected final SCMRepository repository;
 	private final MavenComponentSingletons singletons;
@@ -161,7 +173,7 @@ public class NextMojo extends AbstractMojo {
 	}
 
 	protected ProposedTags figureOutTagNamesAndThrowIfAlreadyExists(final Reactor reactor) throws PluginException {
-		final ProposedTagsBuilder builder = repository.newProposedTagsBuilder(rootProject.getRemoteUrlOrNull());
+		final ProposedTagsBuilder builder = repository.newProposedTagsBuilder();
 		for (final ReleasableModule module : reactor) {
 			if (!module.getVersion().hasChanged()) {
 				continue;

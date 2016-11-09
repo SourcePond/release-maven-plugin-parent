@@ -137,6 +137,23 @@ public interface Configuration {
 	 */
 	String LOCAL_MAVEN_REPO = "localMavenRepo";
 
+	/**
+	 * Specifies whether the plugin should also work with the remote repository.
+	 * If {@code true}, the remote repository will be taken into account during
+	 * the release process. This property has only an effect, when a distributed
+	 * SCM like GIT is used. On client/server SCMs like Subversion, this
+	 * property is ignored. Default value is {@code true}.
+	 */
+	String REMOTE_REPOSITORY_ENABLED = "remoteRepositoryEnabled";
+
+	/**
+	 * Specifies whether the plugin should push changes to the remote
+	 * repository. This property has only an effect, when a distributed SCM like
+	 * GIT is used. If {@code remoteRepositoryEnabled} is disabled and a
+	 * distributed SCM like GIT is used, this property has no effect.
+	 */
+	String REMOTE_PUSH_ENABLED = "remotePushEnabled";
+
 	Long getBuildNumberOrNull();
 
 	List<String> getModulesToRelease();
@@ -168,5 +185,9 @@ public interface Configuration {
 	File getGlobalSettings();
 
 	File getLocalMavenRepo();
+
+	boolean isRemoteRepositoryEnabled();
+
+	boolean isRemotePushEnabled();
 
 }

@@ -18,7 +18,6 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.logging.Log;
 import org.junit.Test;
 
-import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.scm.SCMException;
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
@@ -28,8 +27,7 @@ public class DefaultChangeSetTest {
 	private final SCMRepository repository = mock(SCMRepository.class);
 	private final MavenXpp3Writer writer = mock(MavenXpp3Writer.class);
 	private final Map<File, Model> releasedModels = new LinkedHashMap<>();
-	private final RootProject rootProject = mock(RootProject.class);
-	private final DefaultChangeSet set = new DefaultChangeSet(log, repository, writer, rootProject);
+	private final DefaultChangeSet set = new DefaultChangeSet(log, repository, writer);
 
 	/**
 	 * @throws Exception

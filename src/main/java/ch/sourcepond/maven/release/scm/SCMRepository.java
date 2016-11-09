@@ -26,17 +26,17 @@ public interface SCMRepository {
 
 	void revertChanges(Collection<File> changedFiles) throws SCMException;
 
-	Collection<Long> getRemoteBuildNumbers(String remoteUrlOrNull, String artifactId, String versionWithoutBuildNumber)
+	Collection<Long> getRemoteBuildNumbers(String artifactId, String versionWithoutBuildNumber)
 			throws SCMException;
 
 	Collection<ProposedTag> tagsForVersion(String module, String versionWithoutBuildNumber) throws SCMException;
 
-	ProposedTagsBuilder newProposedTagsBuilder(String remoteUrlNull) throws SCMException;
+	ProposedTagsBuilder newProposedTagsBuilder() throws SCMException;
 
 	void checkValidRefName(String releaseVersion) throws SCMException;
 
 	boolean hasChangedSince(String modulePath, List<String> childModules, Collection<ProposedTag> tags)
 			throws SCMException;
 
-	void pushChanges(String remoteUrlOrNull, Collection<File> changedFiles) throws SCMException;
+	void pushChanges(Collection<File> changedFiles) throws SCMException;
 }

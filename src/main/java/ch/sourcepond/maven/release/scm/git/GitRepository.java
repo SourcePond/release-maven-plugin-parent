@@ -8,10 +8,10 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.*/
-package ch.sourcepond.maven.release.scm;
+package ch.sourcepond.maven.release.scm.git;
 
-import static ch.sourcepond.maven.release.scm.DefaultProposedTag.BUILD_NUMBER;
-import static ch.sourcepond.maven.release.scm.DefaultProposedTag.VERSION;
+import static ch.sourcepond.maven.release.scm.git.GitProposedTag.BUILD_NUMBER;
+import static ch.sourcepond.maven.release.scm.git.GitProposedTag.VERSION;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.Validate.notNull;
 import static org.eclipse.jgit.lib.Repository.isValidRefName;
@@ -36,6 +36,7 @@ import org.eclipse.jgit.api.LsRemoteCommand;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.NoWorkTreeException;
+import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -49,32 +50,71 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import ch.sourcepond.maven.release.config.Configuration;
+import ch.sourcepond.maven.release.scm.ProposedTag;
+import ch.sourcepond.maven.release.scm.ProposedTagsBuilder;
+import ch.sourcepond.maven.release.scm.SCMException;
+import ch.sourcepond.maven.release.scm.SCMRepository;
 
-// TODO: Make this class package private when SingleModuleTest is working with a Guice injector
-@Named
-@Singleton
-public final class GitRepository implements SCMRepository {
+//TODO: Make this class package private when SingleModuleTest is working with a Guice injector
+public class GitRepository implements SCMRepository {
 	private static final String REFS_TAGS = "refs/tags/";
 	static final String SNAPSHOT_COMMIT_MESSAGE = "Incremented SNAPSHOT-version for next development iteration";
 	static final String INVALID_REF_NAME_MESSAGE = "Sorry, '%s' is not a valid version.";
 	private final Log log;
-	private final GitFactory gitFactory;
-	private final Configuration config;
+	private final GitConfig config;
 	private Git git;
 	private SCMException gitInstantiationException;
 	private Collection<Ref> remoteTags;
 
-	@Inject
-	public GitRepository(final Log pLog, final GitFactory pGitFactory, final Configuration pConfig) {
+	public GitRepository(final Log pLog, final GitConfig pConfig) {
 		log = pLog;
-		gitFactory = pGitFactory;
 		config = pConfig;
+	}
+
+	public Git newGit() throws SCMException {
+		final File gitDir = new File(".");
+		try {
+			return Git.open(gitDir);
+		} catch (final RepositoryNotFoundException rnfe) {
+			final String fullPathOfCurrentDir = pathOf(gitDir);
+			final File gitRoot = getGitRootIfItExistsInOneOfTheParentDirectories(new File(fullPathOfCurrentDir));
+			if (gitRoot == null) {
+				throw new SCMException("Releases can only be performed from Git repositories.")
+						.add("%s is not a Git repository.", fullPathOfCurrentDir);
+			}
+			throw new SCMException("The release plugin can only be run from the root folder of your Git repository")
+					.add("%s is not the root of a Gir repository", fullPathOfCurrentDir)
+					.add("Try running the release plugin from %s", pathOf(gitRoot));
+		} catch (final Exception e) {
+			throw new SCMException("Could not open git repository. Is %s a git repository?", pathOf(gitDir))
+					.add("Exception returned when accessing the git repo: %s", e.toString());
+		}
+	}
+
+	private static String pathOf(final File file) {
+		String path;
+		try {
+			path = file.getCanonicalPath();
+		} catch (final IOException e1) {
+			path = file.getAbsolutePath();
+		}
+		return path;
+	}
+
+	private static File getGitRootIfItExistsInOneOfTheParentDirectories(File candidateDir) {
+		while (candidateDir != null && /* HACK ATTACK! Maybe.... */ !candidateDir.getName().equals("target")) {
+			if (new File(candidateDir, ".git").isDirectory()) {
+				return candidateDir;
+			}
+			candidateDir = candidateDir.getParentFile();
+		}
+		return null;
 	}
 
 	private Git getGit() throws SCMException {
 		if (git == null && gitInstantiationException == null) {
 			try {
-				git = gitFactory.newGit();
+				git = newGit();
 			} catch (final SCMException e) {
 				gitInstantiationException = e;
 			}
@@ -88,9 +128,9 @@ public final class GitRepository implements SCMRepository {
 	}
 
 	@Override
-	public Collection<Long> getRemoteBuildNumbers(final String remoteUrlOrNull, final String artifactId,
-			final String versionWithoutBuildNumber) throws SCMException {
-		final Collection<Ref> remoteTagRefs = allRemoteTags(remoteUrlOrNull);
+	public Collection<Long> getRemoteBuildNumbers(final String artifactId, final String versionWithoutBuildNumber)
+			throws SCMException {
+		final Collection<Ref> remoteTagRefs = allRemoteTags();
 		final Collection<Long> remoteBuildNumbers = new ArrayList<Long>();
 		final String tagWithoutBuildNumber = artifactId + "-" + versionWithoutBuildNumber;
 		for (final Ref remoteTagRef : remoteTagRefs) {
@@ -103,11 +143,11 @@ public final class GitRepository implements SCMRepository {
 		return remoteBuildNumbers;
 	}
 
-	public Collection<Ref> allRemoteTags(final String remoteUrlOrNull) throws SCMException {
+	public Collection<Ref> allRemoteTags() throws SCMException {
 		if (remoteTags == null) {
 			final LsRemoteCommand lsRemoteCommand = getGit().lsRemote().setTags(true).setHeads(false);
-			if (remoteUrlOrNull != null) {
-				lsRemoteCommand.setRemote(remoteUrlOrNull);
+			if (config.getRemoteUrlOrNull() != null) {
+				lsRemoteCommand.setRemote(config.getRemoteUrlOrNull());
 			}
 			try {
 				remoteTags = lsRemoteCommand.call();
@@ -254,7 +294,7 @@ public final class GitRepository implements SCMRepository {
 			message.put(VERSION, "0");
 			message.put(BUILD_NUMBER, "0");
 		}
-		return new DefaultProposedTag(getGit(), log, gitTag, stripRefPrefix(gitTag.getName()), message);
+		return new GitProposedTag(getGit(), log, gitTag, stripRefPrefix(gitTag.getName()), message);
 	}
 
 	static String stripRefPrefix(final String refName) {
@@ -262,8 +302,8 @@ public final class GitRepository implements SCMRepository {
 	}
 
 	@Override
-	public ProposedTagsBuilder newProposedTagsBuilder(final String remoteUrlOrNull) throws SCMException {
-		return new DefaultProposedTagsBuilder(log, getGit(), this, remoteUrlOrNull);
+	public ProposedTagsBuilder newProposedTagsBuilder() throws SCMException {
+		return new GitProposedTagsBuilder(log, getGit(), this, config.getRemoteUrlOrNull());
 	}
 
 	@Override
@@ -338,7 +378,7 @@ public final class GitRepository implements SCMRepository {
 	}
 
 	@Override
-	public void pushChanges(final String remoteUrlOrNull, final Collection<File> changedFiles) throws SCMException {
+	public void pushChanges(final Collection<File> changedFiles) throws SCMException {
 		try {
 			final File workTree = getGit().getRepository().getWorkTree().getCanonicalFile();
 			for (final File changedFile : changedFiles) {
@@ -346,8 +386,8 @@ public final class GitRepository implements SCMRepository {
 				getGit().add().setUpdate(true).addFilepattern(pathRelativeToWorkingTree).call();
 			}
 			getGit().commit().setMessage(SNAPSHOT_COMMIT_MESSAGE).call();
-			if (remoteUrlOrNull != null) {
-				getGit().push().setRemote(remoteUrlOrNull).call();
+			if (config.getRemoteUrlOrNull() != null) {
+				getGit().push().setRemote(config.getRemoteUrlOrNull()).call();
 			}
 		} catch (final GitAPIException | IOException e) {
 			throw new SCMException(e, "Changed POM files could not be committed and pushed!");

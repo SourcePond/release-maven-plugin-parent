@@ -8,7 +8,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.*/
-package ch.sourcepond.maven.release.scm;
+package ch.sourcepond.maven.release.scm.git;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -43,6 +43,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import ch.sourcepond.maven.release.scm.SCMException;
+import ch.sourcepond.maven.release.scm.git.GitProposedTag;
+
 public class DefaultProposedTagTest {
 	private static final String ANY_NAME = "anyName";
 	private static final String ANY_MESSAGE = "anyMessage";
@@ -62,15 +65,15 @@ public class DefaultProposedTagTest {
 	private final RemoteRefUpdate remoteRefUpdate = mock(RemoteRefUpdate.class);
 	private final Collection<RemoteRefUpdate> remoteRefUpdates = asList(remoteRefUpdate);
 	private final DeleteTagCommand deleteTagCommand = mock(DeleteTagCommand.class);
-	private DefaultProposedTag tag = new DefaultProposedTag(git, log, ref, ANY_NAME, json);
+	private GitProposedTag tag = new GitProposedTag(git, log, ref, ANY_NAME, json);
 
 	@Before
 	public void setup() {
 		when(ref.getTarget()).thenReturn(ref);
 		when(ref.getObjectId()).thenReturn(id);
 		when(json.toJSONString()).thenReturn(ANY_MESSAGE);
-		when(json.get(DefaultProposedTag.BUILD_NUMBER)).thenReturn(String.valueOf(BUILD_NUMBER));
-		when(json.get(DefaultProposedTag.VERSION)).thenReturn(BUSINESS_VERSION);
+		when(json.get(GitProposedTag.BUILD_NUMBER)).thenReturn(String.valueOf(BUILD_NUMBER));
+		when(json.get(GitProposedTag.VERSION)).thenReturn(BUSINESS_VERSION);
 		when(remoteRefUpdate.toString()).thenReturn(ANY_TO_STRING);
 	}
 	
@@ -173,15 +176,15 @@ public class DefaultProposedTagTest {
 	
 	@Test
 	public void verifyEquals() {
-		 DefaultProposedTag tag1 = new DefaultProposedTag(git, log, ref, ANY_NAME, json);
+		 GitProposedTag tag1 = new GitProposedTag(git, log, ref, ANY_NAME, json);
 		 assertEquals(tag1, tag1);
 		 assertNotEquals(tag1, null);
 		 assertNotEquals(tag1, new Object());
 		 
-		 DefaultProposedTag tag2 = new DefaultProposedTag(git, log, ref, ANY_NAME, json);
+		 GitProposedTag tag2 = new GitProposedTag(git, log, ref, ANY_NAME, json);
 		 assertEquals(tag1, tag2);
 		 
-		 tag2 = new DefaultProposedTag(git, log, ref, "some different name", json);
+		 tag2 = new GitProposedTag(git, log, ref, "some different name", json);
 		 assertNotEquals(tag1, tag2);
 	}
 

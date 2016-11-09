@@ -27,7 +27,6 @@ import com.ximpleware.ModifyException;
 import com.ximpleware.NavException;
 import com.ximpleware.TranscodeException;
 
-import ch.sourcepond.maven.release.providers.RootProject;
 import ch.sourcepond.maven.release.scm.SCMException;
 import ch.sourcepond.maven.release.scm.SCMRepository;
 
@@ -41,19 +40,16 @@ class DefaultChangeSet implements ChangeSet {
 	static final String IO_EXCEPTION_FORMAT = "Updated project %s could not be written!";
 	private final Log log;
 	private final SCMRepository repository;
-	private final RootProject rootProject;
 	private final Map<File, Model> modelsToBeReleased = new LinkedHashMap<>();
 	private final Map<File, Model> modelsToBeIncremented = new LinkedHashMap<>();
 	private final Set<Model> needOwnVersion = new HashSet<>();
 	private final MavenXpp3Writer writer;
 	private ChangeSetCloseException failure;
 
-	DefaultChangeSet(final Log pLog, final SCMRepository pRepository, final MavenXpp3Writer pWriter,
-			final RootProject pRootProject) {
+	DefaultChangeSet(final Log pLog, final SCMRepository pRepository, final MavenXpp3Writer pWriter) {
 		log = pLog;
 		repository = pRepository;
 		writer = pWriter;
-		rootProject = pRootProject;
 	}
 
 	Map<File, Model> getModelsToBeReleased() {
@@ -140,7 +136,7 @@ class DefaultChangeSet implements ChangeSet {
 			}
 
 			try {
-				repository.pushChanges(rootProject.getRemoteUrlOrNull(), modelsToBeIncremented.keySet());
+				repository.pushChanges(modelsToBeIncremented.keySet());
 			} catch (final SCMException e) {
 				throw new ChangeSetCloseException(e, IO_EXCEPTION_FORMAT, modelsToBeIncremented.keySet());
 			}

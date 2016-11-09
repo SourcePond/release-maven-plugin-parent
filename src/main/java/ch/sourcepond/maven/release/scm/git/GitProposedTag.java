@@ -8,7 +8,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.*/
-package ch.sourcepond.maven.release.scm;
+package ch.sourcepond.maven.release.scm.git;
 
 import static org.apache.commons.lang3.Validate.notBlank;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -27,9 +27,11 @@ import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RemoteRefUpdate;
 import org.json.simple.JSONObject;
 
+import ch.sourcepond.maven.release.scm.ProposedTag;
+import ch.sourcepond.maven.release.scm.SCMException;
 import ch.sourcepond.maven.release.version.BaseVersion;
 
-class DefaultProposedTag extends BaseVersion implements ProposedTag {
+class GitProposedTag extends BaseVersion implements ProposedTag {
 	public static final String VERSION = "version";
 	public static final String BUILD_NUMBER = "buildNumber";
 	private final Log log;
@@ -38,7 +40,7 @@ class DefaultProposedTag extends BaseVersion implements ProposedTag {
 	private final Git git;
 	private Ref ref;
 
-	DefaultProposedTag(final Git git, final Log log, final Ref ref, final String name, final JSONObject message) {
+	GitProposedTag(final Git git, final Log log, final Ref ref, final String name, final JSONObject message) {
 		notBlank(name, "tag name");
 		notNull(message, "tag message");
 		this.log = log;
@@ -99,7 +101,7 @@ class DefaultProposedTag extends BaseVersion implements ProposedTag {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		final DefaultProposedTag that = (DefaultProposedTag) o;
+		final GitProposedTag that = (GitProposedTag) o;
 		return name.equals(that.name);
 	}
 

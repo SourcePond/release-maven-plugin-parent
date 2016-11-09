@@ -21,11 +21,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.sourcepond.integrationtest.utils.TestProject;
-import ch.sourcepond.maven.release.config.Configuration;
-import ch.sourcepond.maven.release.scm.GitFactory;
-import ch.sourcepond.maven.release.scm.GitRepository;
 import ch.sourcepond.maven.release.scm.ProposedTags;
 import ch.sourcepond.maven.release.scm.ProposedTagsBuilder;
+import ch.sourcepond.maven.release.scm.SCMRepository;
+import ch.sourcepond.maven.release.scm.git.GitConfig;
+import ch.sourcepond.maven.release.scm.git.GitFactory;
+import ch.sourcepond.maven.release.scm.git.GitRepository;
 import ch.sourcepond.maven.release.version.Version;
 
 public class SingleModuleTest extends E2ETest {
@@ -59,9 +60,8 @@ public class SingleModuleTest extends E2ETest {
 
 		final GitFactory gitFactory = mock(GitFactory.class);
 		when(gitFactory.newGit()).thenReturn(testProject.local);
-		final Configuration config = mock(Configuration.class);
-		final GitRepository repo = new GitRepository(mock(Log.class), gitFactory, config);
-		final ProposedTagsBuilder builder = repo.newProposedTagsBuilder(null);
+		final SCMRepository repo = new GitRepository(mock(Log.class), mock(GitConfig.class));
+		final ProposedTagsBuilder builder = repo.newProposedTagsBuilder();
 		final Version version = mock(Version.class);
 		when(version.getBusinessVersion()).thenReturn("1.0");
 		when(version.getBuildNumber()).thenReturn(2l);
