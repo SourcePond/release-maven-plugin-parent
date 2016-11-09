@@ -103,7 +103,7 @@
 
 	<profiles>
 		<profile>
-			<id>release</id>
+			<id>self-reference</id>
 			<build>
 				<plugins>
 					<plugin>
@@ -123,6 +123,14 @@
 							</releaseProfiles>
 						</configuration>
 					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
 					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
