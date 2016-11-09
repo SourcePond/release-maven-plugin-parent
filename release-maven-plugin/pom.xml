@@ -290,8 +290,8 @@
 						<configuration>
 							<file>${project.build.directory}/${project.artifactId}-${project.version}.jar</file>
 							<groupId>${project.groupId}</groupId>
-							<artifactId>${project.artifactId}</artifactId>
-							<version>${project.version}-SELF</version>
+							<artifactId>${project.artifactId}-self</artifactId>
+							<version>${project.version}</version>
 						</configuration>
 					</execution>
 				</executions>

@@ -108,9 +108,9 @@
 				<plugins>
 					<plugin>
 						<groupId>ch.sourcepond.maven.plugins.multimodule</groupId>
-						<artifactId>release-maven-plugin</artifactId>
+						<artifactId>release-maven-plugin-self</artifactId>
 						<!-- This is necessary to avoid a circular dependency -->
-						<version>${project.version}-SELF</version>
+						<version>${project.version}</version>
 						<configuration>
 							<serverId>github</serverId>
 							<releaseGoals>
