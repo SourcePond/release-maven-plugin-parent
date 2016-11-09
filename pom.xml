@@ -44,6 +44,7 @@
 		<doxia-module-markdown>1.7</doxia-module-markdown>
 
 		<!-- Configuration properties -->
+		<self.version>${project.version}-SELF</self.version>
 		<repository.path>github.com:SourcePond/${project.artifactId}</repository.path>
 		<deployment.baseurl>https://oss.sonatype.org</deployment.baseurl>
 		<source.level>1.8</source.level>
@@ -175,9 +176,9 @@
 		<plugins>
 			<plugin>
 				<groupId>ch.sourcepond.maven.plugins.multimodule</groupId>
-				<artifactId>release-maven-plugin-self</artifactId>
+				<artifactId>release-maven-plugin</artifactId>
 				<!-- This is necessary to avoid a circular dependency -->
-				<version>[${project.version},)</version>
+				<version>${self.version}</version>
 				<configuration>
 					<serverId>github</serverId>
 					<releaseGoals>
