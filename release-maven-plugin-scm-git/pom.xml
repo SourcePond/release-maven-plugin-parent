@@ -17,4 +17,11 @@
 		<url>https://${repository.path}.git</url>
 		<connection>scm:git:git@${repository.path}.git</connection>
 	</scm>
+	
+	<distributionManagement>
+		<site>
+			<id>www.sourcepond.ch</id>
+			<url>${site.distribution.url}/${project.groupId}/${project.artifactId}/${project.version}/</url>
+		</site>
+	</distributionManagement>
 </project>

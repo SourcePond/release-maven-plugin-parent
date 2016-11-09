@@ -50,7 +50,6 @@
 		<maven-source-plugin>3.0.0</maven-source-plugin>
 		<maven-javadoc-plugin>2.10.4</maven-javadoc-plugin>
 		<maven-gpg-plugin>1.6</maven-gpg-plugin>
-		<site-maven-plugin>0.12</site-maven-plugin>
 
 		<!-- Reporting plugin versions -->
 		<maven-plugin-plugin>3.5</maven-plugin-plugin>
@@ -449,4 +448,11 @@
 			</plugin>
 		</plugins>
 	</reporting>
+
+	<distributionManagement>
+		<site>
+			<id>www.sourcepond.ch</id>
+			<url>${site.distribution.url}/${project.groupId}/${project.artifactId}/${project.version}/</url>
+		</site>
+	</distributionManagement>
 </project>
