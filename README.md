@@ -2,7 +2,7 @@ Documentation, download, and usage instructions
 ===============================================
 
 Full usage details, FAQs, background and more are available on the
-**[project documention website](http://sourcepond.github.io/multi-module-release-maven-plugin/index.html)**.
+**[project documention website](http://sourcepond.github.io/release-maven-plugin/index.html)**.
 
 Difference to the original project
 ==================================
@@ -20,7 +20,7 @@ This project was originally forked from https://github.com/danielflower/multi-mo
 Development
 ===========
 
-[![Build Status](https://travis-ci.org/SourcePond/multi-module-release-maven-plugin.svg?branch=master)](https://travis-ci.org/SourcePond/multi-module-release-maven-plugin)
+[![Build Status](https://travis-ci.org/SourcePond/release-maven-plugin.svg?branch=master)](https://travis-ci.org/SourcePond/release-maven-plugin)
 
 Contributing
 ------------

@@ -3,65 +3,45 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>ch.sourcepond.maven.plugins</groupId>
-	<artifactId>multi-module-release-maven-plugin</artifactId>
-	<version>2.0-SNAPSHOT</version> <!-- When changing also add to src/site/markdown/changelog.md -->
-	<name>The Multi Module Maven Release Plugin</name>
+	<groupId>ch.sourcepond.maven.plugins.multimodule</groupId>
+	<artifactId>release-maven-plugin-base</artifactId>
+	<version>1.0-SNAPSHOT</version> <!-- When changing also add to src/site/markdown/changelog.md -->
+	<name>Multi Module Maven Release Plugin :: Parent Project</name>
 	<description>Maven plugin to release multi-module Maven projects where only changed modules should be released</description>
-	<url>https://github.com/SourcePond/multi-module-release-maven-plugin</url>
-	<packaging>maven-plugin</packaging>
+	<url>https://github.com/SourcePond/release-maven-plugin</url>
+	<packaging>pom</packaging>
+
 	<prerequisites>
 		<!-- if this changes, please update the MavenCompatibilityTest -->
-		<maven>3.3.3</maven>
+		<maven>${maven.version}</maven>
 	</prerequisites>
+
+	<modules>
+		<module>release-maven-plugin</module>
+		<module>release-maven-plugin-commons</module>
+		<module>release-maven-plugin-scm-api</module>
+		<module>release-maven-plugin-scm-git</module>
+	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<github.global.server>github</github.global.server>
+		<maven.version>3.3.3</maven.version>
 
-		<!-- Compile dependencies -->
-		<javax.inject>1</javax.inject>
-		<guice>4.1.0</guice>
-		<vtd-xml>2.13</vtd-xml>
-		<jsch>0.1.54</jsch>
-		<jsch.agentproxy>0.0.9</jsch.agentproxy>
-		<maven-plugin-annotations>3.4</maven-plugin-annotations>
-		<maven-invoker>2.2</maven-invoker>
+		<!-- Dependencies -->
 		<org.eclipse.jgit>4.5.0.201609210915-r</org.eclipse.jgit>
-		<commons-lang3>3.5</commons-lang3>
-		<json-simple>1.1.1</json-simple>
-
-		<!-- Runtime dependencies -->
-		<slf4j-simple>1.7.21</slf4j-simple>
-
-		<!-- Test dependencies -->
-		<aether>1.1.0</aether>
-		<commons-io>2.5</commons-io>
-		<commons-exec>1.3</commons-exec>
-		<hamcrest>1.3</hamcrest>
-		<junit>4.12</junit>
-		<mockito-core>2.2.9</mockito-core>
-		<byte-buddy>1.5.2</byte-buddy>
 
 		<!-- Plugin versions -->
-		<sisu-maven-plugin>0.3.3</sisu-maven-plugin>
 		<maven-plugin-plugin>3.5</maven-plugin-plugin>
 		<maven-compiler-plugin>3.6.0</maven-compiler-plugin>
 		<maven-dependency-plugin>2.10</maven-dependency-plugin>
-		<maven-surefire-plugin>2.19.1</maven-surefire-plugin>
-		<maven-failsafe-plugin>2.19.1</maven-failsafe-plugin>
-		<maven-site-plugin>3.5.1</maven-site-plugin>
-		<doxia-module-markdown>1.7</doxia-module-markdown>
 		<nexus-staging-maven-plugin>1.6.7</nexus-staging-maven-plugin>
 		<maven-source-plugin>3.0.0</maven-source-plugin>
 		<maven-javadoc-plugin>2.10.4</maven-javadoc-plugin>
 		<maven-gpg-plugin>1.6</maven-gpg-plugin>
+		<maven-site-plugin>3.5.1</maven-site-plugin>
 		<site-maven-plugin>0.12</site-maven-plugin>
-
-		<!-- Reporting plugin versions -->
-		<maven-plugin-plugin>3.5</maven-plugin-plugin>
-		<maven-surefire-report-plugin>2.19.1</maven-surefire-report-plugin>
-		<maven-project-info-reports-plugin>2.9</maven-project-info-reports-plugin>
+		<doxia-module-markdown>1.7</doxia-module-markdown>
 
 		<!-- Configuration properties -->
 		<repository.path>github.com:SourcePond/${project.artifactId}</repository.path>
@@ -69,6 +49,21 @@
 		<source.level>1.8</source.level>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.maven</groupId>
+				<artifactId>maven-plugin-api</artifactId>
+				<version>${maven.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jgit</groupId>
+				<artifactId>org.eclipse.jgit</artifactId>
+				<version>${org.eclipse.jgit}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<ciManagement>
 		<system>Jenkins</system>
@@ -106,392 +101,7 @@
 		</developer>
 	</developers>
 
-	<dependencies>
-		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<version>${javax.inject}</version>
-		</dependency>
-		<dependency>
-			<scope>provided</scope>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-			<classifier>no_aop</classifier>
-			<version>${guice}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.ximpleware</groupId>
-			<artifactId>vtd-xml</artifactId>
-			<version>${vtd-xml}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jcraft</groupId>
-			<artifactId>jsch</artifactId>
-			<version>${jsch}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jcraft</groupId>
-			<artifactId>jsch.agentproxy.sshagent</artifactId>
-			<version>${jsch.agentproxy}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jcraft</groupId>
-			<artifactId>jsch.agentproxy.core</artifactId>
-			<version>${jsch.agentproxy}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jcraft</groupId>
-			<artifactId>jsch.agentproxy.jsch</artifactId>
-			<version>${jsch.agentproxy}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jcraft</groupId>
-			<artifactId>jsch.agentproxy.usocket-nc</artifactId>
-			<version>${jsch.agentproxy}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven.plugin-tools</groupId>
-			<artifactId>maven-plugin-annotations</artifactId>
-			<version>${maven-plugin-annotations}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-plugin-api</artifactId>
-			<version>${project.prerequisites.maven}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-model</artifactId>
-			<version>${project.prerequisites.maven}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-core</artifactId>
-			<version>${project.prerequisites.maven}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-settings</artifactId>
-			<version>${project.prerequisites.maven}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven.shared</groupId>
-			<artifactId>maven-invoker</artifactId>
-			<version>${maven-invoker}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jgit</groupId>
-			<artifactId>org.eclipse.jgit</artifactId>
-			<version>${org.eclipse.jgit}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>${commons-lang3}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.googlecode.json-simple</groupId>
-			<artifactId>json-simple</artifactId>
-			<version>${json-simple}</version>
-		</dependency>
-
-		<dependency>
-			<!-- Only because jgit uses slf4j - without a binding, it logs an error -->
-			<scope>runtime</scope>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>${slf4j-simple}</version>
-		</dependency>
-
-		<dependency>
-			<scope>test</scope>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>${commons-io}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-exec</artifactId>
-			<version>${commons-exec}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-core</artifactId>
-			<version>${hamcrest}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-library</artifactId>
-			<version>${hamcrest}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-artifact</artifactId>
-			<version>${project.prerequisites.maven}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-model-builder</artifactId>
-			<version>${project.prerequisites.maven}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-api</artifactId>
-			<version>${aether}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-spi</artifactId>
-			<version>${aether}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-util</artifactId>
-			<version>${aether}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-impl</artifactId>
-			<version>${aether}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-connector-basic</artifactId>
-			<version>${aether}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-transport-file</artifactId>
-			<version>${aether}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-aether-provider</artifactId>
-			<version>${project.prerequisites.maven}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>${mockito-core}</version>
-		</dependency>
-		<dependency>
-			<scope>test</scope>
-			<groupId>net.bytebuddy</groupId>
-			<artifactId>byte-buddy</artifactId>
-			<version>${byte-buddy}</version>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.sisu</groupId>
-				<artifactId>sisu-maven-plugin</artifactId>
-				<version>${sisu-maven-plugin}</version>
-				<executions>
-					<execution>
-						<id>generate-index</id>
-						<goals>
-							<goal>main-index</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>ch.sourcepond.maven.plugins</groupId>
-				<artifactId>multi-module-release-maven-plugin</artifactId>
-				<version>${project.version}</version>
-				<configuration>
-					<serverId>github</serverId>
-					<knownHosts>/private/sourcepond/.ssh/known_hosts</knownHosts>
-					<userSettings>/private/sourcepond/settings.xml</userSettings>
-					<releaseGoals>
-						<releaseGoal>clean</releaseGoal>
-						<releaseGoal>site</releaseGoal>
-						<releaseGoal>deploy</releaseGoal>
-					</releaseGoals>
-					<releaseProfiles>
-						<releaseProfile>release</releaseProfile>
-					</releaseProfiles>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-plugin-plugin</artifactId>
-				<version>${maven-plugin-plugin}</version>
-				<configuration>
-					<goalPrefix>releaser</goalPrefix>
-				</configuration>
-				<executions>
-					<execution>
-						<id>default-descriptor</id>
-						<goals>
-							<goal>descriptor</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>generated-helpmojo</id>
-						<goals>
-							<goal>helpmojo</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin}</version>
-				<configuration>
-					<source>${source.level}</source>
-					<target>${source.level}</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven-surefire-plugin}</version>
-				<configuration>
-					<excludes>
-						<exclude>**/integrationtest/*.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>${maven-failsafe-plugin}</version>
-				<configuration>
-					<includes>
-						<include>**/integrationtest/*Test.java</include>
-					</includes>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>${maven-dependency-plugin}</version>
-				<executions>
-					<execution>
-						<id>analyze</id>
-						<goals>
-							<goal>analyze-only</goal>
-						</goals>
-						<configuration>
-							<failOnWarning>true</failOnWarning>
-							<ignoreNonCompile>true</ignoreNonCompile>
-							<outputXML>true</outputXML>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>${maven-site-plugin}</version>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.maven.doxia</groupId>
-						<artifactId>doxia-module-markdown</artifactId>
-						<version>${doxia-module-markdown}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-		</plugins>
-	</build>
-
 	<profiles>
-		<profile>
-			<id>eclipse-only</id>
-			<activation>
-				<property>
-					<name>m2e.version</name>
-				</property>
-			</activation>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<groupId>org.eclipse.m2e</groupId>
-							<artifactId>lifecycle-mapping</artifactId>
-							<version>1.0.0</version>
-							<configuration>
-								<lifecycleMappingMetadata>
-									<pluginExecutions>
-										<pluginExecution>
-											<pluginExecutionFilter>
-												<groupId>org.eclipse.sisu</groupId>
-												<artifactId>sisu-maven-plugin</artifactId>
-												<versionRange>[0.3,)</versionRange>
-												<goals>
-													<goal>main-index</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<ignore />
-											</action>
-										</pluginExecution>
-										<pluginExecution>
-											<pluginExecutionFilter>
-												<groupId>org.apache.maven.plugins</groupId>
-												<artifactId>maven-plugin-plugin</artifactId>
-												<versionRange>[1.0.0,)</versionRange>
-												<goals>
-													<goal>descriptor</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<ignore />
-											</action>
-										</pluginExecution>
-										<pluginExecution>
-											<pluginExecutionFilter>
-												<groupId>org.apache.maven.plugins</groupId>
-												<artifactId>maven-plugin-plugin</artifactId>
-												<versionRange>[1.0.0,)</versionRange>
-												<goals>
-													<goal>helpmojo</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<ignore />
-											</action>
-										</pluginExecution>
-									</pluginExecutions>
-								</lifecycleMappingMetadata>
-							</configuration>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-			</build>
-		</profile>
-		
 		<profile>
 			<id>release</id>
 			<build>
@@ -568,21 +178,70 @@
 		</profile>
 	</profiles>
 
-	<reporting>
+	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-plugin-plugin</artifactId>
-				<version>${maven-plugin-plugin}</version>
+				<groupId>ch.sourcepond.maven.plugins.multimodule</groupId>
+				<artifactId>release-maven-plugin</artifactId>
+				<version>${project.version}-LOCAL</version>
 				<configuration>
-					<goalPrefix>releaser</goalPrefix>
+					<serverId>github</serverId>
+					<knownHosts>/private/sourcepond/.ssh/known_hosts</knownHosts>
+					<userSettings>/private/sourcepond/settings.xml</userSettings>
+					<releaseGoals>
+						<releaseGoal>clean</releaseGoal>
+						<releaseGoal>site</releaseGoal>
+						<releaseGoal>deploy</releaseGoal>
+					</releaseGoals>
+					<releaseProfiles>
+						<releaseProfile>release</releaseProfile>
+					</releaseProfiles>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>${maven-surefire-report-plugin}</version>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin}</version>
+				<configuration>
+					<source>${source.level}</source>
+					<target>${source.level}</target>
+				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${maven-dependency-plugin}</version>
+				<executions>
+					<execution>
+						<id>analyze</id>
+						<goals>
+							<goal>analyze-only</goal>
+						</goals>
+						<configuration>
+							<failOnWarning>true</failOnWarning>
+							<ignoreNonCompile>true</ignoreNonCompile>
+							<outputXML>true</outputXML>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>${maven-site-plugin}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.doxia</groupId>
+						<artifactId>doxia-module-markdown</artifactId>
+						<version>${doxia-module-markdown}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+
+	<reporting>
+		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
@@ -601,17 +260,4 @@
 			</plugin>
 		</plugins>
 	</reporting>
-
-	<distributionManagement>
-		<repository>
-			<id>ossrh-stage</id>
-			<name>SourcePond Stage Repository</name>
-			<url>${deployment.baseurl}/service/local/staging/deploy/maven2/</url>
-		</repository>
-		<snapshotRepository>
-			<id>ossrh-snapshot</id>
-			<name>SourcePond Snapshot Repository</name>
-			<url>${deployment.baseurl}/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
 </project>

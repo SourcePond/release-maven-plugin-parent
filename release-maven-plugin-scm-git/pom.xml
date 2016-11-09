@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>ch.sourcepond.maven.plugins.multimodule</groupId>
+		<artifactId>release-maven-plugin-base</artifactId>
+		<version>1.0-SNAPSHOT</version> <!-- When changing also add to src/site/markdown/changelog.md -->
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>release-maven-plugin-scm-git</artifactId>
+	<name>Multi Module Maven Release Plugin :: Git Provider</name>
+	<description>Maven plugin to release multi-module Maven projects where only changed modules should be released</description>
+	<url>https://github.com/SourcePond/release-maven-plugin</url>
+	<packaging>jar</packaging>
+
+	<scm>
+		<url>https://${repository.path}.git</url>
+		<connection>scm:git:git@${repository.path}.git</connection>
+	</scm>
+</project>
