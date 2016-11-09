@@ -37,6 +37,7 @@
 		<maven-dependency-plugin>2.10</maven-dependency-plugin>
 		<nexus-staging-maven-plugin>1.6.7</nexus-staging-maven-plugin>
 		<maven-source-plugin>3.0.0</maven-source-plugin>
+		<maven-install-plugin>2.5.2</maven-install-plugin>
 		<maven-javadoc-plugin>2.10.4</maven-javadoc-plugin>
 		<maven-gpg-plugin>1.6</maven-gpg-plugin>
 		<maven-site-plugin>3.5.1</maven-site-plugin>
@@ -106,6 +107,23 @@
 			<build>
 				<plugins>
 					<plugin>
+						<groupId>ch.sourcepond.maven.plugins.multimodule</groupId>
+						<artifactId>release-maven-plugin</artifactId>
+						<!-- This is necessary to avoid a circular dependency -->
+						<version>${project.version}-SELF</version>
+						<configuration>
+							<serverId>github</serverId>
+							<releaseGoals>
+								<releaseGoal>clean</releaseGoal>
+								<releaseGoal>deploy</releaseGoal>
+								<releaseGoal>site-deploy</releaseGoal>
+							</releaseGoals>
+							<releaseProfiles>
+								<releaseProfile>release</releaseProfile>
+							</releaseProfiles>
+						</configuration>
+					</plugin>
+					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
 						<version>${nexus-staging-maven-plugin}</version>
@@ -162,22 +180,16 @@
 	</profiles>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>${maven-install-plugin}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
-			<plugin>
-				<groupId>ch.sourcepond.maven.plugins.multimodule</groupId>
-				<artifactId>release-maven-plugin</artifactId>
-				<configuration>
-					<serverId>github</serverId>
-					<releaseGoals>
-						<releaseGoal>clean</releaseGoal>
-						<releaseGoal>deploy</releaseGoal>
-						<releaseGoal>site-deploy</releaseGoal>
-					</releaseGoals>
-					<releaseProfiles>
-						<releaseProfile>release</releaseProfile>
-					</releaseProfiles>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
