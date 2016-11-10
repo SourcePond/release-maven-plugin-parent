@@ -8,21 +8,15 @@
 		</xsl:copy>
 	</xsl:template>
 
-	<xsl:template match="/plugin/version/text()">
-		<xsl:value-of select="/plugin/version/text()" />
-		<xsl:text>-SELF</xsl:text>
+	<xsl:template match="/plugin/artifactId/text()">
+		<xsl:value-of select="/plugin/artifactId/text()" />
+		<xsl:text>-self</xsl:text>
 	</xsl:template>
 
-	<xsl:template match="/mv:project">
-		<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-			<xsl:text>&#x0A;</xsl:text>
-			<version>
-				<xsl:value-of select="/mv:project/mv:parent/mv:version/text()" />
-				<xsl:text>-SELF</xsl:text>
-			</version>
-			<xsl:apply-templates />
-		</project>
+	<xsl:template match="/mv:project/mv:artifactId/text()">
+		<xsl:value-of select="/mv:project/mv:parent/mv:artifactId/text()" />
+		<xsl:text>-self</xsl:text>
+		<xsl:apply-templates />
 	</xsl:template>
-	
+
 </xsl:stylesheet>

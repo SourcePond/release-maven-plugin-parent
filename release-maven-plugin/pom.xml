@@ -58,8 +58,21 @@
 		<maven-surefire-report-plugin>2.19.1</maven-surefire-report-plugin>
 		<maven-project-info-reports-plugin>2.9</maven-project-info-reports-plugin>
 
+		<!-- Properties for self-reference (plugin to release our self) -->
+		<unpackDir>${project.build.directory}/tmp</unpackDir>
+		<metaInfMavenDir>META-INF/maven</metaInfMavenDir>
+		<metaInfMavenPomDir>${metaInfMavenDir}/${project.groupId}/${project.artifactId}</metaInfMavenPomDir>
+
+		<sourceMetaInfMavenDir>${project.build.outputDirectory}/${metaInfMavenDir}</sourceMetaInfMavenDir>
+		<sourceMetaInfMavenPomDir>${project.build.outputDirectory}/${metaInfMavenPomDir}</sourceMetaInfMavenPomDir>
+
+		<targetMetaInfMavenDir>${unpackDir}/${metaInfMavenDir}</targetMetaInfMavenDir>
+		<targetMetaInfMavenPomDir>${unpackDir}/${metaInfMavenPomDir}</targetMetaInfMavenPomDir>
+
+		<finalMetaInfMavenPomDir>${unpackDir}/${metaInfMavenPomDir}-${self.artifactId.extension}</finalMetaInfMavenPomDir>
+
 		<artifactJar>${project.build.directory}/${project.artifactId}-${project.version}.jar</artifactJar>
-		<selfArtifactJar>${project.build.directory}/${project.artifactId}-${self.version}.jar</selfArtifactJar>
+		<selfArtifactJar>${project.build.directory}/${project.artifactId}-${self.artifactId.extension}-${project.version}.jar</selfArtifactJar>
 	</properties>
 
 	<scm>
@@ -295,7 +308,7 @@
 						</goals>
 						<configuration>
 							<target>
-								<unzip src="${artifactJar}" dest="${project.build.directory}/tmp" />
+								<unzip src="${artifactJar}" dest="${unpackDir}" />
 							</target>
 						</configuration>
 					</execution>
@@ -307,10 +320,10 @@
 						</goals>
 						<configuration>
 							<target>
-								<replace
-									file="${project.build.directory}/tmp/META-INF/maven/${project.groupId}/${project.artifactId}/pom.properties"
-									token="${project.version}" value="${self.version}" />
-								<zip basedir="${project.build.directory}/tmp" destfile="${selfArtifactJar}" />
+								<replace file="${targetMetaInfMavenPomDir}/pom.properties"
+									token="${project.artifactId}" value="${project.artifactId}-${self.artifactId.extension}" />
+								<move file="${targetMetaInfMavenPomDir}" tofile="${finalMetaInfMavenPomDir}" />
+								<zip basedir="${unpackDir}" destfile="${selfArtifactJar}" />
 							</target>
 						</configuration>
 					</execution>
@@ -331,20 +344,20 @@
 				<configuration>
 					<transformationSets>
 						<transformationSet>
-							<dir>${project.build.outputDirectory}/META-INF/maven</dir>
-							<outputDir>${project.build.directory}/tmp/META-INF/maven</outputDir>
+							<dir>${sourceMetaInfMavenDir}</dir>
+							<outputDir>${targetMetaInfMavenDir}</outputDir>
 							<stylesheet>src/main/resources/self.xslt</stylesheet>
 							<includes>plugin.xml</includes>
 						</transformationSet>
 						<transformationSet>
-							<dir>${project.build.outputDirectory}/META-INF/maven/${project.groupId}/${project.artifactId}</dir>
-							<outputDir>${project.build.directory}/tmp/META-INF/maven/${project.groupId}/${project.artifactId}</outputDir>
+							<dir>${sourceMetaInfMavenPomDir}</dir>
+							<outputDir>${targetMetaInfMavenPomDir}</outputDir>
 							<stylesheet>src/main/resources/self.xslt</stylesheet>
 							<includes>plugin-help.xml</includes>
 						</transformationSet>
 						<transformationSet>
 							<dir>${project.basedir}</dir>
-							<outputDir>${project.build.directory}/tmp/META-INF/maven/${project.groupId}/${project.artifactId}</outputDir>
+							<outputDir>${targetMetaInfMavenPomDir}</outputDir>
 							<stylesheet>src/main/resources/self.xslt</stylesheet>
 							<includes>pom.xml</includes>
 						</transformationSet>
@@ -364,8 +377,9 @@
 						<configuration>
 							<file>${selfArtifactJar}</file>
 							<groupId>${project.groupId}</groupId>
-							<artifactId>${project.artifactId}</artifactId>
-							<version>${self.version}</version>
+							<artifactId>${project.artifactId}-${self.artifactId.extension}</artifactId>
+							<version>${project.version}</version>
+							<pomFile>${finalMetaInfMavenPomDir}/pom.xml</pomFile>
 						</configuration>
 					</execution>
 				</executions>

@@ -6,3 +6,4 @@ target
 .project
 .DS_Store
 maven-repo
+dependency-reduced-pom.xml
